@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.adapter.ZiAdapter;
 import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.view.CustomProgress;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -38,6 +40,7 @@ public class ZiFragment extends Fragment {
     DecimalFormat df = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
     String taskno,qi,zhi,neirong,jiliang,shuliang,danjia,progress,plan,budget,pbudget,note,hanshui,buhan,fuzhu,fuliang,fasong,huikui,pingfen;
+    CustomProgress dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +73,7 @@ public class ZiFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
+            dialog = CustomProgress.show(mContext,"加载中...",true,null);
             super.onPreExecute();
         }
 
@@ -194,6 +198,7 @@ public class ZiFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            dialog.dismiss();
             if(s.equals("0")){
                 tv_zi.setVisibility(View.VISIBLE);
             }else{

@@ -1777,6 +1777,7 @@ public class AddTaskActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             list.clear();
+            progress = CustomProgress.show(AddTaskActivity.this,"加载中...",true,null);
             super.onPreExecute();
         }
 
@@ -2053,6 +2054,7 @@ public class AddTaskActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            progress.dismiss();
             adapter = new ZiAdapter(AddTaskActivity.this, ziList);
             lv_zb.setAdapter(adapter);
         }
