@@ -266,7 +266,7 @@ public class TaskFragment extends Fragment {
                     case 1:
                         //公司区分
                         if(tool.getId()!=null){
-                            sql = "select fid,fbillno from t_BOS200000000 where fbase11 ="+tool.getId();
+                            sql = "select fid,fbillno from t_BOS200000000 where fbase11 ="+tool.getId()+" order by fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择公司",Toast.LENGTH_SHORT).show();
@@ -275,7 +275,7 @@ public class TaskFragment extends Fragment {
                     case 2:
                         //部门区分
                         if(tool.getId()!=null){
-                            sql = "select fid,fbillno from t_BOS200000000 where fbase12 ="+tool.getId();
+                            sql = "select fid,fbillno from t_BOS200000000 where fbase12 ="+tool.getId()+" order by fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择部门",Toast.LENGTH_SHORT).show();
@@ -284,7 +284,7 @@ public class TaskFragment extends Fragment {
                     case 3:
                         //内容区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase1 ="+tool.getId();
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase1 ="+tool.getId()+" order by fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择内容",Toast.LENGTH_SHORT).show();
@@ -302,7 +302,7 @@ public class TaskFragment extends Fragment {
                     case 4:
                         //责任人区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase4 ="+tool.getId();
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase4 ="+tool.getId()+" order by fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择责任人",Toast.LENGTH_SHORT).show();
@@ -311,7 +311,7 @@ public class TaskFragment extends Fragment {
                     case 5:
                         //往来区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase10 ="+tool.getId();
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase10 ="+tool.getId()+" order by fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择往来",Toast.LENGTH_SHORT).show();
@@ -320,7 +320,7 @@ public class TaskFragment extends Fragment {
                     case 6:
                         //制单人区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 ="+tool.getId();
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 ="+tool.getId()+" order by fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择制单人",Toast.LENGTH_SHORT).show();
@@ -397,7 +397,7 @@ public class TaskFragment extends Fragment {
 //                    "   left join t_Emp p on p.FItemID=b.FBase5 left join t_Emp q on q.FItemID=b.FBase6" +
 //                    "   left join t_Emp m on m.FItemID=b.FBase7 left join t_Emp n on n.FItemID=b.fbase8" +
 //                    "   left join t_Emp r on r.FItemID=b.FBase9 left join t_MeasureUnit s on s.FMeasureUnitID=k.FItemID";
-            String sql = "select fid,fbillno from t_BOS200000000";
+            String sql = "select fid,fbillno from t_BOS200000000 order by fid desc";
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_BOS200000000");
 
@@ -632,7 +632,7 @@ public class TaskFragment extends Fragment {
                 adapter = new TaskAdapter(mContext, list);
                 lv_task.setAdapter(adapter);
             }else {
-                tv_notask.setVisibility(View.INVISIBLE);
+                tv_notask.setVisibility(View.GONE);
                 adapter = new TaskAdapter(mContext, list);
                 lv_task.setAdapter(adapter);
             }

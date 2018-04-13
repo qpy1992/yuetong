@@ -151,7 +151,6 @@ public class AddTaskActivity extends AppCompatActivity {
             final EditText et_fuliang = (EditText)v.findViewById(R.id.et_fuliang);
             et_fuliang.setEnabled(false);
             final EditText et_fasong = (EditText)v.findViewById(R.id.et_fasong);
-            final EditText et_huikui = (EditText)v.findViewById(R.id.et_huikui);
             final TextWatcher shuliang = new TextWatcher(){
 
                 @Override
@@ -359,13 +358,13 @@ public class AddTaskActivity extends AppCompatActivity {
                             }).setNegativeButton("取消",null).show();
                 }
             });
-            final TextView tv_pingfen = (TextView)v.findViewById(R.id.tv_pingfen_add);
-            tv_pingfen.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new PFTask(tv_pingfen).execute();
-                }
-            });
+//            final TextView tv_pingfen = (TextView)v.findViewById(R.id.tv_pingfen_add);
+//            tv_pingfen.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    new PFTask(tv_pingfen).execute();
+//                }
+//            });
             final TextView tv_submit = (TextView)v.findViewById(R.id.tv_submit);
             if(!map.isEmpty()){
                 et_shuliang.setText(map.get("shuliang"));
@@ -381,8 +380,8 @@ public class AddTaskActivity extends AppCompatActivity {
                 et_buhan.setText(map.get("buhan"));
                 et_fuliang.setText(map.get("fuliang"));
                 et_fasong.setText(map.get("fasong"));
-                et_huikui.setText(map.get("huikui"));
-                tv_pingfen.setText(map.get("pingfen"));
+//                et_huikui.setText(map.get("huikui"));
+//                tv_pingfen.setText(map.get("pingfen"));
             }
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
                     .show();
@@ -447,8 +446,8 @@ public class AddTaskActivity extends AppCompatActivity {
                         map.put("fuliang", et_fuliang.getText().toString());
                     }
                     map.put("fasong",et_fasong.getText().toString());
-                    map.put("huikui",et_huikui.getText().toString());
-                    map.put("pingfen",tv_pingfen.getText().toString());
+//                    map.put("huikui",et_huikui.getText().toString());
+//                    map.put("pingfen",tv_pingfen.getText().toString());
                     if(pfid==null){
                         map.put("pfid","0");
                     }else {
@@ -562,7 +561,7 @@ public class AddTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final EditText et = new EditText(AddTaskActivity.this);
-                new AlertDialog.Builder(AddTaskActivity.this).setTitle("职员").setView(et)
+                new AlertDialog.Builder(AddTaskActivity.this).setTitle("责任人").setView(et)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -582,7 +581,7 @@ public class AddTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final EditText et = new EditText(AddTaskActivity.this);
-                new AlertDialog.Builder(AddTaskActivity.this).setTitle("职员").setView(et)
+                new AlertDialog.Builder(AddTaskActivity.this).setTitle("往来").setView(et)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -1532,7 +1531,7 @@ public class AddTaskActivity extends AppCompatActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
             lv.setAdapter(adapter);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
-                    .setTitle(R.string.progress).show();
+                    .setTitle(R.string.jiliang).show();
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

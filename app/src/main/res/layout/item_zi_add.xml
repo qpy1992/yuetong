@@ -72,6 +72,31 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:text="@string/jinehs"
+                    android:textSize="16sp"
+                    android:textColor="@color/bottom_button_text_black"/>
+                <EditText
+                    android:id="@+id/et_hanshui"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginRight="10dp"
+                    android:textSize="16sp"
+                    android:gravity="right"
+                    android:singleLine="true"
+                    android:background="@null"
+                    android:inputType="number|numberDecimal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:text="@string/qi"
                     android:gravity="center_vertical"
                     android:textSize="16sp"
@@ -251,31 +276,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/jinehs"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
-                <EditText
-                    android:id="@+id/et_hanshui"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:layout_marginRight="10dp"
-                    android:textSize="16sp"
-                    android:gravity="right"
-                    android:singleLine="true"
-                    android:background="@null"
-                    android:inputType="number|numberDecimal"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:text="@string/rmb"
                     android:textSize="16sp"
                     android:textColor="@color/bottom_button_text_black"/>
@@ -356,7 +356,7 @@
                     android:background="@null"/>
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp">
 
@@ -377,13 +377,14 @@
                     android:textSize="15sp"
                     android:layout_marginRight="10dp"
                     android:background="@null"/>
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp">
+                android:layout_height="30dp"
+                android:gravity="center">
 
-                <TextView
+                <!--<TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -399,13 +400,12 @@
                     android:textSize="16sp"
                     android:hint="@string/select"
                     android:gravity="right|center_vertical"
-                    android:layout_marginRight="10dp"/>
+                    android:layout_marginRight="10dp"/>-->
 
                 <TextView
                     android:id="@+id/tv_submit"
-                    android:layout_width="0dp"
+                    android:layout_width="160dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
                     android:text="@string/submit"
                     android:gravity="center"
                     android:textSize="16sp"
