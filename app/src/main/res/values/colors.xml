@@ -19,4 +19,8 @@
     <color name="color3">#B0B0B0</color>
     <color name="color4">#666666</color>
     <color name="color5">#57C5E8</color>
+
+    <!--mine-->
+    <color name="btn_pressed">#00A1DB</color>
+    <color name="btn_normal">#00ACFF</color>
 </resources>
