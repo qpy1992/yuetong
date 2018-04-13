@@ -35,7 +35,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     EditText        et_msg;
 //    TextView        tv_send;
     Button          bt_send;
-    String          nickname;
+    String          nickname,name;
     RecyclerView    rcv_msg;
 //    ChatAdapter     adapter;
     ArrayList<Item> list;
@@ -67,6 +67,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
     protected void setTool(){
         nickname = getIntent().getStringExtra("nickname");
+        name = getIntent().getStringExtra("name");
         if (TextUtils.isEmpty(nickname)){
             ToastUtils.showToast(this,"stub,请携带username参数！");
             finish();
@@ -87,7 +88,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void getTalkData() {
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(nickname);
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(name);
         if (conversation != null) {
             //需要将所有的未读消息标记为已读
             conversation.markAllMessagesAsRead();
@@ -273,7 +274,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         switch (view.getId()){
             case R.id.bt_send:
                 String msg = et_msg.getText().toString();
-                EMMessage emMessage = EMMessage.createTxtSendMessage(msg,nickname);
+                EMMessage emMessage = EMMessage.createTxtSendMessage(msg,name);
                 emMessage.setStatus(EMMessage.Status.INPROGRESS);
                 mEMMessageList.add(emMessage);
                 onUpdata(mEMMessageList.size());
@@ -310,7 +311,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
          *
          */
         String from = message.getFrom();
-        if (from.equals(nickname)){
+        if (from.equals(name)){
             getTalkData();
             onUpdata(mEMMessageList.size());
         }

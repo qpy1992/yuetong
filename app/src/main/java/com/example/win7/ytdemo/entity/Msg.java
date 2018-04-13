@@ -5,10 +5,19 @@ package com.example.win7.ytdemo.entity;
  */
 
 public class Msg {
+    String name;
     String nickname;
     String lastmsg;
     String time;
     String imagepath;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getNickname() {
         return nickname;
