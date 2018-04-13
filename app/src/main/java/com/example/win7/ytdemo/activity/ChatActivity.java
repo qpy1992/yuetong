@@ -35,7 +35,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     EditText        et_msg;
 //    TextView        tv_send;
     Button          bt_send;
-    String          nickname,name;
+    String          nickname,username;
     RecyclerView    rcv_msg;
 //    ChatAdapter     adapter;
     ArrayList<Item> list;
@@ -67,7 +67,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
     protected void setTool(){
         nickname = getIntent().getStringExtra("nickname");
-        name = getIntent().getStringExtra("name");
+        username = getIntent().getStringExtra("name");
         if (TextUtils.isEmpty(nickname)){
             ToastUtils.showToast(this,"stub,请携带username参数！");
             finish();
@@ -88,7 +88,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void getTalkData() {
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(name);
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(username);
         if (conversation != null) {
             //需要将所有的未读消息标记为已读
             conversation.markAllMessagesAsRead();
@@ -274,7 +274,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         switch (view.getId()){
             case R.id.bt_send:
                 String msg = et_msg.getText().toString();
-                EMMessage emMessage = EMMessage.createTxtSendMessage(msg,name);
+                EMMessage emMessage = EMMessage.createTxtSendMessage(msg,username);
                 emMessage.setStatus(EMMessage.Status.INPROGRESS);
                 mEMMessageList.add(emMessage);
                 onUpdata(mEMMessageList.size());
@@ -311,7 +311,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
          *
          */
         String from = message.getFrom();
-        if (from.equals(name)){
+        if (from.equals(username)){
             getTalkData();
             onUpdata(mEMMessageList.size());
         }

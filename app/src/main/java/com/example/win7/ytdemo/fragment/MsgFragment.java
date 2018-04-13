@@ -75,7 +75,7 @@ public class MsgFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
                 intent.putExtra("nickname",list.get(i).getNickname());
-                intent.putExtra("name",list.get(i).getName());
+                intent.putExtra("name",list.get(i).getUsername());
                 startActivity(intent);
             }
         });
@@ -162,7 +162,7 @@ public class MsgFragment extends Fragment {
                         Element recordEle = (Element) iter.next();
                         Msg msg = new Msg();
                         msg.setNickname(recordEle.elementTextTrim("fname"));
-                        msg.setName(recordEle.elementTextTrim("name"));
+                        msg.setUsername(recordEle.elementTextTrim("name"));
                         list.add(msg);
                     }
                 } catch (Exception e) {
