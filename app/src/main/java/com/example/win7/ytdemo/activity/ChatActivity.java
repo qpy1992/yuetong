@@ -197,7 +197,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         }else {
             bt_send.setEnabled(true);
         }
-//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
     }
 
 //    EMMessageListener msgListener = new EMMessageListener() {
