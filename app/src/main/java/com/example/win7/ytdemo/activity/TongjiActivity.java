@@ -1,13 +1,12 @@
 package com.example.win7.ytdemo.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.win7.ytdemo.R;
 
-public class TongjiActivity extends AppCompatActivity {
+public class TongjiActivity extends BaseActivity {
     Toolbar toolbar;
 
     @Override

@@ -1,21 +1,14 @@
 package com.example.win7.ytdemo.activity;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.baidu.location.BDAbstractLocationListener;
-import com.baidu.location.BDLocation;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.util.Consts;
@@ -32,7 +25,7 @@ import org.ksoap2.transport.HttpTransportSE;
 import java.util.Calendar;
 import java.util.Iterator;
 
-public class LocationActivity extends AppCompatActivity {
+public class LocationActivity extends BaseActivity {
     Toolbar toolbar;
     TextView tv_date,tv_sdkt,tv_sdkl,tv_xdkt,tv_xdkl,tv_wdkt,tv_wdkl,tv_beizhu;
     String shang,xia,wai,slocate,xlocate,wlocate,note="";

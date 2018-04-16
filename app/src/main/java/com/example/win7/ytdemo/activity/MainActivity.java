@@ -1,14 +1,14 @@
 package com.example.win7.ytdemo.activity;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.fragment.MeFragment;
@@ -20,7 +20,7 @@ import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.util.NetUtils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     MsgFragment msg;
     OrderFragment order;
     TaskFragment task;
@@ -41,13 +41,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        YApplication.listActivity.add(this);
+        YApplication.mBaseActivityList.add(this);
         setViews();
         setListeners();
     }
 
     protected void setViews(){
         btns[0] = (Button) findViewById(R.id.btn_msg);//消息
+//        btns[1] = (Button) findViewById(R.id.btn_msg);//通讯录
         btns[1] = (Button) findViewById(R.id.btn_task);//任务
         btns[2] = (Button) findViewById(R.id.btn_order);//订单
         btns[3] = (Button) findViewById(R.id.btn_me);//我的

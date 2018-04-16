@@ -14,14 +14,24 @@ import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.win7.ytdemo.activity.BaseActivity;
 import com.example.win7.ytdemo.activity.ChatActivity;
+import com.example.win7.ytdemo.activity.LoginActivity;
 import com.example.win7.ytdemo.activity.MainActivity;
 import com.example.win7.ytdemo.adapter.MessageListenerAdapter;
+import com.example.win7.ytdemo.eventMessege.ChatMessageEvent;
+import com.example.win7.ytdemo.eventMessege.OnContactUpdateEvent;
 import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.util.ThreadUtils;
+import com.example.win7.ytdemo.util.ToastUtils;
+import com.hyphenate.EMConnectionListener;
+import com.hyphenate.EMContactListener;
+import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.exceptions.HyphenateException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.ksoap2.SoapEnvelope;
@@ -38,7 +48,7 @@ import java.util.List;
  */
 
 public class YApplication extends Application {
-    public static ArrayList<Activity> listActivity = new ArrayList<Activity>();
+    public static ArrayList<BaseActivity> mBaseActivityList = new ArrayList<BaseActivity>();
     public static String              fname        = "";
     public static String              fgroup       = "";
     private SoundPool mSoundPool;
@@ -56,14 +66,101 @@ public class YApplication extends Application {
         EMOptions options = new EMOptions();
         // 默认添加好友时，是不需要验证的，改成需要验证
         options.setAcceptInvitationAlways(false);
+        /**
+         * 下面的代码是为了避免环信被初始化2次
+         */
+        int pid = android.os.Process.myPid();
+        String processAppName = getAppName(pid);
+        // 如果APP启用了远程的service，此application:onCreate会被调用2次
+        // 为了防止环信SDK被初始化2次，加此判断会保证SDK被初始化1次
+        // 默认的APP会在以包名为默认的process name下运行，如果查到的process name不是APP的process name就立即返回
+        if (processAppName == null || !processAppName.equalsIgnoreCase(getPackageName())) {
+            // 则此application::onCreate 是被service 调用的，直接返回
+            return;
+        }
         //初始化
-        EMClient.getInstance().init(getApplicationContext(), options);
+        EMClient.getInstance().init(this, options);
         //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
         EMClient.getInstance().setDebugMode(true);
+        //添加通讯录监听
+        initContactListener();
         //添加消息的监听
         initMessageListener();
         //监听连接状态的改变
-        //        initConnectionListener();
+        initConnectionListener();
+    }
+
+    private void initContactListener() {
+        EMClient.getInstance().contactManager().setContactListener(new EMContactListener() {
+
+            @Override
+            public void onContactAdded(String username) {
+                //好友请求被同意
+                //发出通知让ContactFragment更新UI
+                EventBus.getDefault().post(new OnContactUpdateEvent(username, true));
+            }
+
+            @Override
+            public void onContactDeleted(String username) {
+                //被删除时回调此方法
+                EventBus.getDefault().post(new OnContactUpdateEvent(username, false));
+            }
+
+            @Override
+            public void onContactInvited(String username, String reason) {
+                //收到好友邀请
+                //同意或者拒绝
+                try {
+                    EMClient.getInstance().contactManager().acceptInvitation(username);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFriendRequestAccepted(String username) {
+                //增加了联系人时回调此方法
+            }
+
+            @Override
+            public void onFriendRequestDeclined(String username) {
+                //好友请求被拒绝
+            }
+        });
+    }
+
+    private void initConnectionListener() {
+        EMClient.getInstance().addConnectionListener(new EMConnectionListener() {
+            @Override
+            public void onConnected() {
+            }
+
+            @Override
+            public void onDisconnected(int i) {
+                if (i== EMError.USER_LOGIN_ANOTHER_DEVICE){
+                    // 显示帐号在其他设备登录
+                    /**
+                     *  将当前任务栈中所有的Activity给清空掉
+                     *  重新打开登录界面
+                     */
+                    for (BaseActivity baseActivity : mBaseActivityList) {
+                        baseActivity.finish();
+                    }
+
+                    Intent intent = new Intent(YApplication.this, LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    ThreadUtils.runOnMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ToastUtils.showToast(YApplication.this,"您已在其他设备上登录了，请重新登录。");
+                        }
+                    });
+
+                }
+            }
+        });
+
     }
 
     private void initSoundPool() {
@@ -93,7 +190,9 @@ public class YApplication extends Application {
                         //发出短声音
                         mSoundPool.play(mDuanSound, 1, 1, 0, 0, 1);
                     }
-                    EventBus.getDefault().post(list.get(0));
+                    EMMessage emMessage = list.get(0);
+                    ChatMessageEvent chatMessageEvent = new ChatMessageEvent(emMessage);
+                    EventBus.getDefault().post(chatMessageEvent);
                 }
             }
         });
@@ -101,7 +200,7 @@ public class YApplication extends Application {
 
     public static void exit() {
         try {
-            for (Activity activity : listActivity) {
+            for (Activity activity : mBaseActivityList) {
                 EMClient.getInstance().logout(true);
                 activity.finish();
                 Log.i("退出", activity.toString() + " finish了");
@@ -223,5 +322,14 @@ public class YApplication extends Application {
                 .setPriority(Notification.PRIORITY_MAX)
                 .build();
         notificationManager.notify(1, notification);
+    }
+
+    public void addActivity(BaseActivity activity){
+        if (!mBaseActivityList.contains(activity)){
+            mBaseActivityList.add(activity);
+        }
+    }
+    public void removeActivity(BaseActivity activity){
+        mBaseActivityList.remove(activity);
     }
 }

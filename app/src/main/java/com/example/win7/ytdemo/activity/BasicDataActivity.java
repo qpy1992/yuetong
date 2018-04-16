@@ -1,6 +1,5 @@
 package com.example.win7.ytdemo.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -9,10 +8,11 @@ import android.widget.Toast;
 
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.view.HorizontalselectedView;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicDataActivity extends AppCompatActivity {
+public class BasicDataActivity extends BaseActivity {
     Toolbar toolbar;
     HorizontalselectedView hsv_main;
     List<String> strings = new ArrayList<>();
