@@ -56,7 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-public class AddTaskActivity extends AppCompatActivity {
+public class AddTaskActivity extends BaseActivity {
     Toolbar toolbar;
     TextView tv_huilv,tv_zuzhi,tv_quyu,tv_content,tv_respon,tv_zhidan,tv_contacts,tv_bibie,tv_jl;
     ListView lv_zb;

@@ -1,6 +1,5 @@
 package com.example.win7.ytdemo.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ViewActivity extends Activity {
+public class ViewActivity extends BaseActivity {
 
     private ViewActivity viewActivity=this;
     private LinearLayout mainView=null;
