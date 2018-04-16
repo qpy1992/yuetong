@@ -32,7 +32,7 @@
         android:gravity="center"
         android:background="@drawable/send_msg_normal"
         android:id="@+id/tv_msg"
-        android:text="你好，今晚一起游泳！"
+        android:text="今晚一起游泳！"
         android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

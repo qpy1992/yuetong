@@ -332,4 +332,10 @@ public class YApplication extends Application {
     public void removeActivity(BaseActivity activity){
         mBaseActivityList.remove(activity);
     }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+
+    }
 }

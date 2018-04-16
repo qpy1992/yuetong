@@ -14,33 +14,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.activity.ChatActivity;
 import com.example.win7.ytdemo.adapter.MsgAdapter;
 import com.example.win7.ytdemo.entity.Msg;
+import com.example.win7.ytdemo.eventMessege.ChatMessageEvent;
 import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.view.CustomProgress;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMTextMessageBody;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class MsgFragment extends Fragment {
-    Context mContext;
-    View view;
-    ListView lv_msg;
+    Context            mContext;
+    View               view;
+    ListView           lv_msg;
     SwipeRefreshLayout srl_msg;
-    MsgAdapter adapter;
-    List<Msg> list;
-    CustomProgress dialog;
-    Toolbar toolbar;
+    MsgAdapter         adapter;
+    List<Msg>          list;
+    CustomProgress     dialog;
+    Toolbar            toolbar;
+    private List<Msg> mEMConversationList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,29 +68,31 @@ public class MsgFragment extends Fragment {
         return view;
     }
 
-    protected void setTool(){
+    protected void setTool() {
         toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
         toolbar.setTitle(R.string.msg);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
-    protected void setViews(){
-        lv_msg = (ListView)view.findViewById(R.id.lv_msg);
-        srl_msg = (SwipeRefreshLayout)view.findViewById(R.id.srl_msg);
+    protected void setViews() {
+        lv_msg = (ListView) view.findViewById(R.id.lv_msg);
+        srl_msg = (SwipeRefreshLayout) view.findViewById(R.id.srl_msg);
         list = new ArrayList<>();
         new NTask().execute();
     }
 
-    protected void setListeners(){
+    protected void setListeners() {
         lv_msg.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(mContext, ChatActivity.class);
-                intent.putExtra("nickname",list.get(i).getNickname());
-                intent.putExtra("name",list.get(i).getUsername());
+                //                intent.putExtra("nickname", list.get(i).getNickname());
+                //                intent.putExtra("name", list.get(i).getUsername());
+                intent.putExtra("nickname", mEMConversationList.get(i).getNickname());
+                intent.putExtra("name", mEMConversationList.get(i).getUsername());
                 startActivity(intent);
             }
         });
@@ -84,17 +101,17 @@ public class MsgFragment extends Fragment {
         srl_msg.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            new NTask().execute();
-            srl_msg.setRefreshing(false);
+                new NTask().execute();
             }
         });
+        EventBus.getDefault().register(this);
     }
 
-    class NTask extends AsyncTask<Void,String,String>{
+    class NTask extends AsyncTask<Void, String, String> {
         @Override
         protected void onPreExecute() {
             list.clear();
-            dialog = CustomProgress.show(mContext,"加载中...",true,null);
+            dialog = CustomProgress.show(mContext, "加载中...", true, null);
             super.onPreExecute();
         }
 
@@ -103,12 +120,12 @@ public class MsgFragment extends Fragment {
             try {
                 List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
                 String s = "(";
-                for(String username:usernames){
-                    s = s+"'"+username+"',";
+                for (String username : usernames) {
+                    s = s + "'" + username + "',";
                 }
-                s = s.substring(0,s.length() - 1);
-                s = s+")";
-                Log.i("拼接的数据集",s+"=================================");
+                s = s.substring(0, s.length() - 1);
+                s = s + ")";
+                Log.i("拼接的数据集", s + "=================================");
 
                 // 命名空间
                 String nameSpace = "http://tempuri.org/";
@@ -123,8 +140,8 @@ public class MsgFragment extends Fragment {
                 SoapObject rpc = new SoapObject(nameSpace, methodName);
 
                 // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
-                Log.i("昵称查询语句","select a.fname from t_emp a inner join t_user d on a.fitemid=b.fempid where d.fname in"+s+"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-                rpc.addProperty("FSql", "select a.fname,b.fname name from t_emp a inner join t_user b on a.fitemid=b.fempid where b.fname in"+s);
+                Log.i("昵称查询语句", "select a.fname from t_emp a inner join t_user d on a.fitemid=b.fempid where d.fname in" + s + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                rpc.addProperty("FSql", "select a.fname,b.fname name from t_emp a inner join t_user b on a.fitemid=b.fempid where b.fname in" + s);
                 rpc.addProperty("FTable", "t_user");
 
                 // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
@@ -165,10 +182,12 @@ public class MsgFragment extends Fragment {
                         msg.setUsername(recordEle.elementTextTrim("name"));
                         list.add(msg);
                     }
+                    //获取对应的会话列表,放入mEMConversationList集合
+                    getAllChatInfo();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -177,9 +196,63 @@ public class MsgFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             dialog.dismiss();
-            adapter = new MsgAdapter(mContext,list);
-            lv_msg.setAdapter(adapter);
+            srl_msg.setRefreshing(false);
+            if (null == adapter) {
+                adapter = new MsgAdapter(mContext, mEMConversationList);
+                lv_msg.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
             super.onPostExecute(s);
         }
+    }
+
+    private void getAllChatInfo() {
+        Map<String, EMConversation> allConversations = EMClient.getInstance().chatManager().getAllConversations();
+        mEMConversationList.clear();
+        Collection<EMConversation> values = allConversations.values();
+        for (int i = 0; i < list.size(); i++) {
+            Msg msg = list.get(i);
+            String userid = msg.getUsername().toLowerCase();
+            String nickname = msg.getNickname();
+            for (EMConversation emConversation : values) {
+                String conversationId = emConversation.conversationId();
+                if (userid.equals(conversationId)) {
+                    EMTextMessageBody emMessageBody = (EMTextMessageBody) emConversation.getLastMessage().getBody();
+                    String message = emMessageBody.getMessage();
+                    long msgTime = emConversation.getLastMessage().getMsgTime();
+                    int unreadMsgCount = emConversation.getUnreadMsgCount();
+                    msg.setLastmsg(message);
+                    msg.setLastMsgTime(msgTime);
+                    msg.setUnreadMsgCount(unreadMsgCount);
+                }
+            }
+            mEMConversationList.add(msg);
+        }
+        /**
+         * 排序，最近的时间在最上面(时间的倒序)
+         */
+        Collections.sort(mEMConversationList, new Comparator<Msg>() {
+            @Override
+            public int compare(Msg o1, Msg o2) {
+                if (o1.getLastMsgTime() == 0 || o2.getLastMsgTime() == 0) {
+                    return (int) Long.MAX_VALUE;
+                } else {
+                    return (int) (o2.getLastMsgTime() - o1.getLastMsgTime());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(ChatMessageEvent message) {
+        ToastUtils.showToast(getActivity(), "收到新消息");
+        getAllChatInfo();
     }
 }

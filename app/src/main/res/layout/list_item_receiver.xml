@@ -27,7 +27,7 @@
     
     <TextView
         android:gravity="center"
-        android:background="@drawable/receive_msg_normal"
+        android:background="@drawable/adi"
         android:layout_gravity="center_vertical"
         android:id="@+id/tv_msg"
         android:text="你好，今晚一起游泳！"
