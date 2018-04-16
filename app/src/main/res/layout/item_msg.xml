@@ -63,10 +63,10 @@
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_margin="5dp"
-            android:src="@drawable/me_focus"/>
+            android:src="@drawable/head_img"/>
 
         <TextView
             android:id="@+id/tv_nickname"

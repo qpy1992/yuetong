@@ -19,12 +19,12 @@ import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.activity.ChatActivity;
 import com.example.win7.ytdemo.adapter.MsgAdapter;
 import com.example.win7.ytdemo.entity.Msg;
-import com.example.win7.ytdemo.eventMessege.ChatMessageEvent;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.view.CustomProgress;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 
 import org.dom4j.Document;
@@ -56,6 +56,7 @@ public class MsgFragment extends Fragment {
     CustomProgress     dialog;
     Toolbar            toolbar;
     private List<Msg> mEMConversationList = new ArrayList<>();
+    private static int REQUEST_CODE =10086;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,7 +94,8 @@ public class MsgFragment extends Fragment {
                 //                intent.putExtra("name", list.get(i).getUsername());
                 intent.putExtra("nickname", mEMConversationList.get(i).getNickname());
                 intent.putExtra("name", mEMConversationList.get(i).getUsername());
-                startActivity(intent);
+//                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE);
             }
         });
 
@@ -251,8 +253,22 @@ public class MsgFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ChatMessageEvent message) {
+    public void onEvent(EMMessage emMessage) {
         ToastUtils.showToast(getActivity(), "收到新消息");
         getAllChatInfo();
+        if (null == adapter) {
+            adapter = new MsgAdapter(mContext, mEMConversationList);
+            lv_msg.setAdapter(adapter);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (REQUEST_CODE==requestCode){
+            new NTask().execute();
+        }
     }
 }
