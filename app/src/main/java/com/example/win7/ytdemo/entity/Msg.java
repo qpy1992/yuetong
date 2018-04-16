@@ -8,6 +8,8 @@ public class Msg {
     String username;
     String nickname;
     String lastmsg;
+    long   lastMsgTime;
+    int    unreadMsgCount;
     String time;
     String imagepath;
 
@@ -17,6 +19,22 @@ public class Msg {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public long getLastMsgTime() {
+        return lastMsgTime;
+    }
+
+    public void setLastMsgTime(long lastMsgTime) {
+        this.lastMsgTime = lastMsgTime;
+    }
+
+    public int getUnreadMsgCount() {
+        return unreadMsgCount;
+    }
+
+    public void setUnreadMsgCount(int unreadMsgCount) {
+        this.unreadMsgCount = unreadMsgCount;
     }
 
     public String getNickname() {

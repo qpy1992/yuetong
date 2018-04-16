@@ -40,4 +40,10 @@ public class BaseActivity extends AppCompatActivity {
     public void hideDialog() {
         mProgressDialog.hide();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 }
