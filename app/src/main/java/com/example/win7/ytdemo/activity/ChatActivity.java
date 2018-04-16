@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.adapter.MyChatAdapter;
 import com.example.win7.ytdemo.entity.Item;
-import com.example.win7.ytdemo.eventMessege.ChatMessageEvent;
 import com.example.win7.ytdemo.listener.CallBackListener;
 import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.util.Utils;
@@ -307,15 +306,14 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(ChatMessageEvent message) {
+    public void onEvent(EMMessage emMessage) {
         //当收到信消息的时候
         /*
          *  判断当前这个消息是不是正在聊天的用户给我发的
          *  如果是，让ChatPresenter 更新数据
          *
          */
-        EMMessage messageInfo = message.getMessage();
-        String from = messageInfo.getFrom();
+        String from = emMessage.getFrom();
         if (from.equals(username)) {
             getTalkData();
             onUpdata(mEMMessageList.size());

@@ -19,7 +19,6 @@ import com.example.win7.ytdemo.activity.ChatActivity;
 import com.example.win7.ytdemo.activity.LoginActivity;
 import com.example.win7.ytdemo.activity.MainActivity;
 import com.example.win7.ytdemo.adapter.MessageListenerAdapter;
-import com.example.win7.ytdemo.eventMessege.ChatMessageEvent;
 import com.example.win7.ytdemo.eventMessege.OnContactUpdateEvent;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.ThreadUtils;
@@ -190,9 +189,7 @@ public class YApplication extends Application {
                         //发出短声音
                         mSoundPool.play(mDuanSound, 1, 1, 0, 0, 1);
                     }
-                    EMMessage emMessage = list.get(0);
-                    ChatMessageEvent chatMessageEvent = new ChatMessageEvent(emMessage);
-                    EventBus.getDefault().post(chatMessageEvent);
+                    EventBus.getDefault().post(list.get(0));
                 }
             }
         });
