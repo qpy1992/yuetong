@@ -266,7 +266,7 @@ public class TaskFragment extends Fragment {
                     case 1:
                         //公司区分
                         if(tool.getId()!=null){
-                            sql = "select fid,fbillno from t_BOS200000000 where fbase11 ="+tool.getId()+" order by fid desc";
+                            sql = "select fid,fbillno from t_BOS200000000 where fbase11 ="+tool.getId()+" order by a.fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择公司",Toast.LENGTH_SHORT).show();
@@ -275,7 +275,7 @@ public class TaskFragment extends Fragment {
                     case 2:
                         //部门区分
                         if(tool.getId()!=null){
-                            sql = "select fid,fbillno from t_BOS200000000 where fbase12 ="+tool.getId()+" order by fid desc";
+                            sql = "select fid,fbillno from t_BOS200000000 where fbase12 ="+tool.getId()+" order by a.fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择部门",Toast.LENGTH_SHORT).show();
@@ -284,7 +284,7 @@ public class TaskFragment extends Fragment {
                     case 3:
                         //内容区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase1 ="+tool.getId()+" order by fid desc";
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase1 ="+tool.getId()+" order by a.fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择内容",Toast.LENGTH_SHORT).show();
@@ -302,7 +302,7 @@ public class TaskFragment extends Fragment {
                     case 4:
                         //责任人区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase4 ="+tool.getId()+" order by fid desc";
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase4 ="+tool.getId()+" order by a.fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择责任人",Toast.LENGTH_SHORT).show();
@@ -311,7 +311,7 @@ public class TaskFragment extends Fragment {
                     case 5:
                         //往来区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase10 ="+tool.getId()+" order by fid desc";
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase10 ="+tool.getId()+" order by a.fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择往来",Toast.LENGTH_SHORT).show();
@@ -320,7 +320,7 @@ public class TaskFragment extends Fragment {
                     case 6:
                         //制单人区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 ="+tool.getId()+" order by fid desc";
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 ="+tool.getId()+" order by a.fid desc";
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择制单人",Toast.LENGTH_SHORT).show();

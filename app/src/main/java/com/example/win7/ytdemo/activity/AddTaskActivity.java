@@ -9,8 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,14 +29,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
+import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
 import com.example.win7.ytdemo.adapter.ZiAdapter;
+import com.example.win7.ytdemo.entity.Msg;
 import com.example.win7.ytdemo.entity.TaskEntry;
 import com.example.win7.ytdemo.entity.Tasks;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.task.SubmitTask;
 import com.example.win7.ytdemo.util.PinyinComparator;
+import com.example.win7.ytdemo.util.Utils;
 import com.example.win7.ytdemo.view.CustomDatePicker;
 import com.example.win7.ytdemo.view.CustomProgress;
+import com.hyphenate.chat.EMClient;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -47,6 +54,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -55,16 +63,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class AddTaskActivity extends BaseActivity {
     Toolbar toolbar;
     TextView tv_huilv,tv_zuzhi,tv_quyu,tv_content,tv_respon,tv_zhidan,tv_contacts,tv_bibie,tv_jl;
     ListView lv_zb;
     List<HashMap<String,String>> list,list1,ziList;
-    List<String> strList,strList1;
+    List<HashMap<String,Object>> list2 = new ArrayList<>();
+    List<String> strList,strList1,strList2;
     DecimalFormat df = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
-    String interid,taskno,respon,zhidan,contacts,content,contentid
+    String id,interid,taskno,respon,zhidan,contacts,content,contentid
             ,planid,sup,jiliang,jiliangid,pfid,zuzhi,quyu,zhidu1,zhidu2,username,depart,company;
     int currencyid=1;
     String currency = "人民币";
@@ -135,7 +145,6 @@ public class AddTaskActivity extends BaseActivity {
             Toast.makeText(AddTaskActivity.this,"请先选择内容",Toast.LENGTH_SHORT).show();
         }else {
             if(!map.isEmpty()){
-//                jiliangid = map.get("jiliangid");
                 planid = map.get("planid");
                 pfid = map.get("pfid");
             }
@@ -165,29 +174,30 @@ public class AddTaskActivity extends BaseActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    if(!TextUtils.isEmpty(editable.toString())){
-                        if (seccoefficient!=0.0000000000){
-                        Double fuliang = Double.parseDouble(editable.toString())/seccoefficient;
-                        et_shuliang.removeTextChangedListener(this);
-                        et_fuliang.setText(df1.format(fuliang));
-                        et_shuliang.addTextChangedListener(this);
-                        }
-                        if (!TextUtils.isEmpty(et_danjia.getText().toString())) {
-                            Double hanshui = Double.parseDouble(editable.toString()) * Double.parseDouble(et_danjia.getText().toString());
-                            Double buhan = hanshui/(taxrate+1)*huilv;
+                    if (!editable.toString().equals("-")) {
+                        if (!TextUtils.isEmpty(editable.toString())) {
+                            if (seccoefficient != 0.0000000000) {
+                                Double fuliang = Double.parseDouble(editable.toString()) / seccoefficient;
+                                et_shuliang.removeTextChangedListener(this);
+                                et_fuliang.setText(df1.format(fuliang));
+                                et_shuliang.addTextChangedListener(this);
+                            }
+                            if (!TextUtils.isEmpty(et_danjia.getText().toString())) {
+                                Double hanshui = Double.parseDouble(editable.toString()) * Double.parseDouble(et_danjia.getText().toString());
+                                Double buhan = hanshui / (taxrate + 1) * huilv;
+                                et_shuliang.removeTextChangedListener(this);
+                                et_hanshui.setText(df.format(hanshui));
+                                et_buhan.setText(df.format(buhan));
+                                et_shuliang.addTextChangedListener(this);
+                            }
+                        } else {
                             et_shuliang.removeTextChangedListener(this);
-                            et_hanshui.setText(df.format(hanshui));
-                            et_buhan.setText(df.format(buhan));
+                            et_hanshui.setText("");
+                            et_fuliang.setText("");
+                            et_buhan.setText("");
                             et_shuliang.addTextChangedListener(this);
                         }
-                    }else{
-                        et_shuliang.removeTextChangedListener(this);
-                        et_hanshui.setText("");
-                        et_fuliang.setText("");
-                        et_buhan.setText("");
-                        et_shuliang.addTextChangedListener(this);
                     }
-
                 }
             };
             final TextWatcher hanshui = new TextWatcher() {
@@ -280,23 +290,6 @@ public class AddTaskActivity extends BaseActivity {
             tv_qi.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    DatePickerDialog dpd = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
-//                        @Override
-//                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//                            String s;
-//                            if(monthOfYear+1<10&&dayOfMonth<10){
-//                                s = year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth;
-//                            }else if(monthOfYear+1<10){
-//                                s = year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth;
-//                            }else if(dayOfMonth<10){
-//                                s = year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth;
-//                            }else{
-//                                s = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-//                            }
-//                            tv_qi.setText(s);
-//                        }
-//                    }, year, month, day);
-//                    dpd.show();//显示DatePickerDialog组件
                     CustomDatePicker dpk = new CustomDatePicker(v.getContext(), new CustomDatePicker.ResultHandler() {
                         @Override
                         public void handle(String time) { // 回调接口，获得选中的时间
@@ -313,23 +306,6 @@ public class AddTaskActivity extends BaseActivity {
             tv_zhi.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    DatePickerDialog dpd = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
-//                        @Override
-//                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//                            String s;
-//                            if(monthOfYear+1<10&&dayOfMonth<10){
-//                                s = year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth;
-//                            }else if(monthOfYear+1<10){
-//                                s = year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth;
-//                            }else if(dayOfMonth<10){
-//                                s = year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth;
-//                            }else{
-//                                s = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-//                            }
-//                            tv_zhi.setText(s);
-//                        }
-//                    }, year, month, day);
-//                    dpd.show();//显示DatePickerDialog组件
                     CustomDatePicker dpk = new CustomDatePicker(v.getContext(), new CustomDatePicker.ResultHandler() {
                         @Override
                         public void handle(String time) { // 回调接口，获得选中的时间
@@ -358,19 +334,24 @@ public class AddTaskActivity extends BaseActivity {
                             }).setNegativeButton("取消",null).show();
                 }
             });
-//            final TextView tv_pingfen = (TextView)v.findViewById(R.id.tv_pingfen_add);
-//            tv_pingfen.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    new PFTask(tv_pingfen).execute();
-//                }
-//            });
+            final TextView tv_check = (TextView)v.findViewById(R.id.tv_check);
+            tv_check.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new HYTask(tv_check).execute();
+                }
+            });
             final TextView tv_submit = (TextView)v.findViewById(R.id.tv_submit);
             if(!map.isEmpty()){
                 et_shuliang.setText(map.get("shuliang"));
                 et_danjia.setText(map.get("danjia"));
-                tv_qi.setText(sdf.format(DateFormat.getInstance().parse(map.get("qi"))));
-                tv_zhi.setText(sdf.format(DateFormat.getInstance().parse(map.get("zhi"))));
+                if(map.get("qi").contains("/")) {
+                    tv_qi.setText(sdf.format(Date.parse(map.get("qi").toString())));
+                    tv_zhi.setText(sdf.format(Date.parse(map.get("zhi").toString())));
+                }else{
+                    tv_qi.setText(map.get("qi").toString());
+                    tv_zhi.setText(map.get("zhi").toString());
+                }
                 tv_progress.setText(map.get("progress"));
                 tv_plan.setText(map.get("plan"));
                 tv_budget.setText(map.get("budget"));
@@ -380,8 +361,6 @@ public class AddTaskActivity extends BaseActivity {
                 et_buhan.setText(map.get("buhan"));
                 et_fuliang.setText(map.get("fuliang"));
                 et_fasong.setText(map.get("fasong"));
-//                et_huikui.setText(map.get("huikui"));
-//                tv_pingfen.setText(map.get("pingfen"));
             }
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
                     .show();
@@ -408,8 +387,8 @@ public class AddTaskActivity extends BaseActivity {
                         return;
                     }
                     map.put("neirong",content);
-                    Log.i("计量",jiliang);
-                    map.put("jiliang",jiliang);
+                    Log.i("计量",jiliangid);
+//                    map.put("jiliang",jiliang);
                     map.put("jiliangid",jiliangid);
                     if(et_shuliang.getText().toString().equals("")){
                         map.put("shuliang","0");
@@ -446,13 +425,72 @@ public class AddTaskActivity extends BaseActivity {
                         map.put("fuliang", et_fuliang.getText().toString());
                     }
                     map.put("fasong",et_fasong.getText().toString());
-//                    map.put("huikui",et_huikui.getText().toString());
-//                    map.put("pingfen",tv_pingfen.getText().toString());
                     if(pfid==null){
                         map.put("pfid","0");
                     }else {
                         map.put("pfid", pfid);
                     }
+                    switch (strList2.size()){
+                        case 1:
+                            map.put("a",list2.get(0).get("fname").toString());
+                            map.put("aid",strList2.get(0));
+                            map.put("bid","0");
+                            map.put("cid","0");
+                            map.put("did","0");
+                            map.put("eid","0");
+                            break;
+                        case 2:
+                            map.put("a",list2.get(0).get("fname").toString());
+                            map.put("b",list2.get(1).get("fname").toString());
+                            map.put("aid",strList2.get(0));
+                            map.put("bid",strList2.get(1));
+                            map.put("cid","0");
+                            map.put("did","0");
+                            map.put("eid","0");
+                            break;
+                        case 3:
+                            map.put("a",list2.get(0).get("fname").toString());
+                            map.put("b",list2.get(1).get("fname").toString());
+                            map.put("c",list2.get(2).get("fname").toString());
+                            map.put("aid",strList2.get(0));
+                            map.put("bid",strList2.get(1));
+                            map.put("cid",strList2.get(2));
+                            map.put("did","0");
+                            map.put("eid","0");
+                            break;
+                        case 4:
+                            map.put("a",list2.get(0).get("fname").toString());
+                            map.put("b",list2.get(1).get("fname").toString());
+                            map.put("c",list2.get(2).get("fname").toString());
+                            map.put("d",list2.get(3).get("fname").toString());
+                            map.put("aid",strList2.get(0));
+                            map.put("bid",strList2.get(1));
+                            map.put("cid",strList2.get(2));
+                            map.put("did",strList2.get(3));
+                            map.put("eid","0");
+                            break;
+                        case 5:
+                            map.put("a",list2.get(0).get("fname").toString());
+                            map.put("b",list2.get(1).get("fname").toString());
+                            map.put("c",list2.get(2).get("fname").toString());
+                            map.put("d",list2.get(3).get("fname").toString());
+                            map.put("e",list2.get(4).get("fname").toString());
+                            map.put("aid",strList2.get(0));
+                            map.put("bid",strList2.get(1));
+                            map.put("cid",strList2.get(2));
+                            map.put("did",strList2.get(3));
+                            map.put("eid",strList2.get(4));
+                            break;
+                    }
+                    map.put("qr1","0");
+                    map.put("qr2","0");
+                    map.put("qr3","0");
+                    map.put("qr4","0");
+                    map.put("qr5","0");
+                    if(id==null){
+                        id=Utils.UUID();
+                    }
+                    map.put("id",id);
                     ziList.add(map);
                     adapter.notifyDataSetChanged();
                     dialog.dismiss();
@@ -496,6 +534,7 @@ public class AddTaskActivity extends BaseActivity {
         list1 = new ArrayList<>();
         strList = new ArrayList<>();
         strList1 = new ArrayList<>();
+        strList2 = new ArrayList<>();
         tasks = new Tasks();
         tv_bibie = (TextView) findViewById(R.id.tv_bibie);
         tv_huilv = (TextView)findViewById(R.id.tv_huilv);
@@ -678,20 +717,21 @@ public class AddTaskActivity extends BaseActivity {
                     entry.setFBase1(contentid);
                     entry.setFBase(ziList.get(i).get("planid"));
                     entry.setFNOTE(ziList.get(i).get("note"));
-                    entry.setFBase2(ziList.get(i).get("jiliangid"));
+                    entry.setFBase2(jiliangid);
                     entry.setFDecimal(Double.parseDouble(ziList.get(i).get("shuliang")));
                     entry.setFDecimal1(Double.parseDouble(ziList.get(i).get("danjia")));
                     entry.setFDecimal2(Double.parseDouble(ziList.get(i).get("fuliang")));
                     entry.setFAmount2(Double.parseDouble(ziList.get(i).get("hanshui")));
                     entry.setFAmount3(Double.parseDouble(ziList.get(i).get("buhan")));
                     entry.setFText(ziList.get(i).get("fasong"));
-                    entry.setFText1(ziList.get(i).get("huikui"));
-                    entry.setFBase14(ziList.get(i).get("pfid"));
-                    entry.setFBase5("0");
-                    entry.setFBase6("0");
-                    entry.setFBase7("0");
-                    entry.setFBase8("0");
-                    entry.setFBase9("0");
+                    entry.setFText1("");
+                    entry.setFBase14(Utils.NulltoString(ziList.get(i).get("pfid")));
+                    entry.setFBase5(Utils.NulltoString(ziList.get(i).get("aid")));
+                    entry.setFBase6(Utils.NulltoString(ziList.get(i).get("bid")));
+                    entry.setFBase7(Utils.NulltoString(ziList.get(i).get("cid")));
+                    entry.setFBase8(Utils.NulltoString(ziList.get(i).get("did")));
+                    entry.setFBase9(Utils.NulltoString(ziList.get(i).get("eid")));
+                    entry.setId(ziList.get(i).get("id"));
                     list.add(entry);
                 }
                 tasks.setEntryList(list);
@@ -1943,8 +1983,8 @@ public class AddTaskActivity extends BaseActivity {
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
             String sql = " select b.FTime qi,b.FTime1 zhi,g.FName respon,h.FName progress,h.fitemid planid,h.F_111 plans,i.FName budget,h.f_107 pbudget,b.FNOTE note," +
                     "   j.FName contacts,k.FName neirong,l.FName jiliang,l.fitemid jiliangid,b.FDecimal shuliang,b.FDecimal1 danjia,b.FAmount2 hanshui,b.FAmount3 buhan," +
-                    "   b.FText fasong,b.FText1 huikui,o.FName pingfen,o.fitemid pfid,p.FName js1,b.FCheckBox1 qr1,q.FName js2,b.FCheckBox2 qr2," +
-                    "   m.FName js3,b.FCheckBox3 qr3,n.FName js4,b.FCheckBox4 qr4,r.FName js5,b.FCheckBox5 qr5,s.fname fuzhu,b.fdecimal2 fuliang" +
+                    "   b.FText fasong,b.FText1 huikui,o.FName pingfen,o.fitemid pfid,p.FName js1,p.fitemid jsid1,b.FCheckBox1 qr1,q.FName js2,q.fitemid jsid2,b.FCheckBox2 qr2," +
+                    "   m.FName js3,m.fitemid jsid3,b.FCheckBox3 qr3,n.FName js4,n.fitemid jsid4,b.FCheckBox4 qr4,r.FName js5,r.fitemid jsid5,b.FCheckBox5 qr5,s.fname fuzhu,b.fdecimal2 fuliang,b.id" +
                     "    from t_BOS200000000 a inner join t_BOS200000000Entry2 b on a.FID=b.FID" +
                     "   left join t_Currency c on c.FCurrencyID=a.FBase3 left join t_Item_3001 d on d.FItemID=a.FBase11" +
                     "   left join t_Department e on e.FItemID=a.FBase11 left join t_Item_3006 f on f.FItemID=a.FBase13" +
@@ -2016,6 +2056,23 @@ public class AddTaskActivity extends BaseActivity {
                     String fasong = recordEle.elementTextTrim("fasong");
                     String huikui = recordEle.elementTextTrim("huikui");
                     String pingfen = recordEle.elementTextTrim("pingfen");
+                    String a = recordEle.elementTextTrim("js1");
+                    String b = recordEle.elementTextTrim("js2");
+                    String c = recordEle.elementTextTrim("js3");
+                    String d = recordEle.elementTextTrim("js4");
+                    String e = recordEle.elementTextTrim("js5");
+                    String aid = recordEle.elementTextTrim("jsid1");
+                    String bid = recordEle.elementTextTrim("jsid2");
+                    String cid = recordEle.elementTextTrim("jsid3");
+                    String did = recordEle.elementTextTrim("jsid4");
+                    String eid = recordEle.elementTextTrim("jsid5");
+                    String qr1 = recordEle.elementTextTrim("qr1");
+                    String qr2 = recordEle.elementTextTrim("qr2");
+                    String qr3 = recordEle.elementTextTrim("qr3");
+                    String qr4 = recordEle.elementTextTrim("qr4");
+                    String qr5 = recordEle.elementTextTrim("qr5");
+                    id = recordEle.elementTextTrim("id");
+                    Log.i("审核标志",qr1+qr2+qr3+qr4+qr5);
                     HashMap<String,String> map = new HashMap<>();
                     map.put("qi",qi);
                     map.put("zhi",zhi);
@@ -2038,6 +2095,21 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("planid",planid);
 //                    map.put("jiliangid",jiliangid);
                     map.put("pfid",pfid);
+                    map.put("a",a);
+                    map.put("b",b);
+                    map.put("c",c);
+                    map.put("d",d);
+                    map.put("e",e);
+                    map.put("aid",aid);
+                    map.put("bid",bid);
+                    map.put("cid",cid);
+                    map.put("did",did);
+                    map.put("eid",eid);
+                    map.put("qr1",qr1);
+                    map.put("qr2",qr2);
+                    map.put("qr3",qr3);
+                    map.put("qr4",qr4);
+                    map.put("qr5",qr5);
                     ziList.add(map);
                 }
             } catch (Exception e) {
@@ -2056,6 +2128,127 @@ public class AddTaskActivity extends BaseActivity {
             progress.dismiss();
             adapter = new ZiAdapter(AddTaskActivity.this, ziList);
             lv_zb.setAdapter(adapter);
+        }
+    }
+    //查询好友列表
+    class HYTask extends AsyncTask<Void, String, String> {
+        TextView tv;
+
+        public HYTask(TextView tv){
+            this.tv=tv;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            list2.clear();
+            progress = CustomProgress.show(AddTaskActivity.this, "加载中...", true, null);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                String s = "(";
+                for (String username : usernames) {
+                    s = s + "'" + username + "',";
+                }
+                s = s.substring(0, s.length() - 1);
+                s = s + ")";
+                Log.i("拼接的数据集", s + "=================================");
+
+                // 命名空间
+                String nameSpace = "http://tempuri.org/";
+                // 调用的方法名称
+                String methodName = "JA_select";
+                // EndPoint
+                String endPoint = Consts.ENDPOINT;
+                // SOAP Action
+                String soapAction = "http://tempuri.org/JA_select";
+
+                // 指定WebService的命名空间和调用的方法名
+                SoapObject rpc = new SoapObject(nameSpace, methodName);
+
+                // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
+                Log.i("昵称查询语句", "select a.fname from t_emp a inner join t_user d on a.fitemid=b.fempid where d.fname in" + s + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                rpc.addProperty("FSql", "select a.fitemid,a.fname,b.fname name from t_emp a inner join t_user b on a.fitemid=b.fempid where b.fname in" + s);
+                rpc.addProperty("FTable", "t_user");
+
+                // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+
+                envelope.bodyOut = rpc;
+                // 设置是否调用的是dotNet开发的WebService
+                envelope.dotNet = true;
+                // 等价于envelope.bodyOut = rpc;
+                envelope.setOutputSoapObject(rpc);
+
+                HttpTransportSE transport = new HttpTransportSE(endPoint);
+                // 调用WebService
+                transport.call(soapAction, envelope);
+                // 获取返回的数据
+                SoapObject object = (SoapObject) envelope.bodyIn;
+
+                // 获取返回的结果
+                Log.i("返回结果", object.getProperty(0).toString() + "=========================");
+                String result = object.getProperty(0).toString();
+                Document doc = null;
+
+                try {
+                    doc = DocumentHelper.parseText(result); // 将字符串转为XML
+
+                    Element rootElt = doc.getRootElement(); // 获取根节点
+
+                    System.out.println("根节点：" + rootElt.getName()); // 拿到根节点的名称
+
+
+                    Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
+
+                    // 遍历head节点
+                    while (iter.hasNext()) {
+                        Element recordEle = (Element) iter.next();
+                        HashMap<String,Object> map = new HashMap<>();
+                        map.put("fname",recordEle.elementTextTrim("fname"));
+                        map.put("name",recordEle.elementTextTrim("name"));
+                        map.put("ischeck",false);
+                        map.put("fitemid",recordEle.elementTextTrim("fitemid"));
+                        list2.add(map);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progress.dismiss();
+            View v = getLayoutInflater().inflate(R.layout.item_shenhe,null);
+            final ListView lv = (ListView)v.findViewById(R.id.lv_checkbox);
+            CheckBoxAdapter adapter = new CheckBoxAdapter(AddTaskActivity.this,list2);
+            lv.setAdapter(adapter);
+            final TextView tv_submits = (TextView)v.findViewById(R.id.tv_check_submit);
+            final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
+                    .setTitle("请选择").show();
+            tv_submits.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    StringBuffer sb = new StringBuffer();
+                    for(int i=0;i<list2.size();i++){
+                        if(Boolean.valueOf(list2.get(i).get("ischeck").toString())){
+                            sb.append(list2.get(i).get("fname").toString()).append(",");
+                            strList2.add(list2.get(i).get("fitemid").toString());
+                        }
+                    }
+                    dialog.dismiss();
+                    tv.setText(sb.toString());
+                }
+            });
+            super.onPostExecute(s);
         }
     }
 }

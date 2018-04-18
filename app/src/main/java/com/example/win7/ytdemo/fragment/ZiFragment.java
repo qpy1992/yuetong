@@ -164,6 +164,17 @@ public class ZiFragment extends Fragment {
                     fasong = recordEle.elementTextTrim("fasong");
                     huikui = recordEle.elementTextTrim("huikui");
                     pingfen = recordEle.elementTextTrim("pingfen");
+                    String a = recordEle.elementTextTrim("js1");
+                    String b = recordEle.elementTextTrim("js2");
+                    String c = recordEle.elementTextTrim("js3");
+                    String d = recordEle.elementTextTrim("js4");
+                    String e = recordEle.elementTextTrim("js5");
+                    String qr1 = recordEle.elementTextTrim("qr1");
+                    String qr2 = recordEle.elementTextTrim("qr2");
+                    String qr3 = recordEle.elementTextTrim("qr3");
+                    String qr4 = recordEle.elementTextTrim("qr4");
+                    String qr5 = recordEle.elementTextTrim("qr5");
+                    Log.i("审核标志",qr1+qr2+qr3+qr4+qr5);
                     HashMap<String,String> map = new HashMap<>();
                     map.put("qi",qi);
                     map.put("zhi",zhi);
@@ -183,6 +194,16 @@ public class ZiFragment extends Fragment {
                     map.put("fasong",fasong);
                     map.put("huikui",huikui);
                     map.put("pingfen",pingfen);
+                    map.put("a",a);
+                    map.put("b",b);
+                    map.put("c",c);
+                    map.put("d",d);
+                    map.put("e",e);
+                    map.put("qr1",qr1);
+                    map.put("qr2",qr2);
+                    map.put("qr3",qr3);
+                    map.put("qr4",qr4);
+                    map.put("qr5",qr5);
                     list.add(map);
                 }
             } catch (Exception e) {

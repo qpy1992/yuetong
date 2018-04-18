@@ -2,6 +2,7 @@ package com.example.win7.ytdemo.adapter;
 
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -87,6 +89,36 @@ public class ZiAdapter extends BaseAdapter{
                     .findViewById(R.id.ll_hide);
             holder.ll_note = (LinearLayout)view.
                     findViewById(R.id.ll_note);
+            holder.ll_a = (LinearLayout)view.
+                    findViewById(R.id.ll_a);
+            holder.ll_c = (LinearLayout)view.
+                    findViewById(R.id.ll_c);
+            holder.ll_b = (LinearLayout)view.
+                    findViewById(R.id.ll_b);
+            holder.ll_d = (LinearLayout)view.
+                    findViewById(R.id.ll_d);
+            holder.ll_e = (LinearLayout)view.
+                    findViewById(R.id.ll_e);
+            holder.tv_a = (TextView) view.
+                    findViewById(R.id.tv_a);
+            holder.v_a = (View) view.
+                    findViewById(R.id.v_a);
+            holder.tv_b = (TextView) view.
+                    findViewById(R.id.tv_b);
+            holder.v_b = (View) view.
+                    findViewById(R.id.v_b);
+            holder.tv_c = (TextView) view.
+                    findViewById(R.id.tv_c);
+            holder.v_c = (View) view.
+                    findViewById(R.id.v_c);
+            holder.tv_d = (TextView) view.
+                    findViewById(R.id.tv_d);
+            holder.v_d = (View) view.
+                    findViewById(R.id.v_d);
+            holder.tv_e = (TextView) view.
+                    findViewById(R.id.tv_e);
+            holder.v_e = (View) view.
+                    findViewById(R.id.v_e);
             view.setTag(holder);
         }else{
             holder = (Holder)view.getTag();
@@ -110,6 +142,116 @@ public class ZiAdapter extends BaseAdapter{
         holder.tv_fasong.setText(item.get("fasong"));
         holder.tv_huikui.setText(item.get("huikui"));
         holder.tv_pingfen.setText(item.get("pingfen"));
+        String a = item.get("a");
+        String b = item.get("b");
+        String c = item.get("c");
+        String d = item.get("d");
+        String e = item.get("e");
+        List<String> l = new ArrayList<>();
+        if(!TextUtils.isEmpty(a)){
+            l.add(a);
+        }
+        if(!TextUtils.isEmpty(b)){
+            l.add(b);
+        }
+        if(!TextUtils.isEmpty(c)) {
+            l.add(c);
+        }
+        if(!TextUtils.isEmpty(d)){
+            l.add(d);
+        }
+        if(!TextUtils.isEmpty(e)){
+            l.add(e);
+        }
+        switch (l.size()){
+            case 0:
+                holder.ll_a.setVisibility(View.GONE);
+                holder.ll_b.setVisibility(View.GONE);
+                holder.ll_c.setVisibility(View.GONE);
+                holder.ll_d.setVisibility(View.GONE);
+                holder.ll_e.setVisibility(View.GONE);
+                break;
+            case 1:
+                holder.tv_a.setText(a);
+                if(item.get("qr1").equals("True")){
+                    holder.v_a.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.ll_b.setVisibility(View.INVISIBLE);
+                holder.ll_c.setVisibility(View.GONE);
+                holder.ll_d.setVisibility(View.GONE);
+                holder.ll_e.setVisibility(View.GONE);
+                break;
+            case 2:
+                holder.tv_a.setText(a);
+                if(item.get("qr1").equals("True")){
+                    holder.v_a.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_b.setText(b);
+                if(item.get("qr2").equals("True")){
+                    holder.v_b.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.ll_c.setVisibility(View.GONE);
+                holder.ll_d.setVisibility(View.GONE);
+                holder.ll_e.setVisibility(View.GONE);
+                break;
+            case 3:
+                holder.tv_a.setText(a);
+                if(item.get("qr1").equals("True")){
+                    holder.v_a.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_b.setText(b);
+                if(item.get("qr2").equals("True")){
+                    holder.v_b.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_c.setText(c);
+                if(item.get("qr3").equals("True")){
+                    holder.v_c.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.ll_d.setVisibility(View.INVISIBLE);
+                holder.ll_e.setVisibility(View.GONE);
+                break;
+            case 4:
+                holder.tv_a.setText(a);
+                if(item.get("qr1").equals("True")){
+                    holder.v_a.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_b.setText(b);
+                if(item.get("qr2").equals("True")){
+                    holder.v_b.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_c.setText(c);
+                if(item.get("qr3").equals("True")){
+                    holder.v_c.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_d.setText(d);
+                if(item.get("qr4").equals("True")){
+                    holder.v_d.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.ll_e.setVisibility(View.GONE);
+                break;
+            case 5:
+                holder.tv_a.setText(a);
+                if(item.get("qr1").equals("True")){
+                    holder.v_a.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_b.setText(b);
+                if(item.get("qr2").equals("True")){
+                    holder.v_b.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_c.setText(c);
+                if(item.get("qr3").equals("True")){
+                    holder.v_c.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_d.setText(d);
+                if(item.get("qr4").equals("True")){
+                    holder.v_d.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                holder.tv_e.setText(e);
+                if(item.get("qr5").equals("True")){
+                    holder.v_e.setBackgroundColor(R.color.bottom_button_text_green);
+                }
+                break;
+        }
 
         if (currentItem == i) {
             holder.ll_hide.setVisibility(View.VISIBLE);
@@ -148,10 +290,12 @@ public class ZiAdapter extends BaseAdapter{
     }
 
     class Holder{
-        LinearLayout ll_show,ll_hide,ll_note;
+        LinearLayout ll_show,ll_hide,ll_note,ll_a,ll_b,ll_c,ll_d,ll_e;
         TextView tv_progress,tv_plan,tv_budget,
                 tv_pbudget,tv_note,tv_shuliang,tv_danjia,tv_hanshui,
                 tv_buhan,tv_fuzhu,tv_fuliang,tv_fasong,
-                tv_huikui,tv_pingfen,tv_qi,tv_zhi;
+                tv_huikui,tv_pingfen,tv_qi,tv_zhi,
+                tv_a,tv_b,tv_c,tv_d,tv_e;
+        View v_a,v_b,v_c,v_d,v_e;
     }
 }

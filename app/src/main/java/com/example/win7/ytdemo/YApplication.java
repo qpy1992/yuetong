@@ -195,6 +195,7 @@ public class YApplication extends Application {
         });
     }
 
+
     public static void exit() {
         try {
             for (Activity activity : mBaseActivityList) {

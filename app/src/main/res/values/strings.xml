@@ -54,6 +54,7 @@
     <string name="supl">辅量：</string>
     <string name="send">发送消息：</string>
     <string name="receive">回馈消息：</string>
+    <string name="zhiding">审核人：</string>
     <string name="point">评分：</string>
     <string name="notask">暂无任务单</string>
     <string name="add">新增</string>
@@ -67,6 +68,11 @@
     <string name="emp">人员:</string>
     <string name="basicdata">基础资料</string>
     <string name="ren">人民币</string>
+    <string name="a">一审:</string>
+    <string name="b">二审:</string>
+    <string name="c">三审:</string>
+    <string name="d">四审:</string>
+    <string name="e">五审:</string>
 
     <string name="cancle">取消</string>
     <string name="title">请选择时间</string>

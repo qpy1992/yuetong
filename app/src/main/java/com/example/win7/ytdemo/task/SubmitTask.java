@@ -139,6 +139,8 @@ public class SubmitTask extends AsyncTask<Void,String,String>{
                 cust2.addElement("FBase9").setText(taskEntry.getFBase9());
                 //消息+确认5
                 cust2.addElement("FCheckBox5").setText(String.valueOf(taskEntry.getFCheckBox5()));
+                //id
+                cust2.addElement("ID").setText(taskEntry.getId());
             }
 
             OutputFormat outputFormat = OutputFormat.createPrettyPrint();

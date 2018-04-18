@@ -2,6 +2,7 @@ package com.example.win7.ytdemo.entity;
 
 
 public class TaskEntry {
+    String id;
     String FTime;//启日期
     String FTime1;//止日期
     String FBase4;//责任人
@@ -29,6 +30,14 @@ public class TaskEntry {
     int FCheckBox3;//消息+确认3
     int FCheckBox4;//消息+确认4
     int FCheckBox5;//消息+确认5
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getFTime() {
         return FTime;

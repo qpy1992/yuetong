@@ -4,6 +4,8 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import java.util.UUID;
+
 /**
  * Created by WIN7 on 2018/3/20.
  */
@@ -45,5 +47,17 @@ public class Utils {
 
                     }
                 });
+    }
+
+    public static String NulltoString(Object object){
+        if(object==null){
+            return "";
+        }else {
+            return object.toString();
+        }
+    }
+
+    public static String UUID(){
+        return UUID.randomUUID().toString().replaceAll("-","");
     }
 }
