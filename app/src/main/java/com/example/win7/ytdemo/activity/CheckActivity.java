@@ -1,5 +1,6 @@
 package com.example.win7.ytdemo.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -11,5 +12,7 @@ public class CheckActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check);
+        Intent intent = getIntent();
+        String goodsId = intent.getStringExtra("goodsId");
     }
 }

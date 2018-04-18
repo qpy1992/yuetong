@@ -2,17 +2,14 @@ package com.example.win7.ytdemo.activity;
 
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,20 +24,23 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
 import com.example.win7.ytdemo.adapter.ZiAdapter;
-import com.example.win7.ytdemo.entity.Msg;
 import com.example.win7.ytdemo.entity.TaskEntry;
 import com.example.win7.ytdemo.entity.Tasks;
-import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.listener.CallBackListener;
 import com.example.win7.ytdemo.task.SubmitTask;
+import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.PinyinComparator;
+import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.util.Utils;
 import com.example.win7.ytdemo.view.CustomDatePicker;
 import com.example.win7.ytdemo.view.CustomProgress;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -50,11 +50,9 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -63,29 +61,27 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class AddTaskActivity extends BaseActivity {
-    Toolbar toolbar;
-    TextView tv_huilv,tv_zuzhi,tv_quyu,tv_content,tv_respon,tv_zhidan,tv_contacts,tv_bibie,tv_jl;
-    ListView lv_zb;
-    List<HashMap<String,String>> list,list1,ziList;
-    List<HashMap<String,Object>> list2 = new ArrayList<>();
-    List<String> strList,strList1,strList2;
-    DecimalFormat df = new DecimalFormat("#0.00");
+    Toolbar  toolbar;
+    TextView tv_huilv, tv_zuzhi, tv_quyu, tv_content, tv_respon, tv_zhidan, tv_contacts, tv_bibie, tv_jl;
+    ListView                      lv_zb;
+    List<HashMap<String, String>> list, list1, ziList;
+    List<HashMap<String, Object>> list2 = new ArrayList<>();
+    List<String> strList, strList1, strList2;
+    DecimalFormat df  = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
-    String id,interid,taskno,respon,zhidan,contacts,content,contentid
-            ,planid,sup,jiliang,jiliangid,pfid,zuzhi,quyu,zhidu1,zhidu2,username,depart,company;
-    int currencyid=1;
-    String currency = "人民币";
-    Double huilv = 1.00;
-    int year,month,day;
-    ZiAdapter adapter;
-    Button btn_submit;
-    Tasks tasks;
+    String id, interid, taskno, respon, zhidan, contacts, content, contentid, planid, sup, jiliang, jiliangid, pfid, zuzhi, quyu, zhidu1, zhidu2, username, depart, company;
+    int    currencyid = 1;
+    String currency   = "人民币";
+    Double huilv      = 1.00;
+    int year, month, day;
+    ZiAdapter      adapter;
+    Button         btn_submit;
+    Tasks          tasks;
     CustomProgress progress;
     private String TAG = "AddTaskActivity";
-    Double taxrate,seccoefficient;
+    Double taxrate, seccoefficient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +92,7 @@ public class AddTaskActivity extends BaseActivity {
         setListeners();
     }
 
-    protected void setTool(){
+    protected void setTool() {
         toolbar = (Toolbar) findViewById(R.id.id_toolbar);
         toolbar.setTitle(R.string.addtask);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -125,12 +121,12 @@ public class AddTaskActivity extends BaseActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.action_add:
-                        HashMap<String,String> map = new HashMap<>();
+                        HashMap<String, String> map = new HashMap<>();
                         try {
                             showDialog(map);
-                        }catch (ParseException e){
+                        } catch (ParseException e) {
                             e.printStackTrace();
                         }
                         break;
@@ -140,27 +136,27 @@ public class AddTaskActivity extends BaseActivity {
         });
     }
 
-    protected void showDialog(final HashMap<String,String> map) throws ParseException {
-        if(tv_content.getText().toString().equals("")){
-            Toast.makeText(AddTaskActivity.this,"请先选择内容",Toast.LENGTH_SHORT).show();
-        }else {
-            if(!map.isEmpty()){
+    protected void showDialog(final HashMap<String, String> map) throws ParseException {
+        if (tv_content.getText().toString().equals("")) {
+            Toast.makeText(AddTaskActivity.this, "请先选择内容", Toast.LENGTH_SHORT).show();
+        } else {
+            if (!map.isEmpty()) {
                 planid = map.get("planid");
                 pfid = map.get("pfid");
             }
-            final View v = getLayoutInflater().inflate(R.layout.item_zi_add,null);
-            final TextView tv_fuzhu = (TextView)v.findViewById(R.id.tv_fuzhu_add);
+            final View v = getLayoutInflater().inflate(R.layout.item_zi_add, null);
+            final TextView tv_fuzhu = (TextView) v.findViewById(R.id.tv_fuzhu_add);
             tv_fuzhu.setText(sup);
-            final EditText et_shuliang = (EditText)v.findViewById(R.id.et_shuliang);
-            final EditText et_danjia = (EditText)v.findViewById(R.id.et_danjia);
-            final EditText et_note = (EditText)v.findViewById(R.id.et_note);
-            final EditText et_hanshui = (EditText)v.findViewById(R.id.et_hanshui);
-            final EditText et_buhan = (EditText)v.findViewById(R.id.et_buhan);
+            final EditText et_shuliang = (EditText) v.findViewById(R.id.et_shuliang);
+            final EditText et_danjia = (EditText) v.findViewById(R.id.et_danjia);
+            final EditText et_note = (EditText) v.findViewById(R.id.et_note);
+            final EditText et_hanshui = (EditText) v.findViewById(R.id.et_hanshui);
+            final EditText et_buhan = (EditText) v.findViewById(R.id.et_buhan);
             et_buhan.setEnabled(false);
-            final EditText et_fuliang = (EditText)v.findViewById(R.id.et_fuliang);
+            final EditText et_fuliang = (EditText) v.findViewById(R.id.et_fuliang);
             et_fuliang.setEnabled(false);
-            final EditText et_fasong = (EditText)v.findViewById(R.id.et_fasong);
-            final TextWatcher shuliang = new TextWatcher(){
+            final EditText et_fasong = (EditText) v.findViewById(R.id.et_fasong);
+            final TextWatcher shuliang = new TextWatcher() {
 
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -213,18 +209,18 @@ public class AddTaskActivity extends BaseActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    if(!TextUtils.isEmpty(et_danjia.getText().toString())&&!TextUtils.isEmpty(editable.toString())){
-                        Double shuliang = Double.parseDouble(et_hanshui.getText().toString())/Double.parseDouble(et_danjia.getText().toString());
-                        Double fuliang = shuliang/seccoefficient;
-                        Double buhan = Double.parseDouble(editable.toString())/(taxrate+1)*huilv;
+                    if (!TextUtils.isEmpty(et_danjia.getText().toString()) && !TextUtils.isEmpty(editable.toString())) {
+                        Double shuliang = Double.parseDouble(et_hanshui.getText().toString()) / Double.parseDouble(et_danjia.getText().toString());
+                        Double fuliang = shuliang / seccoefficient;
+                        Double buhan = Double.parseDouble(editable.toString()) / (taxrate + 1) * huilv;
                         et_hanshui.removeTextChangedListener(this);
                         et_shuliang.setText(df1.format(shuliang));
-                        if(seccoefficient!=0.0000000000) {
+                        if (seccoefficient != 0.0000000000) {
                             et_fuliang.setText(df1.format(fuliang));
                         }
                         et_buhan.setText(df.format(buhan));
                         et_hanshui.addTextChangedListener(this);
-                    }else{
+                    } else {
                         et_hanshui.removeTextChangedListener(this);
                         et_shuliang.setText("");
                         et_fuliang.setText("");
@@ -236,8 +232,8 @@ public class AddTaskActivity extends BaseActivity {
             et_shuliang.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
-                    if(b){
-                        Log.i(TAG,"数量框获得了焦点");
+                    if (b) {
+                        Log.i(TAG, "数量框获得了焦点");
                         et_shuliang.addTextChangedListener(shuliang);
                         et_hanshui.removeTextChangedListener(hanshui);
                     }
@@ -257,25 +253,25 @@ public class AddTaskActivity extends BaseActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                        if(!TextUtils.isEmpty(et_shuliang.getText().toString())&&!TextUtils.isEmpty(editable.toString())){
-                            Double hanshui = Double.parseDouble(et_shuliang.getText().toString())*Double.parseDouble(editable.toString());
-                            Double buhan = hanshui/(taxrate+1)*huilv;
-                            et_danjia.removeTextChangedListener(this);
-                            et_hanshui.setText(df.format(hanshui));
-                            et_buhan.setText(df.format(buhan));
-                            et_danjia.addTextChangedListener(this);
-                        }else{
-                            et_shuliang.removeTextChangedListener(this);
-                            et_hanshui.setText("");
-                            et_buhan.setText("");
-                            et_shuliang.addTextChangedListener(this);
-                        }
+                    if (!TextUtils.isEmpty(et_shuliang.getText().toString()) && !TextUtils.isEmpty(editable.toString())) {
+                        Double hanshui = Double.parseDouble(et_shuliang.getText().toString()) * Double.parseDouble(editable.toString());
+                        Double buhan = hanshui / (taxrate + 1) * huilv;
+                        et_danjia.removeTextChangedListener(this);
+                        et_hanshui.setText(df.format(hanshui));
+                        et_buhan.setText(df.format(buhan));
+                        et_danjia.addTextChangedListener(this);
+                    } else {
+                        et_shuliang.removeTextChangedListener(this);
+                        et_hanshui.setText("");
+                        et_buhan.setText("");
+                        et_shuliang.addTextChangedListener(this);
+                    }
                 }
             });
             et_hanshui.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
-                    if(b) {
+                    if (b) {
                         Log.i(TAG, "含税金额框获得了焦点");
                         et_hanshui.addTextChangedListener(hanshui);
                         et_shuliang.removeTextChangedListener(shuliang);
@@ -285,7 +281,7 @@ public class AddTaskActivity extends BaseActivity {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
             final String now = sdf.format(new Date());
-            final TextView tv_qi = (TextView)v.findViewById(R.id.tv_qi_add);
+            final TextView tv_qi = (TextView) v.findViewById(R.id.tv_qi_add);
             tv_qi.setText(now);
             tv_qi.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -301,7 +297,7 @@ public class AddTaskActivity extends BaseActivity {
                     dpk.show(tv_qi.getText().toString());
                 }
             });
-            final TextView tv_zhi = (TextView)v.findViewById(R.id.tv_zhi_add);
+            final TextView tv_zhi = (TextView) v.findViewById(R.id.tv_zhi_add);
             tv_zhi.setText(now);
             tv_zhi.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -317,10 +313,10 @@ public class AddTaskActivity extends BaseActivity {
                     dpk.show(tv_zhi.getText().toString());
                 }
             });
-            final TextView tv_progress = (TextView)v.findViewById(R.id.tv_progress_add);
-            final TextView tv_plan = (TextView)v.findViewById(R.id.tv_plan_add);
-            final TextView tv_budget = (TextView)v.findViewById(R.id.tv_budget_add);
-            final TextView tv_pbudget = (TextView)v.findViewById(R.id.tv_pbudget_add);
+            final TextView tv_progress = (TextView) v.findViewById(R.id.tv_progress_add);
+            final TextView tv_plan = (TextView) v.findViewById(R.id.tv_plan_add);
+            final TextView tv_budget = (TextView) v.findViewById(R.id.tv_budget_add);
+            final TextView tv_pbudget = (TextView) v.findViewById(R.id.tv_pbudget_add);
             tv_progress.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -329,26 +325,26 @@ public class AddTaskActivity extends BaseActivity {
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    new JHTask(tv_progress,tv_plan,tv_pbudget,tv_budget,et.getText().toString()).execute();
+                                    new JHTask(tv_progress, tv_plan, tv_pbudget, tv_budget, et.getText().toString()).execute();
                                 }
-                            }).setNegativeButton("取消",null).show();
+                            }).setNegativeButton("取消", null).show();
                 }
             });
-            final TextView tv_check = (TextView)v.findViewById(R.id.tv_check);
+            final TextView tv_check = (TextView) v.findViewById(R.id.tv_check);
             tv_check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     new HYTask(tv_check).execute();
                 }
             });
-            final TextView tv_submit = (TextView)v.findViewById(R.id.tv_submit);
-            if(!map.isEmpty()){
+            final TextView tv_submit = (TextView) v.findViewById(R.id.tv_submit);
+            if (!map.isEmpty()) {
                 et_shuliang.setText(map.get("shuliang"));
                 et_danjia.setText(map.get("danjia"));
-                if(map.get("qi").contains("/")) {
+                if (map.get("qi").contains("/")) {
                     tv_qi.setText(sdf.format(Date.parse(map.get("qi").toString())));
                     tv_zhi.setText(sdf.format(Date.parse(map.get("zhi").toString())));
-                }else{
+                } else {
                     tv_qi.setText(map.get("qi").toString());
                     tv_zhi.setText(map.get("zhi").toString());
                 }
@@ -371,142 +367,142 @@ public class AddTaskActivity extends BaseActivity {
             tv_submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!map.isEmpty()){
+                    if (!map.isEmpty()) {
                         ziList.remove(map);
                     }
-                    if(tv_qi.getText().toString().equals("")){
-                        Toast.makeText(AddTaskActivity.this,"请选择启日期",Toast.LENGTH_SHORT).show();
+                    if (tv_qi.getText().toString().equals("")) {
+                        Toast.makeText(AddTaskActivity.this, "请选择启日期", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if(tv_zhi.getText().toString().equals("")){
-                        Toast.makeText(AddTaskActivity.this,"请选择止日期",Toast.LENGTH_SHORT).show();
+                    if (tv_zhi.getText().toString().equals("")) {
+                        Toast.makeText(AddTaskActivity.this, "请选择止日期", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if(tv_progress.getText().toString().equals("")){
-                        Toast.makeText(AddTaskActivity.this,"请选择计划预算进度",Toast.LENGTH_SHORT).show();
+                    if (tv_progress.getText().toString().equals("")) {
+                        Toast.makeText(AddTaskActivity.this, "请选择计划预算进度", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    map.put("neirong",content);
-                    Log.i("计量",jiliangid);
-//                    map.put("jiliang",jiliang);
-                    map.put("jiliangid",jiliangid);
-                    if(et_shuliang.getText().toString().equals("")){
-                        map.put("shuliang","0");
-                    }else {
+                    map.put("neirong", content);
+                    Log.i("计量", jiliangid);
+                    //                    map.put("jiliang",jiliang);
+                    map.put("jiliangid", jiliangid);
+                    if (et_shuliang.getText().toString().equals("")) {
+                        map.put("shuliang", "0");
+                    } else {
                         map.put("shuliang", et_shuliang.getText().toString());
                     }
-                    if(et_danjia.getText().toString().equals("")){
-                        map.put("danjia","0");
-                    }else {
+                    if (et_danjia.getText().toString().equals("")) {
+                        map.put("danjia", "0");
+                    } else {
                         map.put("danjia", et_danjia.getText().toString());
                     }
-                    map.put("qi",tv_qi.getText().toString());
-                    map.put("zhi",tv_zhi.getText().toString());
-                    map.put("progress",tv_progress.getText().toString());
-                    map.put("planid",planid);
-                    map.put("plan",tv_plan.getText().toString());
-                    map.put("budget",tv_budget.getText().toString());
-                    map.put("pbudget",tv_pbudget.getText().toString());
-                    map.put("note",et_note.getText().toString());
-                    if(et_hanshui.getText().toString().equals("")){
-                        map.put("hanshui","0");
-                    }else {
+                    map.put("qi", tv_qi.getText().toString());
+                    map.put("zhi", tv_zhi.getText().toString());
+                    map.put("progress", tv_progress.getText().toString());
+                    map.put("planid", planid);
+                    map.put("plan", tv_plan.getText().toString());
+                    map.put("budget", tv_budget.getText().toString());
+                    map.put("pbudget", tv_pbudget.getText().toString());
+                    map.put("note", et_note.getText().toString());
+                    if (et_hanshui.getText().toString().equals("")) {
+                        map.put("hanshui", "0");
+                    } else {
                         map.put("hanshui", et_hanshui.getText().toString());
                     }
-                    if(et_buhan.getText().toString().equals("")){
-                        map.put("buhan","0");
-                    }else {
+                    if (et_buhan.getText().toString().equals("")) {
+                        map.put("buhan", "0");
+                    } else {
                         map.put("buhan", et_buhan.getText().toString());
                     }
-                    map.put("fuzhu",tv_fuzhu.getText().toString());
-                    if(et_fuliang.getText().toString().equals("")){
-                        map.put("fuliang","0");
-                    }else{
+                    map.put("fuzhu", tv_fuzhu.getText().toString());
+                    if (et_fuliang.getText().toString().equals("")) {
+                        map.put("fuliang", "0");
+                    } else {
                         map.put("fuliang", et_fuliang.getText().toString());
                     }
-                    map.put("fasong",et_fasong.getText().toString());
-                    if(pfid==null){
-                        map.put("pfid","0");
-                    }else {
+                    map.put("fasong", et_fasong.getText().toString());
+                    if (pfid == null) {
+                        map.put("pfid", "0");
+                    } else {
                         map.put("pfid", pfid);
                     }
-                    switch (strList2.size()){
+                    switch (strList2.size()) {
                         case 1:
-                            map.put("a",list2.get(0).get("fname").toString());
-                            map.put("aa",list2.get(0).get("name").toString());
-                            map.put("aid",strList2.get(0));
-                            map.put("bid","0");
-                            map.put("cid","0");
-                            map.put("did","0");
-                            map.put("eid","0");
+                            map.put("a", list2.get(0).get("fname").toString());
+                            map.put("aa", list2.get(0).get("name").toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", "0");
+                            map.put("cid", "0");
+                            map.put("did", "0");
+                            map.put("eid", "0");
                             break;
                         case 2:
-                            map.put("a",list2.get(0).get("fname").toString());
-                            map.put("b",list2.get(1).get("fname").toString());
-                            map.put("aa",list2.get(0).get("name").toString());
-                            map.put("bb",list2.get(1).get("name").toString());
-                            map.put("aid",strList2.get(0));
-                            map.put("bid",strList2.get(1));
-                            map.put("cid","0");
-                            map.put("did","0");
-                            map.put("eid","0");
+                            map.put("a", list2.get(0).get("fname").toString());
+                            map.put("b", list2.get(1).get("fname").toString());
+                            map.put("aa", list2.get(0).get("name").toString());
+                            map.put("bb", list2.get(1).get("name").toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", strList2.get(1));
+                            map.put("cid", "0");
+                            map.put("did", "0");
+                            map.put("eid", "0");
                             break;
                         case 3:
-                            map.put("a",list2.get(0).get("fname").toString());
-                            map.put("b",list2.get(1).get("fname").toString());
-                            map.put("c",list2.get(2).get("fname").toString());
-                            map.put("aa",list2.get(0).get("name").toString());
-                            map.put("bb",list2.get(1).get("name").toString());
-                            map.put("cc",list2.get(2).get("name").toString());
-                            map.put("aid",strList2.get(0));
-                            map.put("bid",strList2.get(1));
-                            map.put("cid",strList2.get(2));
-                            map.put("did","0");
-                            map.put("eid","0");
+                            map.put("a", list2.get(0).get("fname").toString());
+                            map.put("b", list2.get(1).get("fname").toString());
+                            map.put("c", list2.get(2).get("fname").toString());
+                            map.put("aa", list2.get(0).get("name").toString());
+                            map.put("bb", list2.get(1).get("name").toString());
+                            map.put("cc", list2.get(2).get("name").toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", strList2.get(1));
+                            map.put("cid", strList2.get(2));
+                            map.put("did", "0");
+                            map.put("eid", "0");
                             break;
                         case 4:
-                            map.put("a",list2.get(0).get("fname").toString());
-                            map.put("b",list2.get(1).get("fname").toString());
-                            map.put("c",list2.get(2).get("fname").toString());
-                            map.put("d",list2.get(3).get("fname").toString());
-                            map.put("aa",list2.get(0).get("name").toString());
-                            map.put("bb",list2.get(1).get("name").toString());
-                            map.put("cc",list2.get(2).get("name").toString());
-                            map.put("dd",list2.get(3).get("name").toString());
-                            map.put("aid",strList2.get(0));
-                            map.put("bid",strList2.get(1));
-                            map.put("cid",strList2.get(2));
-                            map.put("did",strList2.get(3));
-                            map.put("eid","0");
+                            map.put("a", list2.get(0).get("fname").toString());
+                            map.put("b", list2.get(1).get("fname").toString());
+                            map.put("c", list2.get(2).get("fname").toString());
+                            map.put("d", list2.get(3).get("fname").toString());
+                            map.put("aa", list2.get(0).get("name").toString());
+                            map.put("bb", list2.get(1).get("name").toString());
+                            map.put("cc", list2.get(2).get("name").toString());
+                            map.put("dd", list2.get(3).get("name").toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", strList2.get(1));
+                            map.put("cid", strList2.get(2));
+                            map.put("did", strList2.get(3));
+                            map.put("eid", "0");
                             break;
                         case 5:
-                            map.put("a",list2.get(0).get("fname").toString());
-                            map.put("b",list2.get(1).get("fname").toString());
-                            map.put("c",list2.get(2).get("fname").toString());
-                            map.put("d",list2.get(3).get("fname").toString());
-                            map.put("e",list2.get(4).get("fname").toString());
-                            map.put("aa",list2.get(0).get("name").toString());
-                            map.put("bb",list2.get(1).get("name").toString());
-                            map.put("cc",list2.get(2).get("name").toString());
-                            map.put("dd",list2.get(3).get("name").toString());
-                            map.put("ee",list2.get(4).get("name").toString());
-//                            map.put("ee",list2.get(4).get("name").toString());
-                            map.put("aid",strList2.get(0));
-                            map.put("bid",strList2.get(1));
-                            map.put("cid",strList2.get(2));
-                            map.put("did",strList2.get(3));
-                            map.put("eid",strList2.get(4));
+                            map.put("a", list2.get(0).get("fname").toString());
+                            map.put("b", list2.get(1).get("fname").toString());
+                            map.put("c", list2.get(2).get("fname").toString());
+                            map.put("d", list2.get(3).get("fname").toString());
+                            map.put("e", list2.get(4).get("fname").toString());
+                            map.put("aa", list2.get(0).get("name").toString());
+                            map.put("bb", list2.get(1).get("name").toString());
+                            map.put("cc", list2.get(2).get("name").toString());
+                            map.put("dd", list2.get(3).get("name").toString());
+                            map.put("ee", list2.get(4).get("name").toString());
+                            //                            map.put("ee",list2.get(4).get("name").toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", strList2.get(1));
+                            map.put("cid", strList2.get(2));
+                            map.put("did", strList2.get(3));
+                            map.put("eid", strList2.get(4));
                             break;
                     }
-                    map.put("qr1","0");
-                    map.put("qr2","0");
-                    map.put("qr3","0");
-                    map.put("qr4","0");
-                    map.put("qr5","0");
-                    if(id==null){
-                        id=Utils.UUID();
+                    map.put("qr1", "0");
+                    map.put("qr2", "0");
+                    map.put("qr3", "0");
+                    map.put("qr4", "0");
+                    map.put("qr5", "0");
+                    if (id == null) {
+                        id = Utils.UUID();
                     }
-                    map.put("id",id);
+                    map.put("id", id);
                     ziList.add(map);
                     adapter.notifyDataSetChanged();
                     dialog.dismiss();
@@ -517,7 +513,7 @@ public class AddTaskActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu2,menu);
+        getMenuInflater().inflate(R.menu.menu2, menu);
         return true;
     }
 
@@ -541,7 +537,7 @@ public class AddTaskActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    protected void setViews(){
+    protected void setViews() {
         Calendar mycalendar = Calendar.getInstance();
         year = mycalendar.get(Calendar.YEAR); //获取Calendar对象中的年
         month = mycalendar.get(Calendar.MONTH);//获取Calendar对象中的月
@@ -553,24 +549,24 @@ public class AddTaskActivity extends BaseActivity {
         strList2 = new ArrayList<>();
         tasks = new Tasks();
         tv_bibie = (TextView) findViewById(R.id.tv_bibie);
-        tv_huilv = (TextView)findViewById(R.id.tv_huilv);
-        tv_zuzhi = (TextView)findViewById(R.id.tv_zuzhi);
-        tv_quyu = (TextView)findViewById(R.id.tv_quyu);
-        tv_content = (TextView)findViewById(R.id.tv_content_add);
-        tv_jl = (TextView)findViewById(R.id.tv_jl);
-        tv_respon = (TextView)findViewById(R.id.tv_respon_add);
-        tv_zhidan = (TextView)findViewById(R.id.tv_zhidan_add);
-        tv_contacts = (TextView)findViewById(R.id.tv_contacts_add);
-        lv_zb = (ListView)findViewById(R.id.lv_zb);
-        btn_submit = (Button)findViewById(R.id.btn_submit_add);
+        tv_huilv = (TextView) findViewById(R.id.tv_huilv);
+        tv_zuzhi = (TextView) findViewById(R.id.tv_zuzhi);
+        tv_quyu = (TextView) findViewById(R.id.tv_quyu);
+        tv_content = (TextView) findViewById(R.id.tv_content_add);
+        tv_jl = (TextView) findViewById(R.id.tv_jl);
+        tv_respon = (TextView) findViewById(R.id.tv_respon_add);
+        tv_zhidan = (TextView) findViewById(R.id.tv_zhidan_add);
+        tv_contacts = (TextView) findViewById(R.id.tv_contacts_add);
+        lv_zb = (ListView) findViewById(R.id.lv_zb);
+        btn_submit = (Button) findViewById(R.id.btn_submit_add);
         interid = getIntent().getStringExtra("interid");
         taskno = getIntent().getStringExtra("taskno");
         ziList = new ArrayList<>();
-        if(interid.equals("0")) {
+        if (interid.equals("0")) {
             adapter = new ZiAdapter(AddTaskActivity.this, ziList);
             lv_zb.setAdapter(adapter);
             new MRTask().execute();
-        }else{
+        } else {
             tasks.setFbillno(taskno);
             tasks.setFinterid(interid);
             toolbar.setTitle("编辑任务");
@@ -579,7 +575,7 @@ public class AddTaskActivity extends BaseActivity {
         }
     }
 
-    protected void setListeners(){
+    protected void setListeners() {
         tv_zuzhi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -602,7 +598,7 @@ public class AddTaskActivity extends BaseActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 new ItemTask(et.getText().toString()).execute();
                             }
-                        }).setNegativeButton("取消",null).show();
+                        }).setNegativeButton("取消", null).show();
 
             }
         });
@@ -620,18 +616,18 @@ public class AddTaskActivity extends BaseActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                new EmpTask(0,et.getText().toString()).execute();
+                                new EmpTask(0, et.getText().toString()).execute();
                             }
-                        }).setNegativeButton("取消",null).show();
+                        }).setNegativeButton("取消", null).show();
 
             }
         });
-//        tv_zhidan.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                new EmpTask(1).execute();
-//            }
-//        });
+        //        tv_zhidan.setOnClickListener(new View.OnClickListener() {
+        //            @Override
+        //            public void onClick(View view) {
+        //                new EmpTask(1).execute();
+        //            }
+        //        });
         tv_contacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -640,20 +636,20 @@ public class AddTaskActivity extends BaseActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                new EmpTask(2,et.getText().toString()).execute();
+                                new EmpTask(2, et.getText().toString()).execute();
                             }
-                        }).setNegativeButton("取消",null).show();
+                        }).setNegativeButton("取消", null).show();
             }
         });
         lv_zb.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view,final int index, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int index, long l) {
                 new AlertDialog.Builder(AddTaskActivity.this).setItems(new String[]{"编辑", "删除"}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i){
+                        switch (i) {
                             case 0:
-                                Toast.makeText(AddTaskActivity.this,"正在开发中...",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddTaskActivity.this, "正在开发中...", Toast.LENGTH_SHORT).show();
                                 break;
                             case 1:
                                 ziList.remove(index);
@@ -668,11 +664,11 @@ public class AddTaskActivity extends BaseActivity {
         lv_zb.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                HashMap<String,String> map = ziList.get(i);
+                HashMap<String, String> map = ziList.get(i);
                 jiliang = map.get("jiliang");
                 try {
                     showDialog(map);
-                }catch (ParseException e){
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
@@ -680,35 +676,35 @@ public class AddTaskActivity extends BaseActivity {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(zuzhi==null){
-                    Toast.makeText(AddTaskActivity.this,"请选择组织机构",Toast.LENGTH_SHORT).show();
+                if (zuzhi == null) {
+                    Toast.makeText(AddTaskActivity.this, "请选择组织机构", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(quyu==null){
-                    Toast.makeText(AddTaskActivity.this,"请选择区域部门",Toast.LENGTH_SHORT).show();
+                if (quyu == null) {
+                    Toast.makeText(AddTaskActivity.this, "请选择区域部门", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(contentid==null){
-                    Toast.makeText(AddTaskActivity.this,"请选择内容",Toast.LENGTH_SHORT).show();
+                if (contentid == null) {
+                    Toast.makeText(AddTaskActivity.this, "请选择内容", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(respon==null){
-                    Toast.makeText(AddTaskActivity.this,"请选择责任人",Toast.LENGTH_SHORT).show();
+                if (respon == null) {
+                    Toast.makeText(AddTaskActivity.this, "请选择责任人", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(zhidan==null){
-                    Toast.makeText(AddTaskActivity.this,"请选择制单人",Toast.LENGTH_SHORT).show();
+                if (zhidan == null) {
+                    Toast.makeText(AddTaskActivity.this, "请选择制单人", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(contacts==null){
-                    Toast.makeText(AddTaskActivity.this,"请选择往来",Toast.LENGTH_SHORT).show();
+                if (contacts == null) {
+                    Toast.makeText(AddTaskActivity.this, "请选择往来", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(ziList.size()==0){
-                    Toast.makeText(AddTaskActivity.this,"请添加子表信息",Toast.LENGTH_SHORT).show();
+                if (ziList.size() == 0) {
+                    Toast.makeText(AddTaskActivity.this, "请添加子表信息", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(interid.equals("0")) {
+                if (interid.equals("0")) {
                     tasks.setFinterid("0");
                     tasks.setFbillno("a");
                 }
@@ -718,12 +714,12 @@ public class AddTaskActivity extends BaseActivity {
                 tasks.setFBase12(quyu);
 
                 List<TaskEntry> list = new ArrayList<>();
-                for(int i=0;i<ziList.size();i++){
+                for (int i = 0; i < ziList.size(); i++) {
                     TaskEntry entry = new TaskEntry();
-                    if(interid.equals("0")) {
+                    if (interid.equals("0")) {
                         entry.setFTime(ziList.get(i).get("qi") + ":00");
                         entry.setFTime1(ziList.get(i).get("zhi") + ":00");
-                    }else{
+                    } else {
                         entry.setFTime(ziList.get(i).get("qi"));
                         entry.setFTime1(ziList.get(i).get("zhi"));
                     }
@@ -749,14 +745,60 @@ public class AddTaskActivity extends BaseActivity {
                     entry.setFBase9(Utils.NulltoString(ziList.get(i).get("eid")));
                     entry.setId(ziList.get(i).get("id"));
                     list.add(entry);
+                    HashMap<String, String> stringStringHashMap = ziList.get(i);
+                    String goodsid = "{goodsId}" + stringStringHashMap.get("id");
+                    String aa = stringStringHashMap.get("aa");
+                    String bb = stringStringHashMap.get("bb");
+                    String cc = stringStringHashMap.get("cc");
+                    String dd = stringStringHashMap.get("dd");
+                    String ee = stringStringHashMap.get("ee");
+                    if (null != aa && !aa.equals("")) {
+                        //发送消息
+                        sendMessegeToShenhe(goodsid, aa.toLowerCase());
+                    }
+                    if (null != bb && !bb.equals("")) {
+                        //发送消息
+                        sendMessegeToShenhe(goodsid, bb.toLowerCase());
+                    }
+                    if (null != cc && !cc.equals("")) {
+                        //发送消息
+                        sendMessegeToShenhe(goodsid, cc.toLowerCase());
+                    }
+                    if (null != dd && !dd.equals("")) {
+                        //发送消息
+                        sendMessegeToShenhe(goodsid, dd.toLowerCase());
+                    }
+                    if (null != ee && !ee.equals("")) {
+                        //发送消息
+                        sendMessegeToShenhe(goodsid, ee.toLowerCase());
+                    }
+
                 }
                 tasks.setEntryList(list);
-                new SubmitTask(tasks,AddTaskActivity.this).execute();
+                new SubmitTask(tasks, AddTaskActivity.this).execute();
             }
         });
     }
+
+    private void sendMessegeToShenhe(String msg, String username) {
+        EMMessage emMessage = EMMessage.createTxtSendMessage(msg, username);
+        emMessage.setStatus(EMMessage.Status.INPROGRESS);
+        emMessage.setMessageStatusCallback(new CallBackListener() {
+            @Override
+            public void onMainSuccess() {
+                ToastUtils.showToast(getBaseContext(), "发送成功");
+            }
+
+            @Override
+            public void onMainError(int i, String s) {
+                ToastUtils.showToast(getBaseContext(), "发送失败");
+            }
+        });
+        EMClient.getInstance().chatManager().sendMessage(emMessage);
+    }
+
     //默认字段填充
-    class MRTask extends AsyncTask<Void,String,String>{
+    class MRTask extends AsyncTask<Void, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -777,7 +819,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject rpc = new SoapObject(nameSpace, methodName);
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
-            rpc.addProperty("FSql", "select a.fname username,a.fitemid responid,b.fname depart,b.fitemid departid,c.FName company,c.fitemid companyid from t_User d inner join  t_Emp a on d.FEmpID=a.fitemid left join t_Department b on a.FDepartmentID=b.FItemID left join t_Item_3001 c on c.FItemID=b.f_102 where d.FName='"+ YApplication.fname+"'");
+            rpc.addProperty("FSql", "select a.fname username,a.fitemid responid,b.fname depart,b.fitemid departid,c.FName company,c.fitemid companyid from t_User d inner join  t_Emp a on d.FEmpID=a.fitemid left join t_Department b on a.FDepartmentID=b.FItemID left join t_Item_3001 c on c.FItemID=b.f_102 where d.FName='" + YApplication.fname + "'");
             rpc.addProperty("FTable", "t_user");
 
             // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
@@ -803,7 +845,7 @@ public class AddTaskActivity extends BaseActivity {
 
             // 获取返回的结果
             if (null != object) {
-                Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+                Log.i("返回结果", object.getProperty(0).toString() + "=========================");
                 String result = object.getProperty(0).toString();
                 Document doc = null;
 
@@ -831,8 +873,8 @@ public class AddTaskActivity extends BaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return username+";"+depart+";"+company;
-            }else {
+                return username + ";" + depart + ";" + company;
+            } else {
                 return "";
             }
         }
@@ -840,7 +882,7 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(!s.equals("")){                            
+            if (!s.equals("")) {
                 String[] str = s.split(";");
                 tv_respon.setText(str[0]);
                 tv_zhidan.setText(str[0]);
@@ -849,13 +891,15 @@ public class AddTaskActivity extends BaseActivity {
             }
         }
     }
+
     //查币别和汇率
-    class CTask extends AsyncTask<Void,String,String>{
+    class CTask extends AsyncTask<Void, String, String> {
         Spinner sp;
 
-        public CTask(Spinner sp){
+        public CTask(Spinner sp) {
             this.sp = sp;
         }
+
         @Override
         protected void onPreExecute() {
             list1.clear();
@@ -904,7 +948,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
             try {
@@ -915,10 +959,10 @@ public class AddTaskActivity extends BaseActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("fitemid",recordEle.elementTextTrim("fcurrencyid"));
-                    map.put("bibie",recordEle.elementTextTrim("FName"));
-                    map.put("huilv",df.format(Double.parseDouble(recordEle.elementTextTrim("FExchangeRate"))));
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("fitemid", recordEle.elementTextTrim("fcurrencyid"));
+                    map.put("bibie", recordEle.elementTextTrim("FName"));
+                    map.put("huilv", df.format(Double.parseDouble(recordEle.elementTextTrim("FExchangeRate"))));
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -930,7 +974,7 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            for(HashMap<String,String> map:list1){
+            for (HashMap<String, String> map : list1) {
                 String fname = map.get("bibie");
                 strList1.add(fname);
             }
@@ -949,10 +993,10 @@ public class AddTaskActivity extends BaseActivity {
 
                 }
             });
-            Log.i("币别",currency+"<<<<<<<<<<<");
-            if(currency!=null){
+            Log.i("币别", currency + "<<<<<<<<<<<");
+            if (currency != null) {
                 for (int i = 0; i < adapter1.getCount(); i++) {
-                    Log.i("获得的币别",adapter1.getItem(i)+"");
+                    Log.i("获得的币别", adapter1.getItem(i) + "");
                     if (currency.equals(adapter1.getItem(i).toString())) {
                         sp.setSelection(i);// 默认选中项
                         break;
@@ -961,8 +1005,9 @@ public class AddTaskActivity extends BaseActivity {
             }
         }
     }
+
     //查组织机构
-    class DepartsTask extends AsyncTask<Void,String,String>{
+    class DepartsTask extends AsyncTask<Void, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -1012,7 +1057,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
             try {
@@ -1023,9 +1068,9 @@ public class AddTaskActivity extends BaseActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
-                    map.put("fname",recordEle.elementTextTrim("fname"));
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                    map.put("fname", recordEle.elementTextTrim("fname"));
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1038,13 +1083,13 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1,comparator);
-            for(HashMap<String,String> map:list1){
+            Collections.sort(list1, comparator);
+            for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
             }
             final ListView lv = new ListView(AddTaskActivity.this);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
                     .setTitle(R.string.departs).show();
@@ -1059,8 +1104,9 @@ public class AddTaskActivity extends BaseActivity {
         }
 
     }
+
     //查区域部门
-    class AreaTask extends AsyncTask<Void,String,String>{
+    class AreaTask extends AsyncTask<Void, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -1110,7 +1156,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
             try {
@@ -1121,9 +1167,9 @@ public class AddTaskActivity extends BaseActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
-                    map.put("fname",recordEle.elementTextTrim("fname"));
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                    map.put("fname", recordEle.elementTextTrim("fname"));
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1136,13 +1182,13 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1,comparator);
-            for(HashMap<String,String> map:list1){
+            Collections.sort(list1, comparator);
+            for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
             }
             final ListView lv = new ListView(AddTaskActivity.this);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
                     .setTitle(R.string.area).show();
@@ -1157,110 +1203,110 @@ public class AddTaskActivity extends BaseActivity {
         }
     }
     //查制度所属部门和制度操作细则
-//    class ZhiduTask extends AsyncTask<Void,String,String>{
-//
-//        @Override
-//        protected void onPreExecute() {
-//            list1.clear();
-//            strList1.clear();
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected String doInBackground(Void... voids) {
-//            // 命名空间
-//            String nameSpace = "http://tempuri.org/";
-//            // 调用的方法名称
-//            String methodName = "JA_select";
-//            // EndPoint
-//            String endPoint = Consts.ENDPOINT;
-//            // SOAP Action
-//            String soapAction = "http://tempuri.org/JA_select";
-//
-//            // 指定WebService的命名空间和调用的方法名
-//            SoapObject rpc = new SoapObject(nameSpace, methodName);
-//
-//            // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
-//            String sql = "select fitemid,fname,f_102 from t_Item_3006 where fitemid>0";
-//            rpc.addProperty("FSql", sql);
-//            rpc.addProperty("FTable", "t_user");
-//
-//            // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
-//            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
-//
-//            envelope.bodyOut = rpc;
-//            // 设置是否调用的是dotNet开发的WebService
-//            envelope.dotNet = true;
-//            // 等价于envelope.bodyOut = rpc;
-//            envelope.setOutputSoapObject(rpc);
-//
-//            HttpTransportSE transport = new HttpTransportSE(endPoint);
-//            try {
-//                // 调用WebService
-//                transport.call(soapAction, envelope);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                Log.i("AddTaskActivity", e.toString() + "==================================");
-//            }
-//
-//            // 获取返回的数据
-//            SoapObject object = (SoapObject) envelope.bodyIn;
-//
-//            // 获取返回的结果
-//            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
-//            String result = object.getProperty(0).toString();
-//            Document doc = null;
-//            try {
-//                doc = DocumentHelper.parseText(result); // 将字符串转为XML
-//                Element rootElt = doc.getRootElement(); // 获取根节点
-//                System.out.println("根节点：" + rootElt.getName()); // 拿到根节点的名称
-//                Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
-//                // 遍历head节点
-//                while (iter.hasNext()) {
-//                    Element recordEle = (Element) iter.next();
-//                    HashMap<String,String> map = new HashMap<>();
-//                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
-//                    map.put("fname",recordEle.elementTextTrim("fname"));
-//                    map.put("fnote",recordEle.elementTextTrim("f_102"));
-//                    list1.add(map);
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return "0";
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//            for(HashMap<String,String> map:list1){
-//                String name = map.get("fname");
-//                strList1.add(name);
-//            }
-//            final ListView lv = new ListView(AddTaskActivity.this);
-//            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
-//            lv.setAdapter(adapter);
-//            final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
-//                    .setTitle(R.string.zhidu1).show();
-//            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                    zhidu1 = list1.get(i).get("itemid");
-//                    tv_zhidu1.setText(strList1.get(i));
-//                    zhidu2 = list1.get(i).get("fnote");
-//                    et_zhidu2.setText(list1.get(i).get("fnote"));
-//                    dialog.dismiss();
-//                }
-//            });
-//        }
-//
-//    }
+    //    class ZhiduTask extends AsyncTask<Void,String,String>{
+    //
+    //        @Override
+    //        protected void onPreExecute() {
+    //            list1.clear();
+    //            strList1.clear();
+    //            super.onPreExecute();
+    //        }
+    //
+    //        @Override
+    //        protected String doInBackground(Void... voids) {
+    //            // 命名空间
+    //            String nameSpace = "http://tempuri.org/";
+    //            // 调用的方法名称
+    //            String methodName = "JA_select";
+    //            // EndPoint
+    //            String endPoint = Consts.ENDPOINT;
+    //            // SOAP Action
+    //            String soapAction = "http://tempuri.org/JA_select";
+    //
+    //            // 指定WebService的命名空间和调用的方法名
+    //            SoapObject rpc = new SoapObject(nameSpace, methodName);
+    //
+    //            // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
+    //            String sql = "select fitemid,fname,f_102 from t_Item_3006 where fitemid>0";
+    //            rpc.addProperty("FSql", sql);
+    //            rpc.addProperty("FTable", "t_user");
+    //
+    //            // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+    //            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+    //
+    //            envelope.bodyOut = rpc;
+    //            // 设置是否调用的是dotNet开发的WebService
+    //            envelope.dotNet = true;
+    //            // 等价于envelope.bodyOut = rpc;
+    //            envelope.setOutputSoapObject(rpc);
+    //
+    //            HttpTransportSE transport = new HttpTransportSE(endPoint);
+    //            try {
+    //                // 调用WebService
+    //                transport.call(soapAction, envelope);
+    //            } catch (Exception e) {
+    //                e.printStackTrace();
+    //                Log.i("AddTaskActivity", e.toString() + "==================================");
+    //            }
+    //
+    //            // 获取返回的数据
+    //            SoapObject object = (SoapObject) envelope.bodyIn;
+    //
+    //            // 获取返回的结果
+    //            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+    //            String result = object.getProperty(0).toString();
+    //            Document doc = null;
+    //            try {
+    //                doc = DocumentHelper.parseText(result); // 将字符串转为XML
+    //                Element rootElt = doc.getRootElement(); // 获取根节点
+    //                System.out.println("根节点：" + rootElt.getName()); // 拿到根节点的名称
+    //                Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
+    //                // 遍历head节点
+    //                while (iter.hasNext()) {
+    //                    Element recordEle = (Element) iter.next();
+    //                    HashMap<String,String> map = new HashMap<>();
+    //                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
+    //                    map.put("fname",recordEle.elementTextTrim("fname"));
+    //                    map.put("fnote",recordEle.elementTextTrim("f_102"));
+    //                    list1.add(map);
+    //                }
+    //            } catch (Exception e) {
+    //                e.printStackTrace();
+    //            }
+    //            return "0";
+    //        }
+    //
+    //        @Override
+    //        protected void onPostExecute(String s) {
+    //            super.onPostExecute(s);
+    //            for(HashMap<String,String> map:list1){
+    //                String name = map.get("fname");
+    //                strList1.add(name);
+    //            }
+    //            final ListView lv = new ListView(AddTaskActivity.this);
+    //            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
+    //            lv.setAdapter(adapter);
+    //            final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
+    //                    .setTitle(R.string.zhidu1).show();
+    //            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    //                @Override
+    //                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    //                    zhidu1 = list1.get(i).get("itemid");
+    //                    tv_zhidu1.setText(strList1.get(i));
+    //                    zhidu2 = list1.get(i).get("fnote");
+    //                    et_zhidu2.setText(list1.get(i).get("fnote"));
+    //                    dialog.dismiss();
+    //                }
+    //            });
+    //        }
+    //
+    //    }
 
     //查内容和辅助
-    class ItemTask extends AsyncTask<Void,String,String>{
+    class ItemTask extends AsyncTask<Void, String, String> {
         String name;
 
-        public ItemTask(String name){
+        public ItemTask(String name) {
             this.name = name;
         }
 
@@ -1268,7 +1314,7 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPreExecute() {
             list1.clear();
             strList1.clear();
-            progress = CustomProgress.show(AddTaskActivity.this,"加载中...",true,null);
+            progress = CustomProgress.show(AddTaskActivity.this, "加载中...", true, null);
             super.onPreExecute();
         }
 
@@ -1288,9 +1334,9 @@ public class AddTaskActivity extends BaseActivity {
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
             String sql;
-            if(TextUtils.isEmpty(name)) {
+            if (TextUtils.isEmpty(name)) {
                 sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0";
-            }else{
+            } else {
                 sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0 and a.fname like '%" + name + "%'";
             }
             rpc.addProperty("FSql", sql);
@@ -1318,7 +1364,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
             try {
@@ -1329,14 +1375,14 @@ public class AddTaskActivity extends BaseActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
-                    map.put("fname",recordEle.elementTextTrim("fname"));
-                    map.put("sup",recordEle.elementTextTrim("sup"));
-                    map.put("taxrate",recordEle.elementTextTrim("ftaxrate"));
-                    map.put("seccoefficient",recordEle.elementTextTrim("fseccoefficient"));
-                    map.put("unitid",recordEle.elementTextTrim("funitid"));
-                    map.put("jiliang",recordEle.elementTextTrim("jiliang"));
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                    map.put("fname", recordEle.elementTextTrim("fname"));
+                    map.put("sup", recordEle.elementTextTrim("sup"));
+                    map.put("taxrate", recordEle.elementTextTrim("ftaxrate"));
+                    map.put("seccoefficient", recordEle.elementTextTrim("fseccoefficient"));
+                    map.put("unitid", recordEle.elementTextTrim("funitid"));
+                    map.put("jiliang", recordEle.elementTextTrim("jiliang"));
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1349,16 +1395,16 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1,comparator);
+            Collections.sort(list1, comparator);
             progress.dismiss();
-            for(HashMap<String,String> map:list1){
+            for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
             }
             final ListView lv = new ListView(AddTaskActivity.this);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
-//            lv.setPadding(60,20,40,10);
+            //            lv.setPadding(60,20,40,10);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
                     .setTitle(R.string.content).show();
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -1369,7 +1415,7 @@ public class AddTaskActivity extends BaseActivity {
                     sup = list1.get(i).get("sup");
                     jiliangid = list1.get(i).get("unitid");
                     jiliang = list1.get(i).get("jiliang");
-                    taxrate = Double.parseDouble(list1.get(i).get("taxrate"))/100;
+                    taxrate = Double.parseDouble(list1.get(i).get("taxrate")) / 100;
                     seccoefficient = Double.parseDouble(list1.get(i).get("seccoefficient"));
                     tv_content.setText(content);
                     tv_jl.setText(jiliang);
@@ -1378,20 +1424,22 @@ public class AddTaskActivity extends BaseActivity {
             });
         }
     }
+
     //查人员
-    class EmpTask extends AsyncTask<Void,String,String>{
-        int type;
+    class EmpTask extends AsyncTask<Void, String, String> {
+        int    type;
         String name;
 
-        public EmpTask(int type,String name){
+        public EmpTask(int type, String name) {
             this.type = type;
             this.name = name;
         }
+
         @Override
         protected void onPreExecute() {
             list1.clear();
             strList1.clear();
-            progress = CustomProgress.show(AddTaskActivity.this,"加载中",true,null);
+            progress = CustomProgress.show(AddTaskActivity.this, "加载中", true, null);
             super.onPreExecute();
         }
 
@@ -1411,9 +1459,9 @@ public class AddTaskActivity extends BaseActivity {
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
             String sql;
-            if(TextUtils.isEmpty(name)){
+            if (TextUtils.isEmpty(name)) {
                 sql = "select fitemid,fname from t_Emp where fitemid>0";
-            }else{
+            } else {
                 sql = "select fitemid,fname from t_Emp where fitemid>0 and fname like '%" + name + "%'";
             }
             rpc.addProperty("FSql", sql);
@@ -1441,7 +1489,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
             try {
@@ -1452,9 +1500,9 @@ public class AddTaskActivity extends BaseActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
-                    map.put("fname",recordEle.elementTextTrim("fname"));
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                    map.put("fname", recordEle.elementTextTrim("fname"));
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1467,22 +1515,22 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1,comparator);
+            Collections.sort(list1, comparator);
             progress.dismiss();
-            for(HashMap<String,String> map:list1){
+            for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
             }
             final ListView lv = new ListView(AddTaskActivity.this);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
-//            lv.setPadding(60,20,40,10);
+            //            lv.setPadding(60,20,40,10);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
                     .setTitle(R.string.emp).show();
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    switch(type){
+                    switch (type) {
                         case 0:
                             respon = list1.get(i).get("itemid");
                             tv_respon.setText(strList1.get(i));
@@ -1501,8 +1549,9 @@ public class AddTaskActivity extends BaseActivity {
             });
         }
     }
+
     //查计量
-    class JLTask extends AsyncTask<Void,String,String>{
+    class JLTask extends AsyncTask<Void, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -1552,7 +1601,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
             try {
@@ -1563,9 +1612,9 @@ public class AddTaskActivity extends BaseActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
-                    map.put("fname",recordEle.elementTextTrim("fname"));
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                    map.put("fname", recordEle.elementTextTrim("fname"));
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1578,13 +1627,13 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1,comparator);
-            for(HashMap<String,String> map:list1){
+            Collections.sort(list1, comparator);
+            for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
             }
             final ListView lv = new ListView(AddTaskActivity.this);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
                     .setTitle(R.string.jiliang).show();
@@ -1598,12 +1647,13 @@ public class AddTaskActivity extends BaseActivity {
             });
         }
     }
+
     //查计划相关字段
-    class JHTask extends AsyncTask<Void,String,String>{
-        TextView tv,tv1,tv2,tv3;
+    class JHTask extends AsyncTask<Void, String, String> {
+        TextView tv, tv1, tv2, tv3;
         String name;
 
-        public JHTask(TextView tv,TextView tv1,TextView tv2,TextView tv3,String name){
+        public JHTask(TextView tv, TextView tv1, TextView tv2, TextView tv3, String name) {
             this.tv = tv;
             this.tv1 = tv1;
             this.tv2 = tv2;
@@ -1634,9 +1684,9 @@ public class AddTaskActivity extends BaseActivity {
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
             String sql;
-            if(TextUtils.isEmpty(name)) {
+            if (TextUtils.isEmpty(name)) {
                 sql = "select a.fitemid,a.fname,a.f_111,a.f_107,b.fname yusuan from t_Item_3007 a left join t_item b on b.fitemid=a.f_105 where a.fitemid>0";
-            }else {
+            } else {
                 sql = "select a.fitemid,a.fname,a.f_111,a.f_107,b.fname yusuan from t_Item_3007 a left join t_item b on b.fitemid=a.f_105 where a.fitemid>0 and a.fname like '%" + name + "%'";
             }
             rpc.addProperty("FSql", sql);
@@ -1664,7 +1714,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
             try {
@@ -1675,12 +1725,12 @@ public class AddTaskActivity extends BaseActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
-                    map.put("fname",recordEle.elementTextTrim("fname"));
-                    map.put("jihua",recordEle.elementTextTrim("f_111"));
-                    map.put("jhys",recordEle.elementTextTrim("f_107"));
-                    map.put("yusuan",recordEle.elementTextTrim("yusuan"));
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                    map.put("fname", recordEle.elementTextTrim("fname"));
+                    map.put("jihua", recordEle.elementTextTrim("f_111"));
+                    map.put("jhys", recordEle.elementTextTrim("f_107"));
+                    map.put("yusuan", recordEle.elementTextTrim("yusuan"));
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1693,13 +1743,13 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1,comparator);
-            for(HashMap<String,String> map:list1){
+            Collections.sort(list1, comparator);
+            for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
             }
             final ListView lv = new ListView(AddTaskActivity.this);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,strList1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
                     .setTitle(R.string.progress).show();
@@ -1716,11 +1766,12 @@ public class AddTaskActivity extends BaseActivity {
             });
         }
     }
+
     //查评分规则
-    class PFTask extends AsyncTask<Void,String,String>{
+    class PFTask extends AsyncTask<Void, String, String> {
         TextView tv;
 
-        public PFTask(TextView tv){
+        public PFTask(TextView tv) {
             this.tv = tv;
         }
 
@@ -1772,7 +1823,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
             try {
@@ -1783,9 +1834,9 @@ public class AddTaskActivity extends BaseActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("itemid",recordEle.elementTextTrim("fitemid"));
-                    map.put("fname",recordEle.elementTextTrim("fname"));
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                    map.put("fname", recordEle.elementTextTrim("fname"));
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1797,17 +1848,17 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            for(HashMap<String,String> map:list1){
+            for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
             }
             final GridView gv = new GridView(AddTaskActivity.this);
             gv.setNumColumns(3);
             final String[] fen = new String[strList1.size()];
-            for(int i=0;i<strList1.size();i++){
+            for (int i = 0; i < strList1.size(); i++) {
                 fen[i] = strList1.get(i);
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this,android.R.layout.simple_list_item_1,
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1,
                     fen);
             gv.setAdapter(adapter);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(gv).show();
@@ -1821,8 +1872,9 @@ public class AddTaskActivity extends BaseActivity {
             });
         }
     }
+
     //查单子主表详情
-    class DeTask extends AsyncTask<Void,String,String> {
+    class DeTask extends AsyncTask<Void, String, String> {
         String Taskno;
 
         public DeTask(String Taskno) {
@@ -1832,7 +1884,7 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPreExecute() {
             list.clear();
-            progress = CustomProgress.show(AddTaskActivity.this,"加载中...",true,null);
+            progress = CustomProgress.show(AddTaskActivity.this, "加载中...", true, null);
             super.onPreExecute();
         }
 
@@ -1900,10 +1952,10 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("departsid", recordEle.elementTextTrim("departsid"));
                     map.put("currency", recordEle.elementTextTrim("currency"));
                     map.put("fcurrencyid", recordEle.elementTextTrim("fcurrencyid"));
-                    if(recordEle.elementTextTrim("area").equals("")){
-                        map.put("area","");
-                        map.put("areaid",null);
-                    }else {
+                    if (recordEle.elementTextTrim("area").equals("")) {
+                        map.put("area", "");
+                        map.put("areaid", null);
+                    } else {
                         map.put("area", recordEle.elementTextTrim("area"));
                         map.put("areaid", recordEle.elementTextTrim("areaid"));
                     }
@@ -1911,10 +1963,10 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("neirongid", recordEle.elementTextTrim("neirongid"));
                     map.put("respon", recordEle.elementTextTrim("respon"));
                     map.put("responid", recordEle.elementTextTrim("responid"));
-                    if(recordEle.elementTextTrim("zhidan").equals("")){
-                        map.put("zhidan","");
-                        map.put("zhidanid",null);
-                    }else {
+                    if (recordEle.elementTextTrim("zhidan").equals("")) {
+                        map.put("zhidan", "");
+                        map.put("zhidanid", null);
+                    } else {
                         map.put("zhidan", recordEle.elementTextTrim("zhidan"));
                         map.put("zhidanid", recordEle.elementTextTrim("zhidanid"));
                     }
@@ -1923,10 +1975,10 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("zhidu1", recordEle.elementTextTrim("zhidu1"));
                     map.put("zhiduid", recordEle.elementTextTrim("zhiduid"));
                     map.put("fnote1", recordEle.elementTextTrim("fnote1"));
-                    map.put("taxrate",recordEle.elementTextTrim("ftaxrate"));
-                    map.put("seccoefficient",recordEle.elementTextTrim("fseccoefficient"));
-                    map.put("jiliang",recordEle.elementTextTrim("jiliang"));
-                    map.put("jiliangid",recordEle.elementTextTrim("jiliangid"));
+                    map.put("taxrate", recordEle.elementTextTrim("ftaxrate"));
+                    map.put("seccoefficient", recordEle.elementTextTrim("fseccoefficient"));
+                    map.put("jiliang", recordEle.elementTextTrim("jiliang"));
+                    map.put("jiliangid", recordEle.elementTextTrim("jiliangid"));
                     list.add(map);
                 }
             } catch (Exception e) {
@@ -1938,11 +1990,11 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-//            if (list.get(0).get("fcurrencyid").equals("1")) {
-//                sp_bibie.setSelection(0);
-//            } else {
-//                sp_bibie.setSelection(1);
-//            }
+            //            if (list.get(0).get("fcurrencyid").equals("1")) {
+            //                sp_bibie.setSelection(0);
+            //            } else {
+            //                sp_bibie.setSelection(1);
+            //            }
             tv_huilv.setText(df.format(Double.parseDouble(list.get(0).get("rate"))));
             tv_zuzhi.setText(list.get(0).get("departs"));
             tv_quyu.setText(list.get(0).get("area"));
@@ -1962,17 +2014,18 @@ public class AddTaskActivity extends BaseActivity {
             respon = list.get(0).get("responid");
             zhidan = list.get(0).get("zhidanid");
             contacts = list.get(0).get("wanglid");
-            taxrate = Double.parseDouble(list.get(0).get("taxrate"))/100;
+            taxrate = Double.parseDouble(list.get(0).get("taxrate")) / 100;
             seccoefficient = Double.parseDouble(list.get(0).get("seccoefficient"));
             jiliangid = list.get(0).get("jiliangid");
         }
 
     }
+
     //查询单子子表详情
-    class DeEntryTask extends AsyncTask<Void,String,String>{
+    class DeEntryTask extends AsyncTask<Void, String, String> {
         String Taskno;
 
-        DeEntryTask(String Taskno){
+        DeEntryTask(String Taskno) {
             this.Taskno = Taskno;
         }
 
@@ -2009,7 +2062,7 @@ public class AddTaskActivity extends BaseActivity {
                     "   left join t_MeasureUnit l on l.FMeasureUnitID=b.FBase2 left join t_Item o on o.FItemID=b.FBase14" +
                     "   left join t_Emp p on p.FItemID=b.FBase5 left join t_Emp q on q.FItemID=b.FBase6" +
                     "   left join t_Emp m on m.FItemID=b.FBase7 left join t_Emp n on n.FItemID=b.fbase8" +
-                    "   left join t_Emp r on r.FItemID=b.FBase9 left join t_MeasureUnit s on s.FMeasureUnitID=k.FSecUnitID where a.fbillno='"+Taskno+"'";
+                    "   left join t_Emp r on r.FItemID=b.FBase9 left join t_MeasureUnit s on s.FMeasureUnitID=k.FSecUnitID where a.fbillno='" + Taskno + "'";
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_BOS200000000");
 
@@ -2035,7 +2088,7 @@ public class AddTaskActivity extends BaseActivity {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
 
@@ -2052,7 +2105,7 @@ public class AddTaskActivity extends BaseActivity {
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
                     planid = recordEle.elementTextTrim("planid");
-//                    jiliangid = recordEle.elementTextTrim("jiliangid");
+                    //                    jiliangid = recordEle.elementTextTrim("jiliangid");
                     pfid = recordEle.elementTextTrim("pfid");
                     String qi = recordEle.elementTextTrim("qi");
                     String zhi = recordEle.elementTextTrim("zhi");
@@ -2088,52 +2141,52 @@ public class AddTaskActivity extends BaseActivity {
                     String qr4 = recordEle.elementTextTrim("qr4");
                     String qr5 = recordEle.elementTextTrim("qr5");
                     id = recordEle.elementTextTrim("id");
-                    Log.i("审核标志",qr1+qr2+qr3+qr4+qr5);
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("qi",qi);
-                    map.put("zhi",zhi);
-                    map.put("neirong",neirong);
-//                    map.put("jiliang",jiliang);
-                    map.put("shuliang",df.format(Double.parseDouble(shuliang)));
-                    map.put("danjia",df.format(Double.parseDouble(danjia)));
-                    map.put("progress",progress);
-                    map.put("plan",plan);
-                    map.put("budget",budget);
-                    map.put("pbudget",df.format(Double.parseDouble(pbudget)));
-                    map.put("note",note);
-                    map.put("hanshui",df.format(Double.parseDouble(hanshui)));
-                    map.put("buhan",df.format(Double.parseDouble(buhan)));
-                    map.put("fuzhu",fuzhu);
-                    map.put("fuliang",df.format(Double.parseDouble(fuliang)));
-                    map.put("fasong",fasong);
-                    map.put("huikui",huikui);
-                    map.put("pingfen",pingfen);
-                    map.put("planid",planid);
-//                    map.put("jiliangid",jiliangid);
-                    map.put("pfid",pfid);
-                    map.put("a",a);
-                    map.put("b",b);
-                    map.put("c",c);
-                    map.put("d",d);
-                    map.put("e",e);
-                    map.put("aid",aid);
-                    map.put("bid",bid);
-                    map.put("cid",cid);
-                    map.put("did",did);
-                    map.put("eid",eid);
-                    map.put("qr1",qr1);
-                    map.put("qr2",qr2);
-                    map.put("qr3",qr3);
-                    map.put("qr4",qr4);
-                    map.put("qr5",qr5);
+                    Log.i("审核标志", qr1 + qr2 + qr3 + qr4 + qr5);
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("qi", qi);
+                    map.put("zhi", zhi);
+                    map.put("neirong", neirong);
+                    //                    map.put("jiliang",jiliang);
+                    map.put("shuliang", df.format(Double.parseDouble(shuliang)));
+                    map.put("danjia", df.format(Double.parseDouble(danjia)));
+                    map.put("progress", progress);
+                    map.put("plan", plan);
+                    map.put("budget", budget);
+                    map.put("pbudget", df.format(Double.parseDouble(pbudget)));
+                    map.put("note", note);
+                    map.put("hanshui", df.format(Double.parseDouble(hanshui)));
+                    map.put("buhan", df.format(Double.parseDouble(buhan)));
+                    map.put("fuzhu", fuzhu);
+                    map.put("fuliang", df.format(Double.parseDouble(fuliang)));
+                    map.put("fasong", fasong);
+                    map.put("huikui", huikui);
+                    map.put("pingfen", pingfen);
+                    map.put("planid", planid);
+                    //                    map.put("jiliangid",jiliangid);
+                    map.put("pfid", pfid);
+                    map.put("a", a);
+                    map.put("b", b);
+                    map.put("c", c);
+                    map.put("d", d);
+                    map.put("e", e);
+                    map.put("aid", aid);
+                    map.put("bid", bid);
+                    map.put("cid", cid);
+                    map.put("did", did);
+                    map.put("eid", eid);
+                    map.put("qr1", qr1);
+                    map.put("qr2", qr2);
+                    map.put("qr3", qr3);
+                    map.put("qr4", qr4);
+                    map.put("qr5", qr5);
                     ziList.add(map);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(list.size()==0){
+            if (list.size() == 0) {
                 return "0";
-            }else {
+            } else {
                 return "1";
             }
         }
@@ -2146,12 +2199,13 @@ public class AddTaskActivity extends BaseActivity {
             lv_zb.setAdapter(adapter);
         }
     }
+
     //查询好友列表
     class HYTask extends AsyncTask<Void, String, String> {
         TextView tv;
 
-        public HYTask(TextView tv){
-            this.tv=tv;
+        public HYTask(TextView tv) {
+            this.tv = tv;
         }
 
         @Override
@@ -2223,11 +2277,11 @@ public class AddTaskActivity extends BaseActivity {
                     // 遍历head节点
                     while (iter.hasNext()) {
                         Element recordEle = (Element) iter.next();
-                        HashMap<String,Object> map = new HashMap<>();
-                        map.put("fname",recordEle.elementTextTrim("fname"));
-                        map.put("name",recordEle.elementTextTrim("name"));
-                        map.put("ischeck",false);
-                        map.put("fitemid",recordEle.elementTextTrim("fitemid"));
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("fname", recordEle.elementTextTrim("fname"));
+                        map.put("name", recordEle.elementTextTrim("name"));
+                        map.put("ischeck", false);
+                        map.put("fitemid", recordEle.elementTextTrim("fitemid"));
                         list2.add(map);
                     }
 
@@ -2243,19 +2297,19 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             progress.dismiss();
-            View v = getLayoutInflater().inflate(R.layout.item_shenhe,null);
-            final ListView lv = (ListView)v.findViewById(R.id.lv_checkbox);
-            CheckBoxAdapter adapter = new CheckBoxAdapter(AddTaskActivity.this,list2);
+            View v = getLayoutInflater().inflate(R.layout.item_shenhe, null);
+            final ListView lv = (ListView) v.findViewById(R.id.lv_checkbox);
+            CheckBoxAdapter adapter = new CheckBoxAdapter(AddTaskActivity.this, list2);
             lv.setAdapter(adapter);
-            final TextView tv_submits = (TextView)v.findViewById(R.id.tv_check_submit);
+            final TextView tv_submits = (TextView) v.findViewById(R.id.tv_check_submit);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
                     .setTitle("请选择").show();
             tv_submits.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     StringBuffer sb = new StringBuffer();
-                    for(int i=0;i<list2.size();i++){
-                        if(Boolean.valueOf(list2.get(i).get("ischeck").toString())){
+                    for (int i = 0; i < list2.size(); i++) {
+                        if (Boolean.valueOf(list2.get(i).get("ischeck").toString())) {
                             sb.append(list2.get(i).get("fname").toString()).append(",");
                             strList2.add(list2.get(i).get("fitemid").toString());
                         }

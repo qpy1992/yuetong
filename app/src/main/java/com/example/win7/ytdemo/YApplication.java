@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.example.win7.ytdemo.activity.BaseActivity;
 import com.example.win7.ytdemo.activity.ChatActivity;
+import com.example.win7.ytdemo.activity.CheckActivity;
 import com.example.win7.ytdemo.activity.LoginActivity;
 import com.example.win7.ytdemo.activity.MainActivity;
 import com.example.win7.ytdemo.adapter.MessageListenerAdapter;
@@ -48,11 +49,12 @@ import java.util.List;
 
 public class YApplication extends Application {
     public static ArrayList<BaseActivity> mBaseActivityList = new ArrayList<BaseActivity>();
-    public static String              fname        = "";
-    public static String              fgroup       = "";
+    public static String                  fname             = "";
+    public static String                  fgroup            = "";
     private SoundPool mSoundPool;
     private int       mDuanSound;
     private int       mYuluSound;
+    private int markExamine = 10;
 
     @Override
     public void onCreate() {
@@ -136,7 +138,7 @@ public class YApplication extends Application {
 
             @Override
             public void onDisconnected(int i) {
-                if (i== EMError.USER_LOGIN_ANOTHER_DEVICE){
+                if (i == EMError.USER_LOGIN_ANOTHER_DEVICE) {
                     // 显示帐号在其他设备登录
                     /**
                      *  将当前任务栈中所有的Activity给清空掉
@@ -152,7 +154,7 @@ public class YApplication extends Application {
                     ThreadUtils.runOnMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            ToastUtils.showToast(YApplication.this,"您已在其他设备上登录了，请重新登录。");
+                            ToastUtils.showToast(YApplication.this, "您已在其他设备上登录了，请重新登录。");
                         }
                     });
 
@@ -189,6 +191,7 @@ public class YApplication extends Application {
                         //发出短声音
                         mSoundPool.play(mDuanSound, 1, 1, 0, 0, 1);
                     }
+                    EMMessage emMessage = list.get(0);
                     EventBus.getDefault().post(list.get(0));
                 }
             }
@@ -297,37 +300,67 @@ public class YApplication extends Application {
 
     private void sendNotification(EMMessage message) {
         EMTextMessageBody messageBody = (EMTextMessageBody) message.getBody();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        //延时意图
-        /**
-         * 参数2：请求码 大于1
-         */
-        Intent mainIntent = new Intent(this, MainActivity.class);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Intent chatIntent = new Intent(this, ChatActivity.class);
-        chatIntent.putExtra("username", message.getFrom());
+        String messageContent = messageBody.getMessage();
+        if (messageContent.startsWith("{goodsId}")) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            messageContent = messageContent.substring(10, messageContent.length());
+            //延时意图
+            /**
+             * 参数2：请求码 大于1
+             */
+            Intent mainIntent = new Intent(this, MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent chatIntent = new Intent(this, CheckActivity.class);
+            chatIntent.putExtra("goodsId", messageContent);
+            Intent[] intents = {mainIntent, chatIntent};
+            PendingIntent pendingIntent = PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+            Notification notification = new Notification.Builder(this)
+                    .setAutoCancel(true) //当点击后自动删除
+                    .setSmallIcon(R.mipmap.message) //必须设置
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                    .setContentTitle("您有一条新的审核待消息")
+                    .setContentText(messageContent)
+                    .setContentInfo(message.getFrom())
+                    .setContentIntent(pendingIntent)
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .build();
+            notificationManager.notify(markExamine, notification);
+            markExamine++;
+        } else {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            //延时意图
+            /**
+             * 参数2：请求码 大于1
+             */
+            Intent mainIntent = new Intent(this, MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent chatIntent = new Intent(this, ChatActivity.class);
+            chatIntent.putExtra("nickname", message.getFrom());
+            chatIntent.putExtra("name", message.getFrom());
 
-        Intent[] intents = {mainIntent, chatIntent};
-        PendingIntent pendingIntent = PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new Notification.Builder(this)
-                .setAutoCancel(true) //当点击后自动删除
-                .setSmallIcon(R.mipmap.message) //必须设置
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setContentTitle("您有一条新消息")
-                .setContentText(messageBody.getMessage())
-                .setContentInfo(message.getFrom())
-                .setContentIntent(pendingIntent)
-                .setPriority(Notification.PRIORITY_MAX)
-                .build();
-        notificationManager.notify(1, notification);
+            Intent[] intents = {mainIntent, chatIntent};
+            PendingIntent pendingIntent = PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+            Notification notification = new Notification.Builder(this)
+                    .setAutoCancel(true) //当点击后自动删除
+                    .setSmallIcon(R.mipmap.message) //必须设置
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                    .setContentTitle("您有一条新消息")
+                    .setContentText(messageContent)
+                    .setContentInfo(message.getFrom())
+                    .setContentIntent(pendingIntent)
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .build();
+            notificationManager.notify(1, notification);
+        }
     }
 
-    public void addActivity(BaseActivity activity){
-        if (!mBaseActivityList.contains(activity)){
+    public void addActivity(BaseActivity activity) {
+        if (!mBaseActivityList.contains(activity)) {
             mBaseActivityList.add(activity);
         }
     }
-    public void removeActivity(BaseActivity activity){
+
+    public void removeActivity(BaseActivity activity) {
         mBaseActivityList.remove(activity);
     }
 
