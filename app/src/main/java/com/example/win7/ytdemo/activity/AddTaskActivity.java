@@ -433,6 +433,7 @@ public class AddTaskActivity extends BaseActivity {
                     switch (strList2.size()){
                         case 1:
                             map.put("a",list2.get(0).get("fname").toString());
+                            map.put("aa",list2.get(0).get("name").toString());
                             map.put("aid",strList2.get(0));
                             map.put("bid","0");
                             map.put("cid","0");
@@ -442,6 +443,8 @@ public class AddTaskActivity extends BaseActivity {
                         case 2:
                             map.put("a",list2.get(0).get("fname").toString());
                             map.put("b",list2.get(1).get("fname").toString());
+                            map.put("aa",list2.get(0).get("name").toString());
+                            map.put("bb",list2.get(1).get("name").toString());
                             map.put("aid",strList2.get(0));
                             map.put("bid",strList2.get(1));
                             map.put("cid","0");
@@ -452,6 +455,9 @@ public class AddTaskActivity extends BaseActivity {
                             map.put("a",list2.get(0).get("fname").toString());
                             map.put("b",list2.get(1).get("fname").toString());
                             map.put("c",list2.get(2).get("fname").toString());
+                            map.put("aa",list2.get(0).get("name").toString());
+                            map.put("bb",list2.get(1).get("name").toString());
+                            map.put("cc",list2.get(2).get("name").toString());
                             map.put("aid",strList2.get(0));
                             map.put("bid",strList2.get(1));
                             map.put("cid",strList2.get(2));
@@ -463,6 +469,10 @@ public class AddTaskActivity extends BaseActivity {
                             map.put("b",list2.get(1).get("fname").toString());
                             map.put("c",list2.get(2).get("fname").toString());
                             map.put("d",list2.get(3).get("fname").toString());
+                            map.put("aa",list2.get(0).get("name").toString());
+                            map.put("bb",list2.get(1).get("name").toString());
+                            map.put("cc",list2.get(2).get("name").toString());
+                            map.put("dd",list2.get(3).get("name").toString());
                             map.put("aid",strList2.get(0));
                             map.put("bid",strList2.get(1));
                             map.put("cid",strList2.get(2));
@@ -475,6 +485,11 @@ public class AddTaskActivity extends BaseActivity {
                             map.put("c",list2.get(2).get("fname").toString());
                             map.put("d",list2.get(3).get("fname").toString());
                             map.put("e",list2.get(4).get("fname").toString());
+                            map.put("aa",list2.get(0).get("name").toString());
+                            map.put("bb",list2.get(1).get("name").toString());
+                            map.put("cc",list2.get(2).get("name").toString());
+                            map.put("dd",list2.get(3).get("name").toString());
+                            map.put("ee",list2.get(4).get("name").toString());
                             map.put("aid",strList2.get(0));
                             map.put("bid",strList2.get(1));
                             map.put("cid",strList2.get(2));
