@@ -182,8 +182,9 @@ public class YApplication extends Application {
                      * 3. 如果是在后台发出长声音
                      * 4. 如果在前台发出短声音
                      */
+                    sendNotification(list.get(0), 1);
                     if (isRuninBackground()) {
-                        sendNotification(list.get(0));
+                        sendNotification(list.get(0), 0);
                         //发出长声音
                         //参数2/3：左右喇叭声音的大小
                         mSoundPool.play(mYuluSound, 1, 1, 0, 0, 1);
@@ -298,7 +299,7 @@ public class YApplication extends Application {
         }
     }
 
-    private void sendNotification(EMMessage message) {
+    private void sendNotification(EMMessage message, int kind) {//kind=0 在后台，kind=1在前台
         EMTextMessageBody messageBody = (EMTextMessageBody) message.getBody();
         String messageContent = messageBody.getMessage();
         if (messageContent.startsWith("{goodsId}")) {
@@ -327,30 +328,32 @@ public class YApplication extends Application {
             notificationManager.notify(markExamine, notification);
             markExamine++;
         } else {
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            //延时意图
-            /**
-             * 参数2：请求码 大于1
-             */
-            Intent mainIntent = new Intent(this, MainActivity.class);
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Intent chatIntent = new Intent(this, ChatActivity.class);
-            chatIntent.putExtra("nickname", message.getFrom());
-            chatIntent.putExtra("name", message.getFrom());
+            if (kind == 0) {
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                //延时意图
+                /**
+                 * 参数2：请求码 大于1
+                 */
+                Intent mainIntent = new Intent(this, MainActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent chatIntent = new Intent(this, ChatActivity.class);
+                chatIntent.putExtra("nickname", message.getFrom());
+                chatIntent.putExtra("name", message.getFrom());
 
-            Intent[] intents = {mainIntent, chatIntent};
-            PendingIntent pendingIntent = PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification notification = new Notification.Builder(this)
-                    .setAutoCancel(true) //当点击后自动删除
-                    .setSmallIcon(R.mipmap.message) //必须设置
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                    .setContentTitle("您有一条新消息")
-                    .setContentText(messageContent)
-                    .setContentInfo(message.getFrom())
-                    .setContentIntent(pendingIntent)
-                    .setPriority(Notification.PRIORITY_MAX)
-                    .build();
-            notificationManager.notify(1, notification);
+                Intent[] intents = {mainIntent, chatIntent};
+                PendingIntent pendingIntent = PendingIntent.getActivities(this, 1, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+                Notification notification = new Notification.Builder(this)
+                        .setAutoCancel(true) //当点击后自动删除
+                        .setSmallIcon(R.mipmap.message) //必须设置
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                        .setContentTitle("您有一条新消息")
+                        .setContentText(messageContent)
+                        .setContentInfo(message.getFrom())
+                        .setContentIntent(pendingIntent)
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .build();
+                notificationManager.notify(1, notification);
+            }
         }
     }
 
