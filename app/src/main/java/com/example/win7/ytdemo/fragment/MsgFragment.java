@@ -99,7 +99,7 @@ public class MsgFragment extends Fragment {
             }
         });
 
-        srl_msg.setColorSchemeResources(new int[]{R.color.colorAccent, R.color.colorPrimary});
+        srl_msg.setColorSchemeResources(new int[]{R.color.bottom_button_text_green, R.color.colorPrimary});
         srl_msg.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

@@ -73,6 +73,8 @@
     <string name="c">三审:</string>
     <string name="d">四审:</string>
     <string name="e">五审:</string>
+    <string name="check">审核</string>
+    <string name="ncheck">待审核</string>
 
     <string name="cancle">取消</string>
     <string name="title">请选择时间</string>

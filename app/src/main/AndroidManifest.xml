@@ -102,7 +102,8 @@
             android:name=".activity.AddTaskActivity"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
         <activity android:name=".activity.BasicDataActivity" />
-        <activity android:name=".activity.CheckActivity"></activity>
+        <activity android:name=".activity.CheckActivity" />
+        <activity android:name=".activity.NeedCheckActivity"></activity>
     </application>
 
 </manifest>

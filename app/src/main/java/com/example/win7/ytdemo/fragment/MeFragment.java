@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.win7.ytdemo.R;
@@ -28,6 +29,7 @@ import com.example.win7.ytdemo.activity.BasicDataActivity;
 import com.example.win7.ytdemo.activity.DakaActivity;
 import com.example.win7.ytdemo.activity.DetailActivity;
 import com.example.win7.ytdemo.activity.JiankongActivity;
+import com.example.win7.ytdemo.activity.NeedCheckActivity;
 import com.example.win7.ytdemo.activity.SettingsActivity;
 import com.example.win7.ytdemo.activity.TongjiActivity;
 import com.example.win7.ytdemo.adapter.GridViewAdapter;
@@ -54,8 +56,8 @@ public class MeFragment extends Fragment {
     String username,depart,company,detail,lately,zhidu="";
     GridView gv_me;
     GridViewAdapter adapter;
-    private int[] resArr = new int[]{R.drawable.daka, R.drawable.jiankong,R.drawable.tongji};
-    private String[] textArr = new String[]{"打卡", "实时监控","统计表"};
+    private int[] resArr = new int[]{R.drawable.daka, R.drawable.jiankong,R.drawable.tongji,R.drawable.ic_action_tick,R.drawable.ic_action_barcode_2};
+    private String[] textArr = new String[]{"打卡", "实时监控","统计表","待审核","收款码"};
     private List<MainMenuEntity> list = new ArrayList<MainMenuEntity>();
     MainMenuEntity data;
 
@@ -222,7 +224,13 @@ public class MeFragment extends Fragment {
                         startActivity(new Intent(mContext, TongjiActivity.class));
                         break;
                     case 3:
-                        startActivity(new Intent(mContext, BasicDataActivity.class));
+                        startActivity(new Intent(mContext, NeedCheckActivity.class));
+                        break;
+                    case 4:
+                        ImageView iv = new ImageView(mContext);
+                        iv.setImageResource(R.drawable.receive_barcode);
+                        new AlertDialog.Builder(mContext).setView(iv).show();
+                        break;
                 }
             }
         });

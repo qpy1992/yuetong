@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/ll_user"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
@@ -46,7 +46,7 @@
     <LinearLayout
         android:id="@+id/ll_depart"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
@@ -82,7 +82,7 @@
     <LinearLayout
         android:id="@+id/ll_zhidu"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
@@ -118,7 +118,7 @@
     <LinearLayout
         android:id="@+id/ll_company"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
@@ -154,7 +154,7 @@
     <LinearLayout
         android:id="@+id/ll_companydetail"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
@@ -191,7 +191,7 @@
     <LinearLayout
         android:id="@+id/ll_lately"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
