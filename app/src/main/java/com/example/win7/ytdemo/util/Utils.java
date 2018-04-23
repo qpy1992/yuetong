@@ -4,6 +4,9 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -11,6 +14,7 @@ import java.util.UUID;
  */
 
 public class Utils {
+    //弹出软键盘时滚动视图
     private static int scrollToPosition=0;
     public static void autoScrollView(final View root, final View scrollToView) {
         root.getViewTreeObserver().addOnGlobalLayoutListener(
@@ -49,6 +53,7 @@ public class Utils {
                 });
     }
 
+    //null值转换成空字符串
     public static String NulltoString(Object object){
         if(object==null){
             return "";
@@ -57,7 +62,14 @@ public class Utils {
         }
     }
 
+    //生成32位UUID
     public static String UUID(){
         return UUID.randomUUID().toString().replaceAll("-","");
+    }
+
+    //按拼音首字母排序
+    public static void sortByInitial(List<HashMap<String,String>> list){
+        PinyinComparator comparator = new PinyinComparator();
+        Collections.sort(list, comparator);
     }
 }

@@ -75,7 +75,6 @@ public class AddTaskActivity extends BaseActivity {
     int    currencyid = 1;
     String currency   = "人民币";
     Double huilv      = 1.00;
-    int year, month, day;
     ZiAdapter      adapter;
     Button         btn_submit;
     Tasks          tasks;
@@ -357,6 +356,7 @@ public class AddTaskActivity extends BaseActivity {
                 et_buhan.setText(map.get("buhan"));
                 et_fuliang.setText(map.get("fuliang"));
                 et_fasong.setText(map.get("fasong"));
+                id = map.get("id");
             }
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
                     .show();
@@ -538,35 +538,34 @@ public class AddTaskActivity extends BaseActivity {
     }
 
     protected void setViews() {
-        Calendar mycalendar = Calendar.getInstance();
-        year = mycalendar.get(Calendar.YEAR); //获取Calendar对象中的年
-        month = mycalendar.get(Calendar.MONTH);//获取Calendar对象中的月
-        day = mycalendar.get(Calendar.DAY_OF_MONTH);
         list = new ArrayList<>();
         list1 = new ArrayList<>();
         strList = new ArrayList<>();
         strList1 = new ArrayList<>();
         strList2 = new ArrayList<>();
-        tasks = new Tasks();
-        tv_bibie = (TextView) findViewById(R.id.tv_bibie);
-        tv_huilv = (TextView) findViewById(R.id.tv_huilv);
-        tv_zuzhi = (TextView) findViewById(R.id.tv_zuzhi);
-        tv_quyu = (TextView) findViewById(R.id.tv_quyu);
-        tv_content = (TextView) findViewById(R.id.tv_content_add);
-        tv_jl = (TextView) findViewById(R.id.tv_jl);
-        tv_respon = (TextView) findViewById(R.id.tv_respon_add);
-        tv_zhidan = (TextView) findViewById(R.id.tv_zhidan_add);
-        tv_contacts = (TextView) findViewById(R.id.tv_contacts_add);
-        lv_zb = (ListView) findViewById(R.id.lv_zb);
-        btn_submit = (Button) findViewById(R.id.btn_submit_add);
-        interid = getIntent().getStringExtra("interid");
-        taskno = getIntent().getStringExtra("taskno");
-        ziList = new ArrayList<>();
+        tasks = new Tasks();//任务主表对象
+        tv_bibie = (TextView) findViewById(R.id.tv_bibie);//币别
+        tv_huilv = (TextView) findViewById(R.id.tv_huilv);//汇率
+        tv_zuzhi = (TextView) findViewById(R.id.tv_zuzhi);//组织机构
+        tv_quyu = (TextView) findViewById(R.id.tv_quyu);//区域部门
+        tv_content = (TextView) findViewById(R.id.tv_content_add);//内容
+        tv_jl = (TextView) findViewById(R.id.tv_jl);//计量
+        tv_respon = (TextView) findViewById(R.id.tv_respon_add);//责任人
+        tv_zhidan = (TextView) findViewById(R.id.tv_zhidan_add);//制单人
+        tv_contacts = (TextView) findViewById(R.id.tv_contacts_add);//往来
+        lv_zb = (ListView) findViewById(R.id.lv_zb);//子表
+        btn_submit = (Button) findViewById(R.id.btn_submit_add);//提交按钮
+        interid = getIntent().getStringExtra("interid");//单据内码
+        taskno = getIntent().getStringExtra("taskno");//任务单单号
+        ziList = new ArrayList<>();//子表集合
         if (interid.equals("0")) {
-            adapter = new ZiAdapter(AddTaskActivity.this, ziList);
+            //单据内码为0，表示做新增操作
+            adapter = new ZiAdapter(AddTaskActivity.this, ziList);//ziList一开始为空
             lv_zb.setAdapter(adapter);
+            //查询默认显示的字段
             new MRTask().execute();
         } else {
+            //单据内码不为0，表示做修改操作
             tasks.setFbillno(taskno);
             tasks.setFinterid(interid);
             toolbar.setTitle("编辑任务");
@@ -576,38 +575,21 @@ public class AddTaskActivity extends BaseActivity {
     }
 
     protected void setListeners() {
+        //组织机构选择
         tv_zuzhi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new DepartsTask().execute();
             }
         });
+        //区域部门选择
         tv_quyu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new AreaTask().execute();
             }
         });
-        tv_content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final EditText et = new EditText(AddTaskActivity.this);
-                new AlertDialog.Builder(AddTaskActivity.this).setTitle("内容").setView(et)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                new ItemTask(et.getText().toString()).execute();
-                            }
-                        }).setNegativeButton("取消", null).show();
-
-            }
-        });
-        tv_jl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new JLTask().execute();
-            }
-        });
+        //责任人和制单人选择
         tv_respon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -622,12 +604,7 @@ public class AddTaskActivity extends BaseActivity {
 
             }
         });
-        //        tv_zhidan.setOnClickListener(new View.OnClickListener() {
-        //            @Override
-        //            public void onClick(View view) {
-        //                new EmpTask(1).execute();
-        //            }
-        //        });
+        //往来选择
         tv_contacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -636,22 +613,42 @@ public class AddTaskActivity extends BaseActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                new EmpTask(2, et.getText().toString()).execute();
+                                new EmpTask(1, et.getText().toString()).execute();
                             }
                         }).setNegativeButton("取消", null).show();
             }
         });
+        //内容选择
+        tv_content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText et = new EditText(AddTaskActivity.this);
+                new AlertDialog.Builder(AddTaskActivity.this).setTitle("物料").setView(et)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                new ItemTask(et.getText().toString()).execute();
+                            }
+                        }).setNegativeButton("取消", null).show();
+
+            }
+        });
+        //计量单位选择
+        tv_jl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new JLTask().execute();
+            }
+        });
+        //长按选择删除
         lv_zb.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int index, long l) {
-                new AlertDialog.Builder(AddTaskActivity.this).setItems(new String[]{"编辑", "删除"}, new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(AddTaskActivity.this).setItems(new String[]{"删除"}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i) {
                             case 0:
-                                Toast.makeText(AddTaskActivity.this, "正在开发中...", Toast.LENGTH_SHORT).show();
-                                break;
-                            case 1:
                                 ziList.remove(index);
                                 adapter.notifyDataSetChanged();
                                 break;
@@ -661,6 +658,7 @@ public class AddTaskActivity extends BaseActivity {
                 return true;
             }
         });
+        //单击编辑子表
         lv_zb.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -862,18 +860,19 @@ public class AddTaskActivity extends BaseActivity {
                     // 遍历head节点
                     while (iter.hasNext()) {
                         Element recordEle = (Element) iter.next();
-                        username = recordEle.elementTextTrim("username"); // 拿到head节点下的子节点title值
-                        depart = recordEle.elementTextTrim("depart");
-                        company = recordEle.elementTextTrim("company");
-                        respon = recordEle.elementTextTrim("responid");
-                        zhidan = recordEle.elementTextTrim("responid");
-                        quyu = recordEle.elementTextTrim("departid");
-                        zuzhi = recordEle.elementTextTrim("companyid");
+                        // 拿到head节点下的子节点title值
+                        username = recordEle.elementTextTrim("username");//责任人
+                        depart = recordEle.elementTextTrim("depart");//区域部门
+                        company = recordEle.elementTextTrim("company");//组织机构
+                        respon = recordEle.elementTextTrim("responid");//制单人id
+                        zhidan = recordEle.elementTextTrim("responid");//制单人和责任人为一人
+                        quyu = recordEle.elementTextTrim("departid");//区域部门id
+                        zuzhi = recordEle.elementTextTrim("companyid");//组织机构id
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return username + ";" + depart + ";" + company;
+                return "SUCCESS";
             } else {
                 return "";
             }
@@ -882,12 +881,11 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (!s.equals("")) {
-                String[] str = s.split(";");
-                tv_respon.setText(str[0]);
-                tv_zhidan.setText(str[0]);
-                tv_quyu.setText(str[1]);
-                tv_zuzhi.setText(str[2]);
+            if (s.equals("SUCCESS")) {
+                tv_respon.setText(username);//责任人
+                tv_zhidan.setText(username);//制单人
+                tv_quyu.setText(depart);//区域部门
+                tv_zuzhi.setText(company);//组织机构
             }
         }
     }
@@ -1069,8 +1067,8 @@ public class AddTaskActivity extends BaseActivity {
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
                     HashMap<String, String> map = new HashMap<>();
-                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
-                    map.put("fname", recordEle.elementTextTrim("fname"));
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));//组织机构id
+                    map.put("fname", recordEle.elementTextTrim("fname"));//组织机构名称
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1082,8 +1080,7 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1, comparator);
+            Utils.sortByInitial(list1);
             for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
@@ -1096,8 +1093,8 @@ public class AddTaskActivity extends BaseActivity {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    tv_zuzhi.setText(strList1.get(i));
-                    zuzhi = list1.get(i).get("itemid");
+                    tv_zuzhi.setText(strList1.get(i));//显示组织机构名称
+                    zuzhi = list1.get(i).get("itemid");//保存组织机构id
                     dialog.dismiss();
                 }
             });
@@ -1181,8 +1178,7 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1, comparator);
+            Utils.sortByInitial(list1);
             for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
@@ -1195,8 +1191,8 @@ public class AddTaskActivity extends BaseActivity {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    quyu = list1.get(i).get("itemid");
-                    tv_quyu.setText(strList1.get(i));
+                    quyu = list1.get(i).get("itemid");//保存区域部门id
+                    tv_quyu.setText(strList1.get(i));//显示区域部门名称
                     dialog.dismiss();
                 }
             });
@@ -1335,9 +1331,9 @@ public class AddTaskActivity extends BaseActivity {
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
             String sql;
             if (TextUtils.isEmpty(name)) {
-                sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0";
+                sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0 order by a.fnumber";
             } else {
-                sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0 and a.fname like '%" + name + "%'";
+                sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0 and a.fname like '%" + name + "%' order by a.fnumber";
             }
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_user");
@@ -1376,13 +1372,13 @@ public class AddTaskActivity extends BaseActivity {
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
                     HashMap<String, String> map = new HashMap<>();
-                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
-                    map.put("fname", recordEle.elementTextTrim("fname"));
-                    map.put("sup", recordEle.elementTextTrim("sup"));
-                    map.put("taxrate", recordEle.elementTextTrim("ftaxrate"));
-                    map.put("seccoefficient", recordEle.elementTextTrim("fseccoefficient"));
-                    map.put("unitid", recordEle.elementTextTrim("funitid"));
-                    map.put("jiliang", recordEle.elementTextTrim("jiliang"));
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));//物料id
+                    map.put("fname", recordEle.elementTextTrim("fname"));//物料名称
+                    map.put("sup", recordEle.elementTextTrim("sup"));//辅助单位名称
+                    map.put("taxrate", recordEle.elementTextTrim("ftaxrate"));//对应税率
+                    map.put("seccoefficient", recordEle.elementTextTrim("fseccoefficient"));//对应辅量换算率
+                    map.put("unitid", recordEle.elementTextTrim("funitid"));//计量单位id
+                    map.put("jiliang", recordEle.elementTextTrim("jiliang"));//计量名称
                     list1.add(map);
                 }
             } catch (Exception e) {
@@ -1394,8 +1390,6 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1, comparator);
             progress.dismiss();
             for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
@@ -1404,21 +1398,20 @@ public class AddTaskActivity extends BaseActivity {
             final ListView lv = new ListView(AddTaskActivity.this);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
-            //            lv.setPadding(60,20,40,10);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
-                    .setTitle(R.string.content).show();
+                    .setTitle(R.string.item).show();
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    contentid = list1.get(i).get("itemid");
-                    content = strList1.get(i);
-                    sup = list1.get(i).get("sup");
-                    jiliangid = list1.get(i).get("unitid");
-                    jiliang = list1.get(i).get("jiliang");
-                    taxrate = Double.parseDouble(list1.get(i).get("taxrate")) / 100;
-                    seccoefficient = Double.parseDouble(list1.get(i).get("seccoefficient"));
-                    tv_content.setText(content);
-                    tv_jl.setText(jiliang);
+                    contentid = list1.get(i).get("itemid");//内容id
+                    content = strList1.get(i);//内容名称
+                    sup = list1.get(i).get("sup");//辅助单位名称
+                    jiliangid = list1.get(i).get("unitid");//计量单位id
+                    jiliang = list1.get(i).get("jiliang");//计量单位名称
+                    taxrate = Double.parseDouble(list1.get(i).get("taxrate")) / 100;//对应税率
+                    seccoefficient = Double.parseDouble(list1.get(i).get("seccoefficient"));//辅量换算率
+                    tv_content.setText(content);//显示内容名称
+                    tv_jl.setText(jiliang);//显示计量单位名称
                     dialog.dismiss();
                 }
             });
@@ -1427,7 +1420,7 @@ public class AddTaskActivity extends BaseActivity {
 
     //查人员
     class EmpTask extends AsyncTask<Void, String, String> {
-        int    type;
+        int    type;//0选择制单人,1选择往来
         String name;
 
         public EmpTask(int type, String name) {
@@ -1514,8 +1507,7 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1, comparator);
+            Utils.sortByInitial(list1);
             progress.dismiss();
             for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
@@ -1524,7 +1516,6 @@ public class AddTaskActivity extends BaseActivity {
             final ListView lv = new ListView(AddTaskActivity.this);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
-            //            lv.setPadding(60,20,40,10);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
                     .setTitle(R.string.emp).show();
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -1532,14 +1523,14 @@ public class AddTaskActivity extends BaseActivity {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     switch (type) {
                         case 0:
+                            //责任人和制单人相同
                             respon = list1.get(i).get("itemid");
                             tv_respon.setText(strList1.get(i));
-                            break;
-                        case 1:
                             zhidan = list1.get(i).get("itemid");
                             tv_zhidan.setText(strList1.get(i));
                             break;
-                        case 2:
+                        case 1:
+                            //选择往来
                             contacts = list1.get(i).get("itemid");
                             tv_contacts.setText(strList1.get(i));
                             break;
@@ -1626,8 +1617,7 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            PinyinComparator comparator = new PinyinComparator();
-            Collections.sort(list1, comparator);
+            Utils.sortByInitial(list1);
             for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
@@ -1640,8 +1630,8 @@ public class AddTaskActivity extends BaseActivity {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    jiliangid = list1.get(i).get("itemid");
-                    jiliang = strList1.get(i);
+                    jiliangid = list1.get(i).get("itemid");//计量单位id
+                    jiliang = strList1.get(i);//显示计量单位
                     dialog.dismiss();
                 }
             });
@@ -2140,7 +2130,7 @@ public class AddTaskActivity extends BaseActivity {
                     String qr3 = recordEle.elementTextTrim("qr3");
                     String qr4 = recordEle.elementTextTrim("qr4");
                     String qr5 = recordEle.elementTextTrim("qr5");
-                    id = recordEle.elementTextTrim("id");
+                    String id = recordEle.elementTextTrim("id");
                     Log.i("审核标志", qr1 + qr2 + qr3 + qr4 + qr5);
                     HashMap<String, String> map = new HashMap<>();
                     map.put("qi", qi);
@@ -2179,6 +2169,7 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("qr3", qr3);
                     map.put("qr4", qr4);
                     map.put("qr5", qr5);
+                    map.put("id",id);
                     ziList.add(map);
                 }
             } catch (Exception e) {

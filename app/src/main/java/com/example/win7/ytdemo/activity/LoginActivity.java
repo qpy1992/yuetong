@@ -36,8 +36,8 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         sp = getSharedPreferences("token",MODE_PRIVATE);
-        String fname = sp.getString("name","");
-        String fgroup = sp.getString("group","");
+        String fname = sp.getString("fname","");
+        String fgroup = sp.getString("fgroup","");
         //判断是否已登录
         if(!fname.equals("")){
             YApplication.fname = fname;
