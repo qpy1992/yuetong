@@ -29,16 +29,21 @@ public class LoginActivity extends BaseActivity {
     Button btn_login;
     CustomProgress dialog;
     LinearLayout ll_login;
-    SharedPreferences sp  = getSharedPreferences("token",MODE_PRIVATE);;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sp = getSharedPreferences("token",MODE_PRIVATE);
         String fname = sp.getString("name","");
+        String fgroup = sp.getString("group","");
         //判断是否已登录
         if(!fname.equals("")){
-
+            YApplication.fname = fname;
+            YApplication.fgroup = fgroup;
+            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+            startActivity(intent);
         }else {
             setViews();
             setListeners();
