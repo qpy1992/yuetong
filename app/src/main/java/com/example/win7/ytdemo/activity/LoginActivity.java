@@ -1,6 +1,7 @@
 package com.example.win7.ytdemo.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,13 +29,20 @@ public class LoginActivity extends BaseActivity {
     Button btn_login;
     CustomProgress dialog;
     LinearLayout ll_login;
+    SharedPreferences sp  = getSharedPreferences("token",MODE_PRIVATE);;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        setViews();
-        setListeners();
+        String fname = sp.getString("name","");
+        //判断是否已登录
+        if(!fname.equals("")){
+
+        }else {
+            setViews();
+            setListeners();
+        }
     }
 
     protected void setViews(){
@@ -156,6 +164,11 @@ public class LoginActivity extends BaseActivity {
                         Log.d("main", "登录聊天服务器失败！");
                     }
                 });
+                //保存用户名，用户组
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("fname",name);
+                editor.putString("fgroup",YApplication.fgroup);
+                editor.commit();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                 finish();
