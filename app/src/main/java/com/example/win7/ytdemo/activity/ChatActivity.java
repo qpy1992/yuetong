@@ -23,6 +23,7 @@ import com.example.win7.ytdemo.util.Utils;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -109,8 +110,21 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             List<EMMessage> messageList = conversation.loadMoreMsgFromDB(lastMessage.getMsgId(), count);
             Collections.reverse(messageList);
             mEMMessageList.clear();
-            mEMMessageList.add(lastMessage);
-            mEMMessageList.addAll(messageList);
+
+            EMTextMessageBody body = (EMTextMessageBody) lastMessage.getBody();
+            String message = body.getMessage();
+            if (!message.startsWith("{goodsId}")){
+                mEMMessageList.add(lastMessage);
+            }
+            for (int i =0;i<messageList.size();i++){
+                EMMessage emMessage = messageList.get(i);
+                EMTextMessageBody body1 = (EMTextMessageBody) emMessage.getBody();
+                String message1 = body1.getMessage();
+                if (!message1.startsWith("{goodsId}")){
+                    mEMMessageList.add(messageList.get(i));
+                }
+            }
+//            mEMMessageList.addAll(messageList);
             Collections.reverse(mEMMessageList);
         } else {
             mEMMessageList.clear();
