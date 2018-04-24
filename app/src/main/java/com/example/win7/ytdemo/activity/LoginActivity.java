@@ -2,16 +2,15 @@ package com.example.win7.ytdemo.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.util.Consts;
@@ -19,6 +18,7 @@ import com.example.win7.ytdemo.util.Utils;
 import com.example.win7.ytdemo.view.CustomProgress;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
