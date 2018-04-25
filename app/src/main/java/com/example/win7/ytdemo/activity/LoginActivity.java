@@ -35,11 +35,17 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         sp = getSharedPreferences("token",MODE_PRIVATE);
         String fname = sp.getString("fname","");
         String fgroup = sp.getString("fgroup","");
+        String status = sp.getString("status","");
         //判断是否已登录
-        if(!fname.equals("")){
+        if(!status.equals("")){
             YApplication.fname = fname;
             YApplication.fgroup = fgroup;
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
@@ -55,6 +61,7 @@ public class LoginActivity extends BaseActivity {
         et_username = (EditText)findViewById(R.id.et_username);
         et_password = (EditText)findViewById(R.id.et_password);
         btn_login = (Button)findViewById(R.id.btn_login);
+        et_username.setText(sp.getString("fname",""));
         Utils.autoScrollView(ll_login, btn_login);//弹出软键盘时滚动视图
     }
 
@@ -173,6 +180,7 @@ public class LoginActivity extends BaseActivity {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("fname",name);
                 editor.putString("fgroup",YApplication.fgroup);
+                editor.putString("status","1");
                 editor.commit();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();

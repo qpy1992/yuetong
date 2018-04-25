@@ -64,7 +64,7 @@ import java.util.Locale;
 
 public class AddTaskActivity extends BaseActivity {
     Toolbar  toolbar;
-    TextView tv_huilv, tv_zuzhi, tv_quyu, tv_content, tv_respon, tv_zhidan, tv_contacts, tv_bibie, tv_jl;
+    TextView tv_huilv, tv_zuzhi, tv_quyu, tv_content, tv_respon, tv_zhidan, tv_contacts, tv_bibie, tv_jl, tv_total, tv_amounts;
     ListView                      lv_zb;
     List<HashMap<String, String>> list, list1, ziList;
     List<HashMap<String, Object>> list2 = new ArrayList<>();
@@ -81,6 +81,8 @@ public class AddTaskActivity extends BaseActivity {
     CustomProgress progress;
     private String TAG = "AddTaskActivity";
     Double taxrate, seccoefficient;
+    Double total = 0d;
+    Double amount = 0d;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -364,6 +366,7 @@ public class AddTaskActivity extends BaseActivity {
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE |
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
             tv_submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -504,6 +507,10 @@ public class AddTaskActivity extends BaseActivity {
                     }
                     map.put("id", id);
                     ziList.add(map);
+                    total = total+Double.parseDouble(map.get("shuliang"));
+                    amount = amount+Double.parseDouble(map.get("hanshui"));
+                    tv_total.setText(String.valueOf(total));
+                    tv_amounts.setText(String.valueOf(amount));
                     adapter.notifyDataSetChanged();
                     dialog.dismiss();
                 }
@@ -553,6 +560,8 @@ public class AddTaskActivity extends BaseActivity {
         tv_respon = (TextView) findViewById(R.id.tv_respon_add);//责任人
         tv_zhidan = (TextView) findViewById(R.id.tv_zhidan_add);//制单人
         tv_contacts = (TextView) findViewById(R.id.tv_contacts_add);//往来
+        tv_total = (TextView)findViewById(R.id.tv_total);
+        tv_amounts = (TextView)findViewById(R.id.tv_amounts);
         lv_zb = (ListView) findViewById(R.id.lv_zb);//子表
         btn_submit = (Button) findViewById(R.id.btn_submit_add);//提交按钮
         interid = getIntent().getStringExtra("interid");//单据内码
@@ -2186,6 +2195,12 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progress.dismiss();
+            for(int i=0;i<ziList.size();i++){
+                total = total + Double.parseDouble(ziList.get(i).get("shuliang"));
+                amount = amount + Double.parseDouble(ziList.get(i).get("hanshui"));
+            }
+            tv_total.setText(String.valueOf(total));
+            tv_amounts.setText(String.valueOf(amount));
             adapter = new ZiAdapter(AddTaskActivity.this, ziList);
             lv_zb.setAdapter(adapter);
         }

@@ -53,15 +53,17 @@
             android:text="@string/login"
             android:textSize="20sp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="20dp"/>
-    </LinearLayout>
-
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/egg"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
+    </LinearLayout>
+
+
 </LinearLayout>

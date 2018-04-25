@@ -206,8 +206,8 @@ public class YApplication extends Application {
             for (Activity activity : mBaseActivityList) {
                 SharedPreferences sp = activity.getSharedPreferences("token",MODE_PRIVATE);
                 SharedPreferences.Editor ed = sp.edit();
-                ed.remove("fname");
                 ed.remove("fgroup");
+                ed.remove("status");
                 ed.commit();
                 EMClient.getInstance().logout(true);
                 activity.finish();
