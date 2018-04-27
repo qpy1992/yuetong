@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.win7.ytdemo.R;
+import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.activity.AddTaskActivity;
 import com.example.win7.ytdemo.activity.TaskDetailActivity;
 import com.example.win7.ytdemo.adapter.TaskAdapter;
@@ -67,6 +68,8 @@ public class TaskFragment extends Fragment {
     int index=0;
     Tool tool;
     List<HashMap<String,String>> list1;
+    String group = YApplication.fgroup;
+    String outeruser = "外部客户组";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,20 +96,22 @@ public class TaskFragment extends Fragment {
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-//        Log.i("用户名首字母",YApplication.fname.substring(0,1));
-
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.action_add:
-                        Intent intent = new Intent(mContext, AddTaskActivity.class);
-                        intent.putExtra("taskno","a");
-                        intent.putExtra("interid","0");
-                        startActivity(intent);
-                        break;
+                if(group.equals("")){
+                    Toast.makeText(mContext,"您不在任何用户组内，请先申请权限！",Toast.LENGTH_SHORT).show();
+                }else {
+                    switch (item.getItemId()) {
+                        case R.id.action_add:
+                            Intent intent = new Intent(mContext, AddTaskActivity.class);
+                            intent.putExtra("taskno", "a");
+                            intent.putExtra("interid", "0");
+                            startActivity(intent);
+                            break;
+                    }
                 }
-                return true;
+                    return true;
             }
         });
     }
@@ -165,11 +170,6 @@ public class TaskFragment extends Fragment {
                     case 0:
                         Toast.makeText(mContext,"请选择条件",Toast.LENGTH_SHORT).show();
                         break;
-//                    case 1:
-//                        //币别
-//                        sql = "select fcurrencyid fitemid,fname from t_Currency where fcurrencyid>0";
-//                        new Task1(list1,mContext,tv_search,tool,sql).execute();
-//                        break;
                     case 1:
                         //公司
                         sql = "select fitemid,fname from t_Item_3001 where fitemid>0";
@@ -207,22 +207,6 @@ public class TaskFragment extends Fragment {
                                     }
                                 }).setNegativeButton("取消",null).show();
                         break;
-//                    case 5:
-//                        //计量
-//                        new AlertDialog.Builder(mContext).setView(et).setTitle("计量")
-//                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialogInterface, int i) {
-//                                        String sql = "";
-//                                        if(TextUtils.isEmpty(et.getText().toString())){
-//                                            sql = "select fitemid,fname from t_MeasureUnit where fitemid>0";
-//                                        }else{
-//                                            sql = "select fitemid,fname from t_MeasureUnit where fitemid>0 and fname like '%"+et.getText().toString()+"%'";
-//                                        }
-//                                        new Task1(list1,mContext,tv_search,tool,sql).execute();
-//                                    }
-//                                }).setNegativeButton("取消",null).show();
-//                        break;
                     default:
                         //人员
                         new AlertDialog.Builder(mContext).setView(et).setTitle("人员")
@@ -245,28 +229,51 @@ public class TaskFragment extends Fragment {
         iv_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(group.equals("")){
+                    Toast.makeText(mContext,"您不在任何用户组内，请先申请权限！",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String sql = "";
                 Log.i("获取的id",tool.getId()+"<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 switch (index){
                     case 0:
-                        //所有单子
-//                        sql = "select fid,fbillno from t_BOS200000000";
-                        new TTask().execute();
+                        if(group.contains("集团")){
+                            sql = "select fid,fbillno from t_BOS200000000 order by fid desc";
+                        }
+                        if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                    "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") order by a.fid desc";
+                        }
+                        if(group.contains("员")||group.equals(outeruser)){
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
+                                    "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='"+YApplication.fname+"') order by a.fid desc";
+                        }
+                        if(group.contains("总部")) {
+                            String grouphead = group.substring(0,2);
+                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                    "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%"+grouphead+"%') order by a.fid desc";
+                        }
+                        new ConditionTask(sql).execute();
                         break;
-//                    case 1:
-//                        //币别区分
-//                        if(tool.getId()!=null) {
-//                            sql = "select fid,fbillno from t_BOS200000000 where fbase3 ="+tool.getId();
-//                            new ConditionTask(sql).execute();
-////                            Toast.makeText(mContext,"currencyid取到"+tool.getId(),Toast.LENGTH_SHORT).show();
-//                        }else{
-//                            Toast.makeText(mContext,"请选择币别",Toast.LENGTH_SHORT).show();
-//                        }
-//                        break;
                     case 1:
                         //公司区分
                         if(tool.getId()!=null){
-                            sql = "select fid,fbillno from t_BOS200000000 where fbase11 ="+tool.getId()+" order by a.fid desc";
+                            if(group.contains("集团")) {
+                                sql = "select fid,fbillno from t_BOS200000000 where fbase11 =" + tool.getId() + " order by a.fid desc";
+                            }
+                            if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase11 =" + tool.getId() +" order by a.fid desc";
+                            }
+                            if(group.contains("员")||group.equals(outeruser)){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
+                                        "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='"+YApplication.fname+"') and a.fbase11 ="+tool.getId()+" order by a.fid desc";
+                            }
+                            if(group.contains("总部")){
+                                String grouphead = group.substring(0,2);
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%"+grouphead+"%') and  a.fbase11="+tool.getId()+" order by a.fid desc";
+                            }
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择公司",Toast.LENGTH_SHORT).show();
@@ -275,7 +282,22 @@ public class TaskFragment extends Fragment {
                     case 2:
                         //部门区分
                         if(tool.getId()!=null){
-                            sql = "select fid,fbillno from t_BOS200000000 where fbase12 ="+tool.getId()+" order by a.fid desc";
+                            if(group.contains("集团")) {
+                                sql = "select fid,fbillno from t_BOS200000000 where fbase12 =" + tool.getId() + " order by a.fid desc";
+                            }
+                            if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase12 =" + tool.getId() +" order by a.fid desc";
+                            }
+                            if(group.contains("员")||group.equals(outeruser)){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
+                                        "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='"+YApplication.fname+"') and a.fbase12 ="+tool.getId()+" order by a.fid desc";
+                            }
+                            if(group.contains("总部")){
+                                String grouphead = group.substring(0,2);
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%"+grouphead+"%') and  a.fbase12="+tool.getId()+" order by a.fid desc";
+                            }
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择部门",Toast.LENGTH_SHORT).show();
@@ -284,25 +306,46 @@ public class TaskFragment extends Fragment {
                     case 3:
                         //内容区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase1 ="+tool.getId()+" order by a.fid desc";
+                            if(group.contains("集团")) {
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase1 =" + tool.getId() + " order by a.fid desc";
+                            }
+                            if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase1 =" + tool.getId() +" order by a.fid desc";
+                            }
+                            if(group.contains("员")||group.equals(outeruser)){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
+                                        "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='"+YApplication.fname+"') and a.fbase1 ="+tool.getId()+" order by a.fid desc";
+                            }
+                            if(group.contains("总部")){
+                                String grouphead = group.substring(0,2);
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                            "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%"+grouphead+"%') and  a.fbase1="+tool.getId()+" order by a.fid desc";
+                            }
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择内容",Toast.LENGTH_SHORT).show();
                         }
                         break;
-//                    case 5:
-//                        //计量区分
-//                        if(tool.getId()!=null){
-//                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase2 ="+tool.getId();
-//                            new ConditionTask(sql).execute();
-//                        }else {
-//                            Toast.makeText(mContext,"请选择计量",Toast.LENGTH_SHORT).show();
-//                        }
-//                        break;
                     case 4:
                         //责任人区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase4 ="+tool.getId()+" order by a.fid desc";
+                            if(group.contains("集团")) {
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase4 =" + tool.getId() + " order by a.fid desc";
+                            }
+                            if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase4 =" + tool.getId() +" order by a.fid desc";
+                            }
+                            if(group.contains("员")||group.equals(outeruser)){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
+                                        "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='"+YApplication.fname+"') and a.fbase4 ="+tool.getId()+" order by a.fid desc";
+                            }
+                            if(group.contains("总部")){
+                                String grouphead = group.substring(0,2);
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%"+grouphead+"%') and  a.fbase4="+tool.getId()+" order by a.fid desc";
+                            }
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择责任人",Toast.LENGTH_SHORT).show();
@@ -311,7 +354,22 @@ public class TaskFragment extends Fragment {
                     case 5:
                         //往来区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase10 ="+tool.getId()+" order by a.fid desc";
+                            if(group.contains("集团")) {
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase10 =" + tool.getId() + " order by a.fid desc";
+                            }
+                            if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase10 =" + tool.getId() +" order by a.fid desc";
+                            }
+                            if(group.contains("员")||group.equals(outeruser)){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
+                                        "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='"+YApplication.fname+"') and a.fbase10 ="+tool.getId()+" order by a.fid desc";
+                            }
+                            if(group.contains("总部")){
+                                String grouphead = group.substring(0,2);
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%"+grouphead+"%') and  a.fbase10 ="+tool.getId()+" order by a.fid desc";
+                            }
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择往来",Toast.LENGTH_SHORT).show();
@@ -320,7 +378,22 @@ public class TaskFragment extends Fragment {
                     case 6:
                         //制单人区分
                         if(tool.getId()!=null){
-                            sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 ="+tool.getId()+" order by a.fid desc";
+                            if(group.contains("集团")) {
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 =" + tool.getId() + " order by a.fid desc";
+                            }
+                            if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase15 =" + tool.getId() +" order by a.fid desc";
+                            }
+                            if(group.contains("员")||group.equals(outeruser)){
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
+                                        "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='"+YApplication.fname+"') and a.fbase15 ="+tool.getId()+" order by a.fid desc";
+                            }
+                            if(group.contains("总部")){
+                                String grouphead = group.substring(0,2);
+                                sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%"+grouphead+"%') and  a.fbase15 ="+tool.getId()+" order by a.fid desc";
+                            }
                             new ConditionTask(sql).execute();
                         }else {
                             Toast.makeText(mContext,"请选择制单人",Toast.LENGTH_SHORT).show();

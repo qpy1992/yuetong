@@ -60,6 +60,7 @@ public class LoginActivity extends BaseActivity {
         ll_login = (LinearLayout)findViewById(R.id.ll_login);
         et_username = (EditText)findViewById(R.id.et_username);
         et_password = (EditText)findViewById(R.id.et_password);
+        et_password.requestFocus();
         btn_login = (Button)findViewById(R.id.btn_login);
         et_username.setText(sp.getString("fname",""));
         Utils.autoScrollView(ll_login, btn_login);//弹出软键盘时滚动视图

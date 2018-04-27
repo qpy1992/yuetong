@@ -11,7 +11,7 @@ import com.hyphenate.chat.EMClient;
 
 public class SettingsActivity extends BaseActivity {
     Toolbar toolbar;
-    Button btn_logout,btn_notify_pwd;
+    Button btn_logout,btn_notify_pwd,btn_update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,7 @@ public class SettingsActivity extends BaseActivity {
     protected void setViews(){
         btn_logout = (Button)findViewById(R.id.btn_logout);
         btn_notify_pwd = (Button)findViewById(R.id.btn_notify_pwd);
+        btn_update = (Button)findViewById(R.id.btn_update_apk);
     }
 
     protected void setListeners(){
@@ -59,5 +60,11 @@ public class SettingsActivity extends BaseActivity {
                 startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
             }
         });
+//        btn_update.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(SettingsActivity.this,UpdateActivity.class));
+//            }
+//        });
     }
 }

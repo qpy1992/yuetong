@@ -310,7 +310,7 @@ public class YApplication extends Application {
         String messageContent = messageBody.getMessage();
         if (messageContent.startsWith("{goodsId}")) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            messageContent = messageContent.substring(10, messageContent.length());
+            messageContent = messageContent.substring(9, messageContent.length());
             //延时意图
             /**
              * 参数2：请求码 大于1

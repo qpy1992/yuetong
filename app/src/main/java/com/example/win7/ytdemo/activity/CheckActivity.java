@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.util.Consts;
 import org.dom4j.Document;
@@ -113,12 +115,56 @@ public class CheckActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-            return null;
+            // 命名空间
+            String nameSpace = "http://tempuri.org/";
+            // 调用的方法名称
+            String methodName = "CHECK";
+            // EndPoint
+            String endPoint = Consts.ENDPOINT;
+            // SOAP Action
+            String soapAction = "http://tempuri.org/CHECK";
+
+            // 指定WebService的命名空间和调用的方法名
+            SoapObject rpc = new SoapObject(nameSpace, methodName);
+
+            // 设置需调用WebService接口需要传入的参数
+            rpc.addProperty("FSql", "");
+            rpc.addProperty("FTable", "t_BOS200000000Entry2");
+
+            // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+
+            envelope.bodyOut = rpc;
+            // 设置是否调用的是dotNet开发的WebService
+            envelope.dotNet = true;
+            // 等价于envelope.bodyOut = rpc;
+            envelope.setOutputSoapObject(rpc);
+
+            HttpTransportSE transport = new HttpTransportSE(endPoint);
+            try {
+                // 调用WebService
+                transport.call(soapAction, envelope);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("CheckActivity", e.toString() + "==================================");
+            }
+
+            // 获取返回的数据
+            SoapObject object = (SoapObject) envelope.bodyIn;
+
+            // 获取返回的结果
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
+            String result = object.getProperty(0).toString();
+            return result;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            if(s.equals("成功")){
+                Toast.makeText(CheckActivity.this,"确认成功",Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
 
@@ -154,6 +200,7 @@ public class CheckActivity extends AppCompatActivity {
                     " from t_BOS200000000Entry2 a left join t_icitem b on b.fitemid=a.fbase1 " +
                     "left join t_item_3007 c on c.fitemid=a.fbase left join t_item d on d.fitemid=c.f_105 " +
                     "left join t_measureunit e on e.fmeasureunitid=b.fitemid left join t_item f on f.fitemid=a.fbase14 where a.id='"+id+"'";
+            Log.i("SQL查询语句",sql);
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_BOS200000000Entry2");
 
@@ -218,6 +265,7 @@ public class CheckActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             tv_item.setText(map.get("item"));
+            Log.i("数量",map.get("shuliang"));
             tv_num.setText(df.format(Double.parseDouble(map.get("shuliang"))));
             tv_pri.setText(df.format(Double.parseDouble(map.get("danjia"))));
             tv_taxpri.setText(df.format(Double.parseDouble(map.get("hanshui"))));
