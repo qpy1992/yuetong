@@ -118,11 +118,11 @@ public class CheckActivity extends AppCompatActivity {
             // 命名空间
             String nameSpace = "http://tempuri.org/";
             // 调用的方法名称
-            String methodName = "CHECK";
+            String methodName = "UPDATE_t_BOS200000000";
             // EndPoint
             String endPoint = Consts.ENDPOINT;
             // SOAP Action
-            String soapAction = "http://tempuri.org/CHECK";
+            String soapAction = "http://tempuri.org/UPDATE_t_BOS200000000";
 
             // 指定WebService的命名空间和调用的方法名
             SoapObject rpc = new SoapObject(nameSpace, methodName);
