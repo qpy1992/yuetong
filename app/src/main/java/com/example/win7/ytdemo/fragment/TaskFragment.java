@@ -118,8 +118,8 @@ public class TaskFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-            inflater.inflate(R.menu.menu2, menu);
-            super.onCreateOptionsMenu(menu, inflater);
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu2, menu);
     }
 
     protected void setViews(){
