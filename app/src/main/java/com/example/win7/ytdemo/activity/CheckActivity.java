@@ -16,11 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.win7.ytdemo.R;
+import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.view.CustomProgress;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.ksoap2.SoapEnvelope;
+import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
@@ -37,8 +41,10 @@ public class CheckActivity extends AppCompatActivity {
     EditText et_get;
     List<HashMap<String,String>> list1;
     HashMap<String,String> map;
-    String pfid;
+    String pfid = "0";
     DecimalFormat df  = new DecimalFormat("#0.00");
+    String goodsid,userid;
+    CustomProgress progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +93,9 @@ public class CheckActivity extends AppCompatActivity {
         map = new HashMap<>();
         list1 = new ArrayList<>();
         Intent intent = getIntent();
-        String goodsid = intent.getStringExtra("goodsId");
+        goodsid = intent.getStringExtra("goodsId");
         new DetailTask(goodsid).execute();
+        new UseridTask().execute();
     }
 
     protected void setListeners(){
@@ -101,12 +108,101 @@ public class CheckActivity extends AppCompatActivity {
         tv_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                new CheckTask(et_get.getText().toString(),pfid,userid,goodsid).execute();
             }
         });
     }
 
     class CheckTask extends AsyncTask<Void,String,String>{
+        String ftext1;
+        String pfid;
+        String userid;
+        String id;
+
+        CheckTask(String ftext1,String pfid,String userid,String id){
+            this.ftext1 = ftext1;
+            this.pfid = pfid;
+            this.userid = userid;
+            this.id = id;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress = CustomProgress.show(CheckActivity.this,"提交中...",true,null);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                // 命名空间
+                String nameSpace = "http://tempuri.org/";
+                // 调用的方法名称
+                String methodName = "UPDATE_t_BOS200000000";
+                // EndPoint
+                String endPoint = Consts.ENDPOINT;
+                // SOAP Action
+                String soapAction = "http://tempuri.org/UPDATE_t_BOS200000000";
+
+                // 指定WebService的命名空间和调用的方法名
+                SoapObject rpc = new SoapObject(nameSpace, methodName);
+
+                // 设置需调用WebService接口需要传入的参数
+                Log.i("传入的参数","回馈消息"+ftext1+"评分id"+pfid+"审核人id"+userid+"单据id"+id);
+                rpc.addProperty("FText1", ftext1);
+                rpc.addProperty("FBase14", pfid);
+                rpc.addProperty("FCheckerID", userid);
+                rpc.addProperty("ID", id);
+
+                // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+
+                envelope.bodyOut = rpc;
+                // 设置是否调用的是dotNet开发的WebService
+                envelope.dotNet = true;
+                // 等价于envelope.bodyOut = rpc;
+                envelope.setOutputSoapObject(rpc);
+
+                HttpTransportSE transport = new HttpTransportSE(endPoint);
+                try {
+                    // 调用WebService
+                    transport.call(soapAction, envelope);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.i("CheckActivity", e.toString() + "==================================");
+                }
+
+                String result = "";
+                if (envelope.bodyIn instanceof SoapFault) {
+                    Log.i("服务器返回",(SoapObject) envelope.getResponse()+"");
+                } else{
+                    SoapObject object = (SoapObject) envelope.bodyIn;
+
+                    // 获取返回的结果
+                    Log.i("返回结果", object.getProperty(0).toString() + "=========================");
+                    result = object.getProperty(0).toString();
+                }
+                return result;
+            }catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(s.equals("成功")){
+                progress.dismiss();
+                Toast.makeText(CheckActivity.this,"确认成功",Toast.LENGTH_SHORT).show();
+                finish();
+            }else{
+                Toast.makeText(CheckActivity.this,"确认异常",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    class UseridTask extends AsyncTask<Void,String,String>{
 
         @Override
         protected void onPreExecute() {
@@ -118,18 +214,19 @@ public class CheckActivity extends AppCompatActivity {
             // 命名空间
             String nameSpace = "http://tempuri.org/";
             // 调用的方法名称
-            String methodName = "UPDATE_t_BOS200000000";
+            String methodName = "JA_select";
             // EndPoint
             String endPoint = Consts.ENDPOINT;
             // SOAP Action
-            String soapAction = "http://tempuri.org/UPDATE_t_BOS200000000";
+            String soapAction = "http://tempuri.org/JA_select";
 
             // 指定WebService的命名空间和调用的方法名
             SoapObject rpc = new SoapObject(nameSpace, methodName);
 
-            // 设置需调用WebService接口需要传入的参数
-            rpc.addProperty("FSql", "");
-            rpc.addProperty("FTable", "t_BOS200000000Entry2");
+            // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
+            String sql = "select a.fitemid from t_Emp a left join t_user b on a.fitemid=b.fempid where b.fname='"+ YApplication.fname+"'";
+            rpc.addProperty("FSql", sql);
+            rpc.addProperty("FTable", "t_user");
 
             // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
@@ -155,16 +252,26 @@ public class CheckActivity extends AppCompatActivity {
             // 获取返回的结果
             Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
-            return result;
+            Document doc = null;
+            try {
+                doc = DocumentHelper.parseText(result); // 将字符串转为XML
+                Element rootElt = doc.getRootElement(); // 获取根节点
+                System.out.println("根节点：" + rootElt.getName()); // 拿到根节点的名称
+                Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
+                // 遍历head节点
+                while (iter.hasNext()) {
+                    Element recordEle = (Element) iter.next();
+                    userid = recordEle.elementTextTrim("fitemid");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "0";
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(s.equals("成功")){
-                Toast.makeText(CheckActivity.this,"确认成功",Toast.LENGTH_SHORT).show();
-                finish();
-            }
         }
     }
 

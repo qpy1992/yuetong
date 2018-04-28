@@ -43,6 +43,11 @@ public class NeedCheckActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_need_check);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setTool();
         setViews();
         setListeners();
