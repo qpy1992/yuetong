@@ -47,6 +47,32 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/ll_note"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/note"
+                android:gravity="center_vertical"
+                android:textColor="@color/bottom_button_text_black"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/tv_note"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="right|center_vertical"
+                android:layout_marginRight="10dp"
+                android:singleLine="true"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -112,7 +138,8 @@
                 android:layout_weight="2"
                 android:gravity="right|center_vertical"
                 android:layout_marginRight="5dp"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <LinearLayout
@@ -184,29 +211,7 @@
                 android:singleLine="true"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_note"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/note"
-                android:gravity="center_vertical"
-                android:textColor="@color/bottom_button_text_black"/>
-
-            <TextView
-                android:id="@+id/tv_note"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
-                android:singleLine="true"/>
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_buhan"
@@ -270,14 +275,17 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/send"
-                android:textColor="@color/bottom_button_text_black"/>
+                android:textColor="@color/bottom_button_text_black"
+                android:textSize="20sp"/>
             <TextView
                 android:id="@+id/tv_fasong"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:layout_marginRight="10dp"
-                android:gravity="right"/>
+                android:gravity="right"
+                android:textSize="20sp"
+                android:singleLine="true"/>
         </LinearLayout>
 
         <LinearLayout
@@ -289,14 +297,17 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/receive"
-                android:textColor="@color/bottom_button_text_black"/>
+                android:textColor="@color/bottom_button_text_black"
+                android:textSize="20sp"/>
             <TextView
                 android:id="@+id/tv_huikui"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:gravity="right"
-                android:layout_marginRight="10dp"/>
+                android:layout_marginRight="10dp"
+                android:textSize="20sp"
+                android:singleLine="true"/>
         </LinearLayout>
 
         <LinearLayout

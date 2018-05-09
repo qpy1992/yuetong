@@ -310,7 +310,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:gravity="right"
-                android:background="@null"
+                android:background="@drawable/et_shape_1"
                 android:layout_marginRight="10dp"/>
         </LinearLayout>
 
@@ -348,4 +348,15 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:background="@drawable/tv_submit"/>
+
+    <TextView
+        android:id="@+id/tv_refuse_check"
+        android:layout_width="160dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="退回"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/tv_refuse"/>
 </LinearLayout>

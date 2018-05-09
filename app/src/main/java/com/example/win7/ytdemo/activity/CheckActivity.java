@@ -37,11 +37,11 @@ import java.util.List;
 
 public class CheckActivity extends AppCompatActivity {
     Toolbar toolbar;
-    TextView tv_item,tv_num,tv_pri,tv_taxpri,tv_start,tv_end,tv_pro,tv_plans,tv_budget,tv_pbudget,tv_notes,tv_buhan,tv_sup,tv_supl,tv_send,tv_pf,tv_submit;
+    TextView tv_item,tv_num,tv_pri,tv_taxpri,tv_start,tv_end,tv_pro,tv_plans,tv_budget,tv_pbudget,tv_notes,tv_buhan,tv_sup,tv_supl,tv_send,tv_pf,tv_submit,tv_refuse;
     EditText et_get;
     List<HashMap<String,String>> list1;
     HashMap<String,String> map;
-    String pfid = "0";
+    String pfid = "230";
     DecimalFormat df  = new DecimalFormat("#0.00");
     String goodsid,userid;
     CustomProgress progress;
@@ -88,7 +88,9 @@ public class CheckActivity extends AppCompatActivity {
         tv_supl = (TextView)findViewById(R.id.tv_supl);
         tv_send = (TextView)findViewById(R.id.tv_send);
         tv_pf = (TextView)findViewById(R.id.tv_pf);
+        tv_pf.setText("10分");
         tv_submit = (TextView)findViewById(R.id.tv_submit_check);
+        tv_refuse = (TextView)findViewById(R.id.tv_refuse_check);
         et_get = (EditText)findViewById(R.id.et_get);
         map = new HashMap<>();
         list1 = new ArrayList<>();
@@ -109,6 +111,12 @@ public class CheckActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new CheckTask(et_get.getText().toString(),pfid,userid,goodsid).execute();
+            }
+        });
+        tv_refuse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CheckTask(et_get.getText().toString(),pfid,"0",goodsid).execute();
             }
         });
     }
@@ -388,7 +396,9 @@ public class CheckActivity extends AppCompatActivity {
             tv_supl.setText(df.format(Double.parseDouble(map.get("fuliang"))));
             tv_send.setText(map.get("fasong"));
             et_get.setText(map.get("huikui"));
-            tv_pf.setText(map.get("pf"));
+            if(!map.get("pf").equals("*")) {
+                tv_pf.setText(map.get("pf"));
+            }
         }
     }
 

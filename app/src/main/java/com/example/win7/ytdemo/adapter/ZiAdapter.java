@@ -1,6 +1,7 @@
 package com.example.win7.ytdemo.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -58,6 +59,7 @@ public class ZiAdapter extends BaseAdapter{
                     findViewById(R.id.tv_zhi);
             holder.tv_progress = (TextView)view.
                     findViewById(R.id.tv_progress);
+            holder.tv_progress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
             holder.tv_plan = (TextView)view.
                     findViewById(R.id.tv_plan);
             holder.tv_budget = (TextView)view.
@@ -289,6 +291,28 @@ public class ZiAdapter extends BaseAdapter{
             public void onClick(View view) {
                 TextView tv = new TextView(mContext);
                 tv.setText(item.get("note"));
+                tv.setTextSize(16);
+                tv.setPadding(60,20,40,10);
+                new AlertDialog.Builder(mContext).setView(tv).show();
+            }
+        });
+
+        holder.tv_fasong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TextView tv = new TextView(mContext);
+                tv.setText(item.get("fasong"));
+                tv.setTextSize(16);
+                tv.setPadding(60,20,40,10);
+                new AlertDialog.Builder(mContext).setView(tv).show();
+            }
+        });
+
+        holder.tv_huikui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TextView tv = new TextView(mContext);
+                tv.setText(item.get("huikui"));
                 tv.setTextSize(16);
                 tv.setPadding(60,20,40,10);
                 new AlertDialog.Builder(mContext).setView(tv).show();

@@ -363,7 +363,6 @@ public class AddTaskActivity extends BaseActivity {
                 et_buhan.setText(map.get("buhan"));
                 et_fuliang.setText(map.get("fuliang"));
                 et_fasong.setText(map.get("fasong"));
-                tv_check.setText(map.get(""));
             }
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
                     .show();
@@ -438,7 +437,7 @@ public class AddTaskActivity extends BaseActivity {
                     } else {
                         map.put("pfid", pfid);
                     }
-                    if(!map.isEmpty()) {
+                    if(map.get("a")==null) {
                         switch (strList2.size()) {
                             case 1:
                                 map.put("a", list2.get(0).get("fname").toString());
@@ -507,11 +506,11 @@ public class AddTaskActivity extends BaseActivity {
                                 map.put("eid", strList2.get(4));
                                 break;
                         }
-                        map.put("qr1", "0");
-                        map.put("qr2", "0");
-                        map.put("qr3", "0");
-                        map.put("qr4", "0");
-                        map.put("qr5", "0");
+                            map.put("qr1", "0");
+                            map.put("qr2", "0");
+                            map.put("qr3", "0");
+                            map.put("qr4", "0");
+                            map.put("qr5", "0");
                         if (map.get("id") == null) {
                             map.put("id", Utils.UUID());
                         }
@@ -686,6 +685,12 @@ public class AddTaskActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HashMap<String, String> map = ziList.get(i);
+                if(map.get("qr1").equals("True")||map.get("qr2").equals("True")||
+                        map.get("qr3").equals("True")||map.get("qr4").equals("True")||
+                        map.get("qr5").equals("True")){
+                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 jiliang = map.get("jiliang");
                 try {
                     showDialog(map);
@@ -764,6 +769,11 @@ public class AddTaskActivity extends BaseActivity {
                     entry.setFBase7(Utils.NulltoString(ziList.get(i).get("cid")));
                     entry.setFBase8(Utils.NulltoString(ziList.get(i).get("did")));
                     entry.setFBase9(Utils.NulltoString(ziList.get(i).get("eid")));
+                    entry.setFCheckBox1(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr1"))));
+                    entry.setFCheckBox2(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr2"))));
+                    entry.setFCheckBox3(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr3"))));
+                    entry.setFCheckBox4(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr4"))));
+                    entry.setFCheckBox5(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr5"))));
                     entry.setId(ziList.get(i).get("id"));
                     list.add(entry);
                     HashMap<String, String> stringStringHashMap = ziList.get(i);
@@ -1546,11 +1556,10 @@ public class AddTaskActivity extends BaseActivity {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     switch (type) {
                         case 0:
-                            //责任人和制单人相同
                             respon = list1.get(i).get("itemid");
                             tv_respon.setText(strList1.get(i));
-                            zhidan = list1.get(i).get("itemid");
-                            tv_zhidan.setText(strList1.get(i));
+//                            zhidan = list1.get(i).get("itemid");
+//                            tv_zhidan.setText(strList1.get(i));
                             break;
                         case 1:
                             //选择往来
@@ -2338,6 +2347,10 @@ public class AddTaskActivity extends BaseActivity {
                             strList2.add(list2.get(i).get("fitemid").toString());
                             strList3.add(list2.get(i).get("name").toString());
                         }
+                    }
+                    if(strList2.size()>5){
+                        Toast.makeText(AddTaskActivity.this,"最多可选5人",Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     dialog.dismiss();
                     tv.setText(sb.toString());

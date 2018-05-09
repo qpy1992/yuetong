@@ -242,7 +242,7 @@ public class TaskFragment extends Fragment {
                         }
                         if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
                             sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                    "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") order by a.fid desc";
+                                    "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='"+group+"') order by a.fid desc";
                         }
                         if(group.contains("员")||group.equals(outeruser)){
                             sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
@@ -263,7 +263,7 @@ public class TaskFragment extends Fragment {
                             }
                             if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase11 =" + tool.getId() +" order by a.fid desc";
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='"+group+"') and a.fbase11 =" + tool.getId() +" order by a.fid desc";
                             }
                             if(group.contains("员")||group.equals(outeruser)){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
@@ -287,7 +287,7 @@ public class TaskFragment extends Fragment {
                             }
                             if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase12 =" + tool.getId() +" order by a.fid desc";
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='"+group+"') and a.fbase12 =" + tool.getId() +" order by a.fid desc";
                             }
                             if(group.contains("员")||group.equals(outeruser)){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
@@ -311,7 +311,7 @@ public class TaskFragment extends Fragment {
                             }
                             if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase1 =" + tool.getId() +" order by a.fid desc";
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='"+group+"') and a.fbase1 =" + tool.getId() +" order by a.fid desc";
                             }
                             if(group.contains("员")||group.equals(outeruser)){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
@@ -335,7 +335,7 @@ public class TaskFragment extends Fragment {
                             }
                             if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase4 =" + tool.getId() +" order by a.fid desc";
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='"+group+"') and a.fbase4 =" + tool.getId() +" order by a.fid desc";
                             }
                             if(group.contains("员")||group.equals(outeruser)){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
@@ -359,7 +359,7 @@ public class TaskFragment extends Fragment {
                             }
                             if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase10 =" + tool.getId() +" order by a.fid desc";
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='"+group+"') and a.fbase10 =" + tool.getId() +" order by a.fid desc";
                             }
                             if(group.contains("员")||group.equals(outeruser)){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
@@ -383,7 +383,7 @@ public class TaskFragment extends Fragment {
                             }
                             if(group.contains("主管")||(group.contains("财务")&&!group.contains("集团"))){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname="+group+") and a.fbase15 =" + tool.getId() +" order by a.fid desc";
+                                        "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='"+group+"') and a.fbase15 =" + tool.getId() +" order by a.fid desc";
                             }
                             if(group.contains("员")||group.equals(outeruser)){
                                 sql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
