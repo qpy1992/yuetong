@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class AddTaskActivity extends BaseActivity {
     Toolbar  toolbar;
@@ -69,7 +70,7 @@ public class AddTaskActivity extends BaseActivity {
     ListView                      lv_zb;
     List<HashMap<String, String>> list, list1, ziList;
     List<HashMap<String, Object>> list2 = new ArrayList<>();
-    List<String> strList, strList1, strList2,strList3;
+    List<String> strList, strList1, strList2,strList3,lists;
     DecimalFormat df  = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
     String interid, taskno, respon, zhidan, contacts, content, contentid, planid, sup, jiliang, jiliangid, pfid, zuzhi, quyu, zhidu1, zhidu2, username, depart, company;
@@ -159,17 +160,10 @@ public class AddTaskActivity extends BaseActivity {
             et_fuliang.setEnabled(false);
             final EditText et_fasong = (EditText) v.findViewById(R.id.et_fasong);
             final TextWatcher shuliang = new TextWatcher() {
-
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
                 @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
                 @Override
                 public void afterTextChanged(Editable editable) {
                     if (!editable.toString().equals("-")) {
@@ -376,10 +370,11 @@ public class AddTaskActivity extends BaseActivity {
                 public void onClick(View view) {
                     if (!map.isEmpty()) {
                         ziList.remove(map);
-                    }else if(tv_check.getText().toString().equals("")){
-                        Toast.makeText(AddTaskActivity.this, "请选择审核人",Toast.LENGTH_SHORT).show();
-                        return;
                     }
+//                    else if(tv_check.getText().toString().equals("")){
+//                        Toast.makeText(AddTaskActivity.this, "请选择审核人",Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
                     if (tv_qi.getText().toString().equals("")) {
                         Toast.makeText(AddTaskActivity.this, "请选择启日期", Toast.LENGTH_SHORT).show();
                         return;
@@ -594,6 +589,15 @@ public class AddTaskActivity extends BaseActivity {
             new DeTask(taskno).execute();
             new DeEntryTask(taskno).execute();
         }
+        //有人确认过就不能修改
+        lists = new ArrayList<>();
+        for(HashMap<String,String> maps: ziList){
+            lists.add(maps.get("qr1"));
+            lists.add(maps.get("qr2"));
+            lists.add(maps.get("qr3"));
+            lists.add(maps.get("qr4"));
+            lists.add(maps.get("qr5"));
+        }
     }
 
     protected void setListeners() {
@@ -601,6 +605,10 @@ public class AddTaskActivity extends BaseActivity {
         tv_zuzhi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(lists.contains("True")){
+//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 new DepartsTask().execute();
             }
         });
@@ -608,6 +616,10 @@ public class AddTaskActivity extends BaseActivity {
         tv_quyu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(lists.contains("True")){
+//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 new AreaTask().execute();
             }
         });
@@ -615,6 +627,10 @@ public class AddTaskActivity extends BaseActivity {
         tv_respon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(lists.contains("True")){
+//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 final EditText et = new EditText(AddTaskActivity.this);
                 new AlertDialog.Builder(AddTaskActivity.this).setTitle("责任人").setView(et)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -630,6 +646,10 @@ public class AddTaskActivity extends BaseActivity {
         tv_contacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(lists.contains("True")){
+//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 final EditText et = new EditText(AddTaskActivity.this);
                 new AlertDialog.Builder(AddTaskActivity.this).setTitle("往来").setView(et)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -644,6 +664,10 @@ public class AddTaskActivity extends BaseActivity {
         tv_content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(lists.contains("True")){
+//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 final EditText et = new EditText(AddTaskActivity.this);
                 new AlertDialog.Builder(AddTaskActivity.this).setTitle("物料").setView(et)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -659,6 +683,10 @@ public class AddTaskActivity extends BaseActivity {
         tv_jl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(lists.contains("True")){
+//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 new JLTask().execute();
             }
         });

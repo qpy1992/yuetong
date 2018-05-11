@@ -10,12 +10,39 @@
     <include layout="@layout/toolbar"/>
 
     <TextView
+        android:id="@+id/tv_comp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="公司"
+        android:textColor="@color/bottom_button_text_black"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_part"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="部门"
+        android:textColor="@color/bottom_button_text_black"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_creator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="制单人"
+        android:textColor="@color/bottom_button_text_black"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
         android:id="@+id/tv_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="鸡蛋"
         android:textColor="@color/bottom_button_text_black"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:layout_marginLeft="10dp"/>
 
     <LinearLayout
@@ -58,6 +85,32 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginLeft="10dp">
+
+        <LinearLayout
+            android:id="@+id/ll_notes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/note"
+                android:gravity="center_vertical"
+                android:textColor="@color/bottom_button_text_black"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/tv_notes"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="right|center_vertical"
+                android:layout_marginRight="10dp"
+                android:singleLine="true"
+                android:textSize="20sp"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -125,7 +178,8 @@
                 android:layout_weight="2"
                 android:gravity="right|center_vertical"
                 android:layout_marginRight="5dp"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <LinearLayout
@@ -198,30 +252,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_notes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/note"
-                android:gravity="center_vertical"
-                android:textColor="@color/bottom_button_text_black"/>
-
-            <TextView
-                android:id="@+id/tv_notes"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
-                android:singleLine="true"/>
-        </LinearLayout>
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -282,14 +312,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/send"
-                android:textColor="@color/bottom_button_text_black"/>
+                android:textColor="@color/bottom_button_text_black"
+                android:textSize="20sp"/>
             <TextView
                 android:id="@+id/tv_send"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:layout_marginRight="10dp"
-                android:gravity="right"/>
+                android:gravity="right"
+                android:textSize="20sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -303,15 +335,17 @@
                 android:layout_weight="1"
                 android:text="@string/receive"
                 android:gravity="center_vertical"
-                android:textColor="@color/bottom_button_text_black"/>
+                android:textColor="@color/bottom_button_text_black"
+                android:textSize="20sp"/>
             <EditText
                 android:id="@+id/et_get"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:gravity="right"
                 android:background="@drawable/et_shape_1"
-                android:layout_marginRight="10dp"/>
+                android:layout_marginRight="10dp"
+                android:textSize="20sp"/>
         </LinearLayout>
 
         <LinearLayout

@@ -1,6 +1,7 @@
 package com.example.win7.ytdemo.activity;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +38,10 @@ import java.util.List;
 
 public class CheckActivity extends AppCompatActivity {
     Toolbar toolbar;
-    TextView tv_item,tv_num,tv_pri,tv_taxpri,tv_start,tv_end,tv_pro,tv_plans,tv_budget,tv_pbudget,tv_notes,tv_buhan,tv_sup,tv_supl,tv_send,tv_pf,tv_submit,tv_refuse;
+    TextView tv_comp,tv_part,tv_creator,
+            tv_item,tv_num,tv_pri,tv_taxpri,tv_start,tv_end,tv_pro,
+            tv_plans,tv_budget,tv_pbudget,tv_notes,tv_buhan,tv_sup,
+            tv_supl,tv_send,tv_pf,tv_submit,tv_refuse;
     EditText et_get;
     List<HashMap<String,String>> list1;
     HashMap<String,String> map;
@@ -72,6 +76,9 @@ public class CheckActivity extends AppCompatActivity {
     }
 
     protected void setViews(){
+        tv_comp = (TextView)findViewById(R.id.tv_comp);
+        tv_part = (TextView)findViewById(R.id.tv_part);
+        tv_creator = (TextView)findViewById(R.id.tv_creator);
         tv_item = (TextView)findViewById(R.id.tv_item);
         tv_num = (TextView)findViewById(R.id.tv_num);
         tv_pri = (TextView)findViewById(R.id.tv_pri);
@@ -79,6 +86,7 @@ public class CheckActivity extends AppCompatActivity {
         tv_start = (TextView)findViewById(R.id.tv_start);
         tv_end = (TextView)findViewById(R.id.tv_end);
         tv_pro = (TextView)findViewById(R.id.tv_pro);
+        tv_pro.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         tv_plans = (TextView)findViewById(R.id.tv_plans);
         tv_budget = (TextView)findViewById(R.id.tv_budget_check);
         tv_pbudget = (TextView)findViewById(R.id.tv_pbudget_check);
@@ -310,11 +318,12 @@ public class CheckActivity extends AppCompatActivity {
             SoapObject rpc = new SoapObject(nameSpace, methodName);
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
-            String sql = "select b.fname item,a.fdecimal shuliang,a.fdecimal1 danjia,a.famount2 hanshui,a.ftime qi,a.ftime1 zhi,c.fname progress," +
-                    "c.f_111 plans,d.fname budget,c.f_107 pbudget,a.fnote,a.famount3 buhan,e.fname fuzhu,a.fdecimal2 fuliang,a.ftext fasong,a.ftext1 huikui,f.fname pf" +
-                    " from t_BOS200000000Entry2 a left join t_icitem b on b.fitemid=a.fbase1 " +
+            String sql = "select t.fname comp,u.fname part,b.fname item,a.fdecimal shuliang,a.fdecimal1 danjia,a.famount2 hanshui,a.ftime qi,a.ftime1 zhi,c.fname progress," +
+                    "c.f_111 plans,d.fname budget,c.f_107 pbudget,a.fnote,a.famount3 buhan,e.fname fuzhu,a.fdecimal2 fuliang,a.ftext fasong,a.ftext1 huikui,f.fname pf,i.fname zhidan" +
+                    " from t_BOS200000000Entry2 a left join t_BOS200000000 s on s.fid=a.fid left join t_Item_3001 t on t.fitemid=s.fbase11 left join t_Department u on u.FItemID=s.FBase12 " +
+                    " left join t_icitem b on b.fitemid=a.fbase1 " +
                     "left join t_item_3007 c on c.fitemid=a.fbase left join t_item d on d.fitemid=c.f_105 " +
-                    "left join t_measureunit e on e.fmeasureunitid=b.fitemid left join t_item f on f.fitemid=a.fbase14 where a.id='"+id+"'";
+                    "left join t_measureunit e on e.fmeasureunitid=b.fitemid left join t_item f on f.fitemid=a.fbase14 left join t_emp i on i.fitemid=a.fbase15 where a.id='"+id+"'";
             Log.i("SQL查询语句",sql);
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_BOS200000000Entry2");
@@ -352,6 +361,8 @@ public class CheckActivity extends AppCompatActivity {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
+                    map.put("comp",recordEle.elementTextTrim("comp"));
+                    map.put("part",recordEle.elementTextTrim("part"));
                     map.put("item", recordEle.elementTextTrim("item"));
                     map.put("shuliang", recordEle.elementTextTrim("shuliang"));
                     map.put("danjia",recordEle.elementTextTrim("danjia"));
@@ -369,6 +380,7 @@ public class CheckActivity extends AppCompatActivity {
                     map.put("fasong",recordEle.elementTextTrim("fasong"));
                     map.put("huikui",recordEle.elementTextTrim("huikui"));
                     map.put("pf",recordEle.elementTextTrim("pf"));
+                    map.put("zhidan",recordEle.elementTextTrim("zhidan"));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -379,6 +391,8 @@ public class CheckActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            tv_comp.setText(map.get("comp"));
+            tv_part.setText(map.get("part"));
             tv_item.setText(map.get("item"));
             Log.i("数量",map.get("shuliang"));
             tv_num.setText(df.format(Double.parseDouble(map.get("shuliang"))));
@@ -396,6 +410,7 @@ public class CheckActivity extends AppCompatActivity {
             tv_supl.setText(df.format(Double.parseDouble(map.get("fuliang"))));
             tv_send.setText(map.get("fasong"));
             et_get.setText(map.get("huikui"));
+            tv_creator.setText(map.get("zhidan"));
             if(!map.get("pf").equals("*")) {
                 tv_pf.setText(map.get("pf"));
             }
