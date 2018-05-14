@@ -106,24 +106,14 @@ public class ZiAdapter extends BaseAdapter{
                     findViewById(R.id.ll_e);
             holder.tv_a = (TextView) view.
                     findViewById(R.id.tv_a);
-            holder.v_a = (View) view.
-                    findViewById(R.id.v_a);
             holder.tv_b = (TextView) view.
                     findViewById(R.id.tv_b);
-            holder.v_b = (View) view.
-                    findViewById(R.id.v_b);
             holder.tv_c = (TextView) view.
                     findViewById(R.id.tv_c);
-            holder.v_c = (View) view.
-                    findViewById(R.id.v_c);
             holder.tv_d = (TextView) view.
                     findViewById(R.id.tv_d);
-            holder.v_d = (View) view.
-                    findViewById(R.id.v_d);
             holder.tv_e = (TextView) view.
                     findViewById(R.id.tv_e);
-            holder.v_e = (View) view.
-                    findViewById(R.id.v_e);
             if(YApplication.fgroup.contains("仓储")){
                 holder.tv_danjia.setVisibility(View.INVISIBLE);
                 holder.tv_hanshui.setVisibility(View.INVISIBLE);
@@ -183,8 +173,8 @@ public class ZiAdapter extends BaseAdapter{
                 break;
             case 1:
                 holder.tv_a.setText(a);
-                if(item.get("qr1").equals("True")){
-                    holder.v_a.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                if(item.get("qr1").equals("True")) {
+                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.ll_b.setVisibility(View.INVISIBLE);
                 holder.ll_c.setVisibility(View.GONE);
@@ -194,11 +184,11 @@ public class ZiAdapter extends BaseAdapter{
             case 2:
                 holder.tv_a.setText(a);
                 if(item.get("qr1").equals("True")){
-                    holder.v_a.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_b.setText(b);
                 if(item.get("qr2").equals("True")){
-                    holder.v_b.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.ll_c.setVisibility(View.GONE);
                 holder.ll_d.setVisibility(View.GONE);
@@ -207,15 +197,15 @@ public class ZiAdapter extends BaseAdapter{
             case 3:
                 holder.tv_a.setText(a);
                 if(item.get("qr1").equals("True")){
-                    holder.v_a.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_b.setText(b);
                 if(item.get("qr2").equals("True")){
-                    holder.v_b.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_c.setText(c);
                 if(item.get("qr3").equals("True")){
-                    holder.v_c.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_c.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.ll_d.setVisibility(View.INVISIBLE);
                 holder.ll_e.setVisibility(View.GONE);
@@ -223,42 +213,42 @@ public class ZiAdapter extends BaseAdapter{
             case 4:
                 holder.tv_a.setText(a);
                 if(item.get("qr1").equals("True")){
-                    holder.v_a.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_b.setText(b);
                 if(item.get("qr2").equals("True")){
-                    holder.v_b.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_c.setText(c);
                 if(item.get("qr3").equals("True")){
-                    holder.v_c.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_c.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_d.setText(d);
                 if(item.get("qr4").equals("True")){
-                    holder.v_d.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_d.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.ll_e.setVisibility(View.GONE);
                 break;
             case 5:
                 holder.tv_a.setText(a);
                 if(item.get("qr1").equals("True")){
-                    holder.v_a.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_b.setText(b);
                 if(item.get("qr2").equals("True")){
-                    holder.v_b.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_c.setText(c);
                 if(item.get("qr3").equals("True")){
-                    holder.v_c.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_c.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_d.setText(d);
                 if(item.get("qr4").equals("True")){
-                    holder.v_d.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_d.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_e.setText(e);
                 if(item.get("qr5").equals("True")){
-                    holder.v_e.setBackgroundColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+                    holder.tv_e.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 break;
         }
@@ -328,6 +318,5 @@ public class ZiAdapter extends BaseAdapter{
                 tv_buhan,tv_fuzhu,tv_fuliang,tv_fasong,
                 tv_huikui,tv_pingfen,tv_qi,tv_zhi,
                 tv_a,tv_b,tv_c,tv_d,tv_e;
-        View v_a,v_b,v_c,v_d,v_e;
     }
 }

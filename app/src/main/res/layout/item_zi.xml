@@ -354,13 +354,9 @@
                     android:id="@+id/tv_a"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"/>
-
-                <View
-                    android:id="@+id/v_a"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="5"
+                    android:gravity="right"
+                    android:layout_marginRight="10dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -380,13 +376,9 @@
                     android:id="@+id/tv_b"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"/>
-
-                <View
-                    android:id="@+id/v_b"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="5"
+                    android:gravity="right"
+                    android:layout_marginRight="10dp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -411,13 +403,9 @@
                     android:id="@+id/tv_c"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"/>
-
-                <View
-                    android:id="@+id/v_c"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="5"
+                    android:gravity="right"
+                    android:layout_marginRight="10dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -437,13 +425,9 @@
                     android:id="@+id/tv_d"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"/>
-
-                <View
-                    android:id="@+id/v_d"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="5"
+                    android:gravity="right"
+                    android:layout_marginRight="10dp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -463,13 +447,9 @@
                 android:id="@+id/tv_e"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"/>
-
-            <View
-                android:id="@+id/v_e"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="5"
+                android:gravity="right"
+                android:layout_marginRight="10dp"/>
 
             <View
                 android:layout_width="0dp"

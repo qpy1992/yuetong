@@ -267,6 +267,7 @@ public class AddTaskActivity extends BaseActivity {
             et_hanshui.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
+
                     if (b) {
                         Log.i(TAG, "含税金额框获得了焦点");
                         et_hanshui.addTextChangedListener(hanshui);
@@ -588,15 +589,6 @@ public class AddTaskActivity extends BaseActivity {
             toolbar.setTitle("编辑任务");
             new DeTask(taskno).execute();
             new DeEntryTask(taskno).execute();
-        }
-        //有人确认过就不能修改
-        lists = new ArrayList<>();
-        for(HashMap<String,String> maps: ziList){
-            lists.add(maps.get("qr1"));
-            lists.add(maps.get("qr2"));
-            lists.add(maps.get("qr3"));
-            lists.add(maps.get("qr4"));
-            lists.add(maps.get("qr5"));
         }
     }
 
@@ -2240,6 +2232,16 @@ public class AddTaskActivity extends BaseActivity {
             if (list.size() == 0) {
                 return "0";
             } else {
+                //有人确认过就不能修改
+                lists = new ArrayList<>();
+                int size = lists.size();
+                for(HashMap<String,String> maps: ziList){
+                    lists.add(maps.get("qr1"));
+                    lists.add(maps.get("qr2"));
+                    lists.add(maps.get("qr3"));
+                    lists.add(maps.get("qr4"));
+                    lists.add(maps.get("qr5"));
+                }
                 return "1";
             }
         }

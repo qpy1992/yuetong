@@ -124,6 +124,10 @@ public class CheckActivity extends AppCompatActivity {
         tv_refuse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(et_get.getText().toString().equals("")){
+                    Toast.makeText(CheckActivity.this,"请填写回馈消息",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 new CheckTask(et_get.getText().toString(),pfid,"0",goodsid).execute();
             }
         });
