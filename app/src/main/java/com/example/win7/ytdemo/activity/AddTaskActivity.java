@@ -565,6 +565,7 @@ public class AddTaskActivity extends BaseActivity {
         strList2 = new ArrayList<>();
         strList3 = new ArrayList<>();
         strList4 = new ArrayList<>();
+        lists = new ArrayList<>();
         tasks = new Tasks();//任务主表对象
         tv_bibie = (TextView) findViewById(R.id.tv_bibie);//币别
         tv_huilv = (TextView) findViewById(R.id.tv_huilv);//汇率
@@ -2242,7 +2243,6 @@ public class AddTaskActivity extends BaseActivity {
                 return "0";
             } else {
                 //有人确认过就不能修改
-                lists = new ArrayList<>();
                 int size = lists.size();
                 for(HashMap<String,String> maps: ziList){
                     lists.add(maps.get("qr1"));
