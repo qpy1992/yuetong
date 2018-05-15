@@ -1,6 +1,7 @@
 package com.example.win7.ytdemo.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +20,11 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (YApplication.flag == -1) {//flag为-1说明程序被杀掉
+            protectApp();
+        }
         YApplication.mBaseActivityList.add(this);
-        /**
-         *  所有的Activity都依附于一个Application，在Activity中只要通过 getApplication（）方法，就能拿到当前应用中的Application对象
-         *
-         */
+
         mApplication = (YApplication) getApplication();
         mApplication.addActivity(this);
 
@@ -39,6 +40,14 @@ public class BaseActivity extends AppCompatActivity {
 
     public void hideDialog() {
         mProgressDialog.hide();
+    }
+
+    protected void protectApp() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//清空栈里MainActivity之上的所有activty
+        startActivity(intent);
+        finish();
+        YApplication.flag = 0;
     }
 
     @Override

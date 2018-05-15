@@ -52,14 +52,19 @@ public class YApplication extends Application {
     public static ArrayList<BaseActivity> mBaseActivityList = new ArrayList<BaseActivity>();
     public static String                  fname             = "";
     public static String                  fgroup            = "";
+    public static int                     flag              = -1;//判断是否被回收
     private SoundPool mSoundPool;
     private int       mDuanSound;
     private int       mYuluSound;
     private int markExamine = 10;
+    SharedPreferences sp;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        sp = getSharedPreferences("token", MODE_PRIVATE);
+        String fname = sp.getString("fname", "");
+        YApplication.fname = fname;
         initHuanxin();
         initSoundPool();
     }
@@ -204,7 +209,7 @@ public class YApplication extends Application {
     public static void exit() {
         try {
             for (Activity activity : mBaseActivityList) {
-                SharedPreferences sp = activity.getSharedPreferences("token",MODE_PRIVATE);
+                SharedPreferences sp = activity.getSharedPreferences("token", MODE_PRIVATE);
                 SharedPreferences.Editor ed = sp.edit();
                 ed.remove("fgroup");
                 ed.remove("status");

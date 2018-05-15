@@ -1,12 +1,14 @@
 package com.example.win7.ytdemo.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,9 +25,10 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
-import com.example.win7.ytdemo.activity.BasicDataActivity;
 import com.example.win7.ytdemo.activity.DakaActivity;
 import com.example.win7.ytdemo.activity.DetailActivity;
 import com.example.win7.ytdemo.activity.JiankongActivity;
@@ -35,6 +38,7 @@ import com.example.win7.ytdemo.activity.TongjiActivity;
 import com.example.win7.ytdemo.adapter.GridViewAdapter;
 import com.example.win7.ytdemo.entity.MainMenuEntity;
 import com.example.win7.ytdemo.util.Consts;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -42,23 +46,24 @@ import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class MeFragment extends Fragment {
-    Context mContext;
-    View view;
-    Toolbar toolbar;
-    TextView tv_user,tv_depart,tv_company,tv_detail,tv_lately,tv_zhidu;
-    LinearLayout ll_user,ll_depart,ll_company,ll_detail,ll_lately,ll_zhidu;
+    Context  mContext;
+    View     view;
+    Toolbar  toolbar;
+    TextView tv_user, tv_depart, tv_company, tv_detail, tv_lately, tv_zhidu;
+    LinearLayout ll_user, ll_depart, ll_company, ll_detail, ll_lately, ll_zhidu;
     Intent intent;
-    String username,depart,company,detail,lately,zhidu="";
-    GridView gv_me;
+    String username, depart, company, detail, lately, zhidu = "";
+    GridView        gv_me;
     GridViewAdapter adapter;
-    private int[] resArr = new int[]{R.drawable.daka, R.drawable.jiankong,R.drawable.tongji,R.drawable.ic_action_tick,R.drawable.ic_action_barcode_2};
-    private String[] textArr = new String[]{"打卡", "实时监控","统计表","待审核","收款码"};
-    private List<MainMenuEntity> list = new ArrayList<MainMenuEntity>();
+    private int[]                resArr  = new int[]{R.drawable.daka, R.drawable.jiankong, R.drawable.tongji, R.drawable.ic_action_tick, R.drawable.ic_action_barcode_2};
+    private String[]             textArr = new String[]{"打卡", "实时监控", "统计表", "待审核", "收款码"};
+    private List<MainMenuEntity> list    = new ArrayList<MainMenuEntity>();
     MainMenuEntity data;
 
     @Override
@@ -84,18 +89,18 @@ public class MeFragment extends Fragment {
         return view;
     }
 
-    protected void setTool(){
+    protected void setTool() {
         toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
         toolbar.setTitle(getResources().getString(R.string.me));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener(){
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.action_settings:
                         startActivity(new Intent(mContext, SettingsActivity.class));
                         break;
@@ -108,114 +113,120 @@ public class MeFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu,menu);
+        inflater.inflate(R.menu.menu, menu);
     }
 
     protected void setViews() {
-        gv_me = (GridView)view.findViewById(R.id.gv_me);
+        gv_me = (GridView) view.findViewById(R.id.gv_me);
         tv_user = (TextView) view.findViewById(R.id.tv_user);
         tv_depart = (TextView) view.findViewById(R.id.tv_depart);
         tv_company = (TextView) view.findViewById(R.id.tv_company);
         tv_lately = (TextView) view.findViewById(R.id.tv_lately);
         tv_detail = (TextView) view.findViewById(R.id.tv_detail);
         tv_zhidu = (TextView) view.findViewById(R.id.tv_zhidu);
-        ll_user = (LinearLayout)view.findViewById(R.id.ll_user);
-        ll_depart = (LinearLayout)view.findViewById(R.id.ll_depart);
-        ll_company = (LinearLayout)view.findViewById(R.id.ll_company);
-        ll_lately = (LinearLayout)view.findViewById(R.id.ll_lately);
-        ll_detail = (LinearLayout)view.findViewById(R.id.ll_companydetail);
-        ll_zhidu = (LinearLayout)view.findViewById(R.id.ll_zhidu);
-        adapter = new GridViewAdapter(mContext,list);
+        ll_user = (LinearLayout) view.findViewById(R.id.ll_user);
+        ll_depart = (LinearLayout) view.findViewById(R.id.ll_depart);
+        ll_company = (LinearLayout) view.findViewById(R.id.ll_company);
+        ll_lately = (LinearLayout) view.findViewById(R.id.ll_lately);
+        ll_detail = (LinearLayout) view.findViewById(R.id.ll_companydetail);
+        ll_zhidu = (LinearLayout) view.findViewById(R.id.ll_zhidu);
+        adapter = new GridViewAdapter(mContext, list);
         gv_me.setAdapter(adapter);
         intent = new Intent(mContext, DetailActivity.class);
         new MTask().execute();
     }
 
-    protected void setListeners(){
+    protected void setListeners() {
         ll_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                intent.putExtra("title","用户");
-//                intent.putExtra("content",username);
-//                startActivity(intent);
+                //                intent.putExtra("title","用户");
+                //                intent.putExtra("content",username);
+                //                startActivity(intent);
                 TextView tv = new TextView(mContext);
                 tv.setText(username);
                 tv.setTextSize(16);
-                tv.setPadding(60,20,40,10);
+                tv.setPadding(60, 20, 40, 10);
                 new AlertDialog.Builder(mContext).setTitle("用户").setView(tv).show();
             }
         });
         ll_depart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                intent.putExtra("title","部门");
-//                intent.putExtra("content",depart);
-//                startActivity(intent);
+                //                intent.putExtra("title","部门");
+                //                intent.putExtra("content",depart);
+                //                startActivity(intent);
                 TextView tv = new TextView(mContext);
                 tv.setText(depart);
                 tv.setTextSize(16);
-                tv.setPadding(60,20,40,10);
+                tv.setPadding(60, 20, 40, 10);
                 new AlertDialog.Builder(mContext).setTitle("部门").setView(tv).show();
             }
         });
         ll_company.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                intent.putExtra("title","公司");
-//                intent.putExtra("content",company);
-//                startActivity(intent);
+                //                intent.putExtra("title","公司");
+                //                intent.putExtra("content",company);
+                //                startActivity(intent);
                 TextView tv = new TextView(mContext);
                 tv.setText(company);
                 tv.setTextSize(16);
-                tv.setPadding(60,20,40,10);
+                tv.setPadding(60, 20, 40, 10);
                 new AlertDialog.Builder(mContext).setTitle("公司").setView(tv).show();
             }
         });
         ll_detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                intent.putExtra("title","公司简介");
-//                intent.putExtra("content",detail);
-//                startActivity(intent);
+                //                intent.putExtra("title","公司简介");
+                //                intent.putExtra("content",detail);
+                //                startActivity(intent);
                 TextView tv = new TextView(mContext);
                 tv.setText(detail);
                 tv.setTextSize(16);
-                tv.setPadding(60,20,40,10);
+                tv.setPadding(60, 20, 40, 10);
                 new AlertDialog.Builder(mContext).setTitle("公司简介").setView(tv).show();
             }
         });
         ll_lately.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                intent.putExtra("title","最近发布");
-//                intent.putExtra("content",lately);
-//                startActivity(intent);
+                //                intent.putExtra("title","最近发布");
+                //                intent.putExtra("content",lately);
+                //                startActivity(intent);
                 TextView tv = new TextView(mContext);
                 tv.setText(lately);
                 tv.setTextSize(16);
-                tv.setPadding(60,20,40,10);
+                tv.setPadding(60, 20, 40, 10);
                 new AlertDialog.Builder(mContext).setTitle("最近发布").setView(tv).show();
             }
         });
         ll_zhidu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                intent.putExtra("title","制度");
-//                intent.putExtra("content",zhidu);
-//                startActivity(intent);
+                //                intent.putExtra("title","制度");
+                //                intent.putExtra("content",zhidu);
+                //                startActivity(intent);
                 TextView tv = new TextView(mContext);
                 tv.setText(zhidu);
                 tv.setTextSize(16);
-                tv.setPadding(60,20,40,10);
+                tv.setPadding(60, 20, 40, 10);
                 new AlertDialog.Builder(mContext).setTitle("制度").setView(tv).show();
             }
         });
         gv_me.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
+                switch (i) {
                     case 0:
-                        startActivity(new Intent(mContext, DakaActivity.class));
+                        //判断是否为android6.0系统版本，如果是，需要动态添加权限
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            //动态申请定位权限
+                            showContacts();
+                        } else {
+                            startActivity(new Intent(mContext, DakaActivity.class));
+                        }
                         break;
                     case 1:
                         startActivity(new Intent(mContext, JiankongActivity.class));
@@ -236,7 +247,33 @@ public class MeFragment extends Fragment {
         });
     }
 
-    class MTask extends AsyncTask<Void,String,String>{
+    public void showContacts() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getContext(), "没有权限,请手动开启定位权限", Toast.LENGTH_SHORT).show();
+            // 申请一个（或多个）权限，并提供用于回调返回的获取码（用户定义）
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, BAIDU_READ_PHONE_STATE);
+        } else {
+            startActivity(new Intent(mContext, DakaActivity.class));
+        }
+    }
+
+    private static final int BAIDU_READ_PHONE_STATE = 100;
+
+    //Android6.0申请权限的回调方法
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            // requestCode即所声明的权限获取码，在checkSelfPermission时传入
+            case BAIDU_READ_PHONE_STATE:
+                startActivity(new Intent(mContext, DakaActivity.class));
+                break;
+            default:
+                break;
+        }
+    }
+
+    class MTask extends AsyncTask<Void, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -257,7 +294,7 @@ public class MeFragment extends Fragment {
             SoapObject rpc = new SoapObject(nameSpace, methodName);
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
-            rpc.addProperty("FSql", "select a.fname username,b.fname depart,c.FName company,c.F_101 detail,c.f_102 lately,e.f_102 zhidu from t_User d inner join  t_Emp a on d.FEmpID=a.fitemid left join t_Department b on a.FDepartmentID=b.FItemID left join t_Item_3001 c on c.FItemID=b.f_102 left join t_Item_3006 e on e.F_101=b.FItemID where d.FName='"+YApplication.fname+"'");
+            rpc.addProperty("FSql", "select a.fname username,b.fname depart,c.FName company,c.F_101 detail,c.f_102 lately,e.f_102 zhidu from t_User d inner join  t_Emp a on d.FEmpID=a.fitemid left join t_Department b on a.FDepartmentID=b.FItemID left join t_Item_3001 c on c.FItemID=b.f_102 left join t_Item_3006 e on e.F_101=b.FItemID where d.FName='" + YApplication.fname + "'");
             rpc.addProperty("FTable", "t_user");
 
             // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
@@ -283,7 +320,7 @@ public class MeFragment extends Fragment {
 
             // 获取返回的结果
             if (null != object) {
-                Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+                Log.i("返回结果", object.getProperty(0).toString() + "=========================");
                 String result = object.getProperty(0).toString();
                 Document doc = null;
 
@@ -310,8 +347,8 @@ public class MeFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return username+";"+depart+";"+company+";"+detail+";"+lately+";"+zhidu+";QAQ";
-            }else {
+                return username + ";" + depart + ";" + company + ";" + detail + ";" + lately + ";" + zhidu + ";QAQ";
+            } else {
                 return "";
             }
         }
@@ -319,7 +356,7 @@ public class MeFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(!s.equals("")){
+            if (!s.equals("")) {
                 String[] str = s.split(";");
                 tv_user.setText(str[0]);
                 tv_depart.setText(str[1]);

@@ -1,5 +1,6 @@
 package com.example.win7.ytdemo.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -172,5 +173,12 @@ public class MainActivity extends BaseActivity {
             finish();
             YApplication.exit();
         }
+    }
+
+    @Override
+    protected void protectApp() {
+        super.protectApp();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 }
