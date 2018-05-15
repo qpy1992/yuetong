@@ -24,10 +24,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/shuliang"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/shuliang"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
 
                 <EditText
                     android:id="@+id/et_shuliang"
@@ -35,20 +35,20 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
                     android:layout_weight="2"
-                    android:textSize="16sp"
                     android:background="@drawable/et_shape_1"
-                    android:inputType="numberSigned|numberDecimal"
                     android:gravity="right|center_vertical"
-                    android:singleLine="true"/>
+                    android:inputType="numberSigned|numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/danjia"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/danjia"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
 
                 <EditText
                     android:id="@+id/et_danjia"
@@ -56,11 +56,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
                     android:layout_weight="2"
-                    android:textSize="16sp"
                     android:background="@drawable/et_shape_1"
-                    android:inputType="number|numberDecimal"
                     android:gravity="right|center_vertical"
-                    android:singleLine="true"/>
+                    android:inputType="number|numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -72,21 +72,22 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/jinehs"
-                    android:textSize="16sp"
                     android:gravity="center_vertical"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/jinehs"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
+
                 <EditText
                     android:id="@+id/et_hanshui"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
                     android:layout_marginRight="10dp"
-                    android:textSize="16sp"
-                    android:gravity="right|center_vertical"
-                    android:singleLine="true"
+                    android:layout_weight="2"
                     android:background="@drawable/et_shape_1"
-                    android:inputType="number|numberDecimal"/>
+                    android:gravity="right|center_vertical"
+                    android:inputType="number|numberDecimal"
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -98,21 +99,21 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/note"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/note"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
 
                 <EditText
                     android:id="@+id/et_note"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:gravity="right|center_vertical"
                     android:layout_marginRight="10dp"
-                    android:textSize="16sp"
+                    android:layout_weight="4"
+                    android:background="@drawable/et_shape_1"
+                    android:gravity="right|center_vertical"
                     android:singleLine="true"
-                    android:background="@drawable/et_shape_1"/>
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -124,10 +125,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/qi"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/qi"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/tv_qi_add"
@@ -135,10 +136,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
                     android:layout_weight="3"
-                    android:textSize="16sp"
-                    android:hint="@string/select"
                     android:gravity="right|center_vertical"
-                    android:singleLine="true"/>
+                    android:hint="@string/select"
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -150,10 +151,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/zhi"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/zhi"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/tv_zhi_add"
@@ -161,10 +162,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
                     android:layout_weight="3"
-                    android:textSize="16sp"
-                    android:hint="@string/select"
                     android:gravity="right|center_vertical"
-                    android:singleLine="true"/>
+                    android:hint="@string/select"
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -176,21 +177,21 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/progress"
                     android:gravity="center_vertical"
-                    android:textSize="14sp"
-                    android:textColor="@color/bottom_button_text_black" />
+                    android:text="@string/progress"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="14sp"/>
 
                 <TextView
                     android:id="@+id/tv_progress_add"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="2"
                     android:gravity="right|center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:textSize="16sp"
                     android:hint="@string/select"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -202,20 +203,20 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/plan"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black" />
+                    android:text="@string/plan"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/tv_plan_add"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="3"
                     android:gravity="right|center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:textSize="16sp"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -227,20 +228,20 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/budget"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/budget"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/tv_budget_add"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="3"
                     android:gravity="right|center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:textSize="16sp"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -252,20 +253,20 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/pbudget"
                     android:gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/pbudget"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/tv_pbudget_add"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="2"
                     android:gravity="right|center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:textSize="16sp"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -278,18 +279,19 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/rmb"
-                    android:textSize="16sp"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
+
                 <EditText
                     android:id="@+id/et_buhan"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_marginRight="10dp"
-                    android:gravity="right"
-                    android:textSize="16sp"
+                    android:layout_weight="1"
                     android:background="@null"
-                    android:inputType="number|numberDecimal"/>
+                    android:gravity="right"
+                    android:inputType="number|numberDecimal"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -301,37 +303,39 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/sup"
-                    android:textSize="16sp"
                     android:gravity="center_vertical"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/sup"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
+
                 <TextView
                     android:id="@+id/tv_fuzhu_add"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:textSize="16sp"
                     android:layout_marginRight="10dp"
-                    android:gravity="right|center_vertical"/>
+                    android:layout_weight="2"
+                    android:gravity="right|center_vertical"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/supl"
-                    android:textSize="16sp"
                     android:gravity="center_vertical"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/supl"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="16sp"/>
+
                 <EditText
                     android:id="@+id/et_fuliang"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:textSize="16sp"
                     android:layout_marginRight="10dp"
+                    android:layout_weight="2"
                     android:background="@null"
                     android:gravity="right|center_vertical"
-                    android:inputType="number|numberDecimal"/>
+                    android:inputType="number|numberDecimal"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -342,19 +346,20 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/send"
                     android:gravity="center_vertical"
+                    android:text="@string/send"
                     android:textColor="@color/bottom_button_text_black"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"/>
+
                 <EditText
                     android:id="@+id/et_fasong"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:textSize="15sp"
                     android:layout_marginRight="10dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/et_shape_1"
                     android:gravity="right|center_vertical"
-                    android:background="@drawable/et_shape_1"/>
+                    android:textSize="15sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -365,25 +370,33 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/zhiding"
-                    android:textSize="15sp"
                     android:gravity="center_vertical"
-                    android:textColor="@color/bottom_button_text_black"/>
+                    android:text="@string/zhiding"
+                    android:textColor="@color/bottom_button_text_black"
+                    android:textSize="15sp"/>
+
                 <TextView
                     android:id="@+id/tv_check"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:gravity="right|center_vertical"
-                    android:textSize="15sp"
-                    android:hint="@string/select"
                     android:layout_marginRight="10dp"
-                    android:background="@null"/>
+                    android:layout_weight="4"
+                    android:background="@null"
+                    android:gravity="right|center_vertical"
+                    android:hint="@string/select"
+                    android:textSize="15sp"/>
             </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recview_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center">
 
                 <!--<TextView
@@ -408,12 +421,12 @@
                     android:id="@+id/tv_submit"
                     android:layout_width="160dp"
                     android:layout_height="match_parent"
-                    android:text="@string/submit"
-                    android:gravity="center"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
                     android:layout_marginRight="5dp"
-                    android:background="@drawable/tv_submit"/>
+                    android:background="@drawable/tv_submit"
+                    android:gravity="center"
+                    android:text="@string/submit"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

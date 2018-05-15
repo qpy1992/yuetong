@@ -1,9 +1,20 @@
 package com.example.win7.ytdemo.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,7 +30,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -29,6 +39,7 @@ import android.widget.Toast;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
+import com.example.win7.ytdemo.adapter.MyRecAdapter;
 import com.example.win7.ytdemo.adapter.ZiAdapter;
 import com.example.win7.ytdemo.entity.TaskEntry;
 import com.example.win7.ytdemo.entity.Tasks;
@@ -40,8 +51,10 @@ import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.util.Utils;
 import com.example.win7.ytdemo.view.CustomDatePicker;
 import com.example.win7.ytdemo.view.CustomProgress;
+import com.example.win7.ytdemo.view.MyListView;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
+import com.nanchen.compresshelper.CompressHelper;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -51,26 +64,25 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class AddTaskActivity extends BaseActivity {
     Toolbar  toolbar;
     TextView tv_huilv, tv_zuzhi, tv_quyu, tv_content, tv_respon, tv_zhidan, tv_contacts, tv_bibie, tv_jl, tv_total, tv_amounts;
-    ListView                      lv_zb;
+    MyListView                    lv_zb;
     List<HashMap<String, String>> list, list1, ziList;
     List<HashMap<String, Object>> list2 = new ArrayList<>();
-    List<String> strList, strList1, strList2,strList3,strList4,lists;
+    List<String> strList, strList1, strList2, strList3, strList4, lists;
     DecimalFormat df  = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
     String interid, taskno, respon, zhidan, contacts, content, contentid, planid, sup, jiliang, jiliangid, pfid, zuzhi, quyu, zhidu1, zhidu2, username, depart, company;
@@ -83,8 +95,11 @@ public class AddTaskActivity extends BaseActivity {
     CustomProgress progress;
     private String TAG = "AddTaskActivity";
     Double taxrate, seccoefficient;
-    Double total = 0d;
+    Double total  = 0d;
     Double amount = 0d;
+    private GridLayoutManager mLayoutManager;
+    private List<Bitmap> mBitmapList = new ArrayList<Bitmap>();//给recyclerview添加的bitmap集合
+    private MyRecAdapter mMyAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +163,19 @@ public class AddTaskActivity extends BaseActivity {
                 pfid = map.get("pfid");
             }
             final View v = getLayoutInflater().inflate(R.layout.item_zi_add, null);
+            RecyclerView recview_add = v.findViewById(R.id.recview_add);
+            //添加初始展示的图片
+            Resources res = getResources();
+            Bitmap mBm = BitmapFactory.decodeResource(res, R.drawable.add_picture);
+            mBitmapList.add(mBm);
+            mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
+            mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList);
+            // 设置布局管理器
+            recview_add.setLayoutManager(mLayoutManager);
+            // 设置adapter
+            recview_add.setAdapter(mMyAdapter);
+
+
             final TextView tv_fuzhu = (TextView) v.findViewById(R.id.tv_fuzhu_add);
             tv_fuzhu.setText(sup);
             final EditText et_shuliang = (EditText) v.findViewById(R.id.et_shuliang);
@@ -161,9 +189,13 @@ public class AddTaskActivity extends BaseActivity {
             final EditText et_fasong = (EditText) v.findViewById(R.id.et_fasong);
             final TextWatcher shuliang = new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
                 @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
                 @Override
                 public void afterTextChanged(Editable editable) {
                     if (!editable.toString().equals("-")) {
@@ -354,23 +386,23 @@ public class AddTaskActivity extends BaseActivity {
                 et_buhan.setText(map.get("buhan"));
                 et_fuliang.setText(map.get("fuliang"));
                 et_fasong.setText(map.get("fasong"));
-                switch (strList2.size()){
+                switch (strList2.size()) {
                     case 0:
                         break;
                     case 1:
                         tv_check.setText(map.get("a"));
                         break;
                     case 2:
-                        tv_check.setText(map.get("a")+","+map.get("b"));
+                        tv_check.setText(map.get("a") + "," + map.get("b"));
                         break;
                     case 3:
-                        tv_check.setText(map.get("a")+","+map.get("b")+","+map.get("c"));
+                        tv_check.setText(map.get("a") + "," + map.get("b") + "," + map.get("c"));
                         break;
                     case 4:
-                        tv_check.setText(map.get("a")+","+map.get("b")+","+map.get("c")+","+map.get("d"));
+                        tv_check.setText(map.get("a") + "," + map.get("b") + "," + map.get("c") + "," + map.get("d"));
                         break;
                     case 5:
-                        tv_check.setText(map.get("a")+","+map.get("b")+","+map.get("c")+","+map.get("d")+","+map.get("e"));
+                        tv_check.setText(map.get("a") + "," + map.get("b") + "," + map.get("c") + "," + map.get("d") + "," + map.get("e"));
                         break;
                 }
             }
@@ -510,18 +542,18 @@ public class AddTaskActivity extends BaseActivity {
                             map.put("eid", strList2.get(4));
                             break;
                     }
-                        map.put("qr1", "0");
-                        map.put("qr2", "0");
-                        map.put("qr3", "0");
-                        map.put("qr4", "0");
-                        map.put("qr5", "0");
+                    map.put("qr1", "0");
+                    map.put("qr2", "0");
+                    map.put("qr3", "0");
+                    map.put("qr4", "0");
+                    map.put("qr5", "0");
                     if (map.get("id") == null) {
                         map.put("id", Utils.UUID());
                     }
 
                     ziList.add(map);
-                    total = total+Double.parseDouble(map.get("shuliang"));
-                    amount = amount+Double.parseDouble(map.get("hanshui"));
+                    total = total + Double.parseDouble(map.get("shuliang"));
+                    amount = amount + Double.parseDouble(map.get("hanshui"));
                     tv_total.setText(String.valueOf(total));
                     tv_amounts.setText(String.valueOf(amount));
                     adapter.notifyDataSetChanged();
@@ -529,6 +561,48 @@ public class AddTaskActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    private static final int IMAGE = 1;//调用系统相册-选择图片
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //相册返回，获取图片路径
+        if (requestCode == IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumns = {MediaStore.Images.Media.DATA};
+            Cursor c = getContentResolver().query(selectedImage, filePathColumns, null, null, null);
+            c.moveToFirst();
+            int columnIndex = c.getColumnIndex(filePathColumns[0]);
+            String imagePath = c.getString(columnIndex);
+            showImage(imagePath);
+            c.close();
+        }
+    }
+
+    //加载图片
+    private void showImage(String imgPath) {
+        //压缩图片
+        File file = new File(imgPath);
+        File newFile = new CompressHelper.Builder(this)
+                .setMaxWidth(720)  // 默认最大宽度为720
+                .setMaxHeight(960) // 默认最大高度为960
+                .setQuality(100)    // 默认压缩质量为80
+                .setFileName("sendPic") // 设置你需要修改的文件名
+                .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
+                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                .build()
+                .compressToFile(file);
+        Bitmap bm = BitmapFactory.decodeFile(newFile.getPath());
+
+        //        mImgPath = imgPath;
+        //添加到bitmap集合中
+        mBitmapList.add(bm);
+        mMyAdapter.notifyDataSetChanged();
+        //上传图片
+        //        sendPic(NetConfig.UPLOAD_BASE64, bm, mBitmapList.size() - 1);
     }
 
     @Override
@@ -576,12 +650,12 @@ public class AddTaskActivity extends BaseActivity {
         tv_respon = (TextView) findViewById(R.id.tv_respon_add);//责任人
         tv_zhidan = (TextView) findViewById(R.id.tv_zhidan_add);//制单人
         tv_contacts = (TextView) findViewById(R.id.tv_contacts_add);//往来
-        tv_total = (TextView)findViewById(R.id.tv_total);
-        tv_amounts = (TextView)findViewById(R.id.tv_amounts);
-        if(YApplication.fgroup.contains("仓储")){
+        tv_total = (TextView) findViewById(R.id.tv_total);
+        tv_amounts = (TextView) findViewById(R.id.tv_amounts);
+        if (YApplication.fgroup.contains("仓储")) {
             tv_amounts.setVisibility(View.INVISIBLE);
         }
-        lv_zb = (ListView) findViewById(R.id.lv_zb);//子表
+        lv_zb = findViewById(R.id.lv_zb);//子表
         btn_submit = (Button) findViewById(R.id.btn_submit_add);//提交按钮
         interid = getIntent().getStringExtra("interid");//单据内码
         taskno = getIntent().getStringExtra("taskno");//任务单单号
@@ -607,8 +681,8 @@ public class AddTaskActivity extends BaseActivity {
         tv_zuzhi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lists.contains("True")){
-//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                if (lists.contains("True")) {
+                    //                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 new DepartsTask().execute();
@@ -618,8 +692,8 @@ public class AddTaskActivity extends BaseActivity {
         tv_quyu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lists.contains("True")){
-//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                if (lists.contains("True")) {
+                    //                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 new AreaTask().execute();
@@ -629,8 +703,8 @@ public class AddTaskActivity extends BaseActivity {
         tv_respon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lists.contains("True")){
-//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                if (lists.contains("True")) {
+                    //                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 final EditText et = new EditText(AddTaskActivity.this);
@@ -648,8 +722,8 @@ public class AddTaskActivity extends BaseActivity {
         tv_contacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lists.contains("True")){
-//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                if (lists.contains("True")) {
+                    //                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 final EditText et = new EditText(AddTaskActivity.this);
@@ -666,8 +740,8 @@ public class AddTaskActivity extends BaseActivity {
         tv_content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lists.contains("True")){
-//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                if (lists.contains("True")) {
+                    //                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 final EditText et = new EditText(AddTaskActivity.this);
@@ -685,8 +759,8 @@ public class AddTaskActivity extends BaseActivity {
         tv_jl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lists.contains("True")){
-//                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                if (lists.contains("True")) {
+                    //                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 new JLTask().execute();
@@ -715,10 +789,10 @@ public class AddTaskActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HashMap<String, String> map = ziList.get(i);
-                if(map.get("qr1").equals("True")||map.get("qr2").equals("True")||
-                        map.get("qr3").equals("True")||map.get("qr4").equals("True")||
-                        map.get("qr5").equals("True")){
-                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
+                if (map.get("qr1").equals("True") || map.get("qr2").equals("True") ||
+                        map.get("qr3").equals("True") || map.get("qr4").equals("True") ||
+                        map.get("qr5").equals("True")) {
+                    Toast.makeText(AddTaskActivity.this, "已确认，无法修改", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 jiliang = map.get("jiliang");
@@ -1588,8 +1662,8 @@ public class AddTaskActivity extends BaseActivity {
                         case 0:
                             respon = list1.get(i).get("itemid");
                             tv_respon.setText(strList1.get(i));
-//                            zhidan = list1.get(i).get("itemid");
-//                            tv_zhidan.setText(strList1.get(i));
+                            //                            zhidan = list1.get(i).get("itemid");
+                            //                            tv_zhidan.setText(strList1.get(i));
                             break;
                         case 1:
                             //选择往来
@@ -1717,7 +1791,7 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPreExecute() {
             list1.clear();
             strList1.clear();
-            progress = CustomProgress.show(AddTaskActivity.this,"加载中...",true,null);
+            progress = CustomProgress.show(AddTaskActivity.this, "加载中...", true, null);
             super.onPreExecute();
         }
 
@@ -2233,7 +2307,7 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("qr3", qr3);
                     map.put("qr4", qr4);
                     map.put("qr5", qr5);
-                    map.put("id",id);
+                    map.put("id", id);
                     ziList.add(map);
                 }
             } catch (Exception e) {
@@ -2244,25 +2318,25 @@ public class AddTaskActivity extends BaseActivity {
             } else {
                 //有人确认过就不能修改
                 int size = lists.size();
-                for(HashMap<String,String> maps: ziList){
+                for (HashMap<String, String> maps : ziList) {
                     lists.add(maps.get("qr1"));
                     lists.add(maps.get("qr2"));
                     lists.add(maps.get("qr3"));
                     lists.add(maps.get("qr4"));
                     lists.add(maps.get("qr5"));
-                    if(!maps.get("a").equals("")) {
+                    if (!maps.get("a").equals("")) {
                         strList2.add(maps.get("a"));
                     }
-                    if(!maps.get("b").equals("")) {
+                    if (!maps.get("b").equals("")) {
                         strList2.add(maps.get("b"));
                     }
-                    if(!maps.get("c").equals("")) {
+                    if (!maps.get("c").equals("")) {
                         strList2.add(maps.get("c"));
                     }
-                    if(!maps.get("d").equals("")) {
+                    if (!maps.get("d").equals("")) {
                         strList2.add(maps.get("d"));
                     }
-                    if(!maps.get("e").equals("")) {
+                    if (!maps.get("e").equals("")) {
                         strList2.add(maps.get("e"));
                     }
                 }
@@ -2274,7 +2348,7 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progress.dismiss();
-            for(int i=0;i<ziList.size();i++){
+            for (int i = 0; i < ziList.size(); i++) {
                 total = total + Double.parseDouble(ziList.get(i).get("shuliang"));
                 amount = amount + Double.parseDouble(ziList.get(i).get("hanshui"));
             }
@@ -2404,8 +2478,8 @@ public class AddTaskActivity extends BaseActivity {
                             strList4.add(list2.get(i).get("fname").toString());
                         }
                     }
-                    if(strList2.size()>5){
-                        Toast.makeText(AddTaskActivity.this,"最多可选5人",Toast.LENGTH_SHORT).show();
+                    if (strList2.size() > 5) {
+                        Toast.makeText(AddTaskActivity.this, "最多可选5人", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     dialog.dismiss();
