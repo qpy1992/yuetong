@@ -70,7 +70,7 @@ public class AddTaskActivity extends BaseActivity {
     ListView                      lv_zb;
     List<HashMap<String, String>> list, list1, ziList;
     List<HashMap<String, Object>> list2 = new ArrayList<>();
-    List<String> strList, strList1, strList2,strList3,lists;
+    List<String> strList, strList1, strList2,strList3,strList4,lists;
     DecimalFormat df  = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
     String interid, taskno, respon, zhidan, contacts, content, contentid, planid, sup, jiliang, jiliangid, pfid, zuzhi, quyu, zhidu1, zhidu2, username, depart, company;
@@ -327,8 +327,6 @@ public class AddTaskActivity extends BaseActivity {
                             }).setNegativeButton("取消", null).show();
                 }
             });
-            final LinearLayout ll_send = (LinearLayout) v.findViewById(R.id.ll_send);
-            final LinearLayout ll_check = (LinearLayout) v.findViewById(R.id.ll_check);
             final TextView tv_check = (TextView) v.findViewById(R.id.tv_check);
             tv_check.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -338,8 +336,6 @@ public class AddTaskActivity extends BaseActivity {
             });
             final TextView tv_submit = (TextView) v.findViewById(R.id.tv_submit);
             if (!map.isEmpty()) {
-                ll_send.setVisibility(View.GONE);
-                ll_check.setVisibility(View.GONE);
                 et_shuliang.setText(map.get("shuliang"));
                 et_danjia.setText(map.get("danjia"));
                 if (map.get("qi").contains("/")) {
@@ -358,6 +354,25 @@ public class AddTaskActivity extends BaseActivity {
                 et_buhan.setText(map.get("buhan"));
                 et_fuliang.setText(map.get("fuliang"));
                 et_fasong.setText(map.get("fasong"));
+                switch (strList2.size()){
+                    case 0:
+                        break;
+                    case 1:
+                        tv_check.setText(map.get("a"));
+                        break;
+                    case 2:
+                        tv_check.setText(map.get("a")+","+map.get("b"));
+                        break;
+                    case 3:
+                        tv_check.setText(map.get("a")+","+map.get("b")+","+map.get("c"));
+                        break;
+                    case 4:
+                        tv_check.setText(map.get("a")+","+map.get("b")+","+map.get("c")+","+map.get("d"));
+                        break;
+                    case 5:
+                        tv_check.setText(map.get("a")+","+map.get("b")+","+map.get("c")+","+map.get("d")+","+map.get("e"));
+                        break;
+                }
             }
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
                     .show();
@@ -372,10 +387,6 @@ public class AddTaskActivity extends BaseActivity {
                     if (!map.isEmpty()) {
                         ziList.remove(map);
                     }
-//                    else if(tv_check.getText().toString().equals("")){
-//                        Toast.makeText(AddTaskActivity.this, "请选择审核人",Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
                     if (tv_qi.getText().toString().equals("")) {
                         Toast.makeText(AddTaskActivity.this, "请选择启日期", Toast.LENGTH_SHORT).show();
                         return;
@@ -391,7 +402,6 @@ public class AddTaskActivity extends BaseActivity {
 
                     map.put("neirong", content);
                     Log.i("计量", jiliangid);
-                    //                    map.put("jiliang",jiliang);
                     map.put("jiliangid", jiliangid);
                     if (et_shuliang.getText().toString().equals("")) {
                         map.put("shuliang", "0");
@@ -433,84 +443,82 @@ public class AddTaskActivity extends BaseActivity {
                     } else {
                         map.put("pfid", pfid);
                     }
-                    if(map.get("a")==null) {
-                        switch (strList2.size()) {
-                            case 1:
-                                map.put("a", list2.get(0).get("fname").toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", "0");
-                                map.put("cid", "0");
-                                map.put("did", "0");
-                                map.put("eid", "0");
-                                break;
-                            case 2:
-                                map.put("a", list2.get(0).get("fname").toString());
-                                map.put("b", list2.get(1).get("fname").toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("bb", strList3.get(1).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", strList2.get(1));
-                                map.put("cid", "0");
-                                map.put("did", "0");
-                                map.put("eid", "0");
-                                break;
-                            case 3:
-                                map.put("a", list2.get(0).get("fname").toString());
-                                map.put("b", list2.get(1).get("fname").toString());
-                                map.put("c", list2.get(2).get("fname").toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("bb", strList3.get(1).toString());
-                                map.put("cc", strList3.get(2).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", strList2.get(1));
-                                map.put("cid", strList2.get(2));
-                                map.put("did", "0");
-                                map.put("eid", "0");
-                                break;
-                            case 4:
-                                map.put("a", list2.get(0).get("fname").toString());
-                                map.put("b", list2.get(1).get("fname").toString());
-                                map.put("c", list2.get(2).get("fname").toString());
-                                map.put("d", list2.get(3).get("fname").toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("bb", strList3.get(1).toString());
-                                map.put("cc", strList3.get(2).toString());
-                                map.put("dd", strList3.get(3).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", strList2.get(1));
-                                map.put("cid", strList2.get(2));
-                                map.put("did", strList2.get(3));
-                                map.put("eid", "0");
-                                break;
-                            case 5:
-                                map.put("a", list2.get(0).get("fname").toString());
-                                map.put("b", list2.get(1).get("fname").toString());
-                                map.put("c", list2.get(2).get("fname").toString());
-                                map.put("d", list2.get(3).get("fname").toString());
-                                map.put("e", list2.get(4).get("fname").toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("bb", strList3.get(1).toString());
-                                map.put("cc", strList3.get(2).toString());
-                                map.put("dd", strList3.get(3).toString());
-                                map.put("ee", strList3.get(4).toString());
-                                //                            map.put("ee",list2.get(4).get("name").toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", strList2.get(1));
-                                map.put("cid", strList2.get(2));
-                                map.put("did", strList2.get(3));
-                                map.put("eid", strList2.get(4));
-                                break;
-                        }
-                            map.put("qr1", "0");
-                            map.put("qr2", "0");
-                            map.put("qr3", "0");
-                            map.put("qr4", "0");
-                            map.put("qr5", "0");
-                        if (map.get("id") == null) {
-                            map.put("id", Utils.UUID());
-                        }
+                    switch (strList2.size()) {
+                        case 1:
+                            map.put("a", strList4.get(0).toString());
+                            map.put("aa", strList3.get(0).toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", "0");
+                            map.put("cid", "0");
+                            map.put("did", "0");
+                            map.put("eid", "0");
+                            break;
+                        case 2:
+                            map.put("a", strList4.get(0).toString());
+                            map.put("b", strList4.get(1).toString());
+                            map.put("aa", strList3.get(0).toString());
+                            map.put("bb", strList3.get(1).toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", strList2.get(1));
+                            map.put("cid", "0");
+                            map.put("did", "0");
+                            map.put("eid", "0");
+                            break;
+                        case 3:
+                            map.put("a", strList4.get(0).toString());
+                            map.put("b", strList4.get(1).toString());
+                            map.put("c", strList4.get(2).toString());
+                            map.put("aa", strList3.get(0).toString());
+                            map.put("bb", strList3.get(1).toString());
+                            map.put("cc", strList3.get(2).toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", strList2.get(1));
+                            map.put("cid", strList2.get(2));
+                            map.put("did", "0");
+                            map.put("eid", "0");
+                            break;
+                        case 4:
+                            map.put("a", strList4.get(0).toString());
+                            map.put("b", strList4.get(1).toString());
+                            map.put("c", strList4.get(2).toString());
+                            map.put("d", strList4.get(3).toString());
+                            map.put("aa", strList3.get(0).toString());
+                            map.put("bb", strList3.get(1).toString());
+                            map.put("cc", strList3.get(2).toString());
+                            map.put("dd", strList3.get(3).toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", strList2.get(1));
+                            map.put("cid", strList2.get(2));
+                            map.put("did", strList2.get(3));
+                            map.put("eid", "0");
+                            break;
+                        case 5:
+                            map.put("a", strList4.get(0).toString());
+                            map.put("b", strList4.get(1).toString());
+                            map.put("c", strList4.get(2).toString());
+                            map.put("d", strList4.get(3).toString());
+                            map.put("e", strList4.get(4).toString());
+                            map.put("aa", strList3.get(0).toString());
+                            map.put("bb", strList3.get(1).toString());
+                            map.put("cc", strList3.get(2).toString());
+                            map.put("dd", strList3.get(3).toString());
+                            map.put("ee", strList3.get(4).toString());
+                            map.put("aid", strList2.get(0));
+                            map.put("bid", strList2.get(1));
+                            map.put("cid", strList2.get(2));
+                            map.put("did", strList2.get(3));
+                            map.put("eid", strList2.get(4));
+                            break;
                     }
+                        map.put("qr1", "0");
+                        map.put("qr2", "0");
+                        map.put("qr3", "0");
+                        map.put("qr4", "0");
+                        map.put("qr5", "0");
+                    if (map.get("id") == null) {
+                        map.put("id", Utils.UUID());
+                    }
+
                     ziList.add(map);
                     total = total+Double.parseDouble(map.get("shuliang"));
                     amount = amount+Double.parseDouble(map.get("hanshui"));
@@ -556,6 +564,7 @@ public class AddTaskActivity extends BaseActivity {
         strList1 = new ArrayList<>();
         strList2 = new ArrayList<>();
         strList3 = new ArrayList<>();
+        strList4 = new ArrayList<>();
         tasks = new Tasks();//任务主表对象
         tv_bibie = (TextView) findViewById(R.id.tv_bibie);//币别
         tv_huilv = (TextView) findViewById(R.id.tv_huilv);//汇率
@@ -2241,6 +2250,21 @@ public class AddTaskActivity extends BaseActivity {
                     lists.add(maps.get("qr3"));
                     lists.add(maps.get("qr4"));
                     lists.add(maps.get("qr5"));
+                    if(!maps.get("a").equals("")) {
+                        strList2.add(maps.get("a"));
+                    }
+                    if(!maps.get("b").equals("")) {
+                        strList2.add(maps.get("b"));
+                    }
+                    if(!maps.get("c").equals("")) {
+                        strList2.add(maps.get("c"));
+                    }
+                    if(!maps.get("d").equals("")) {
+                        strList2.add(maps.get("d"));
+                    }
+                    if(!maps.get("e").equals("")) {
+                        strList2.add(maps.get("e"));
+                    }
                 }
                 return "1";
             }
@@ -2274,6 +2298,7 @@ public class AddTaskActivity extends BaseActivity {
             list2.clear();
             strList2.clear();
             strList3.clear();
+            strList4.clear();
             progress = CustomProgress.show(AddTaskActivity.this, "加载中...", true, null);
             super.onPreExecute();
         }
@@ -2376,6 +2401,7 @@ public class AddTaskActivity extends BaseActivity {
                             sb.append(list2.get(i).get("fname").toString()).append(",");
                             strList2.add(list2.get(i).get("fitemid").toString());
                             strList3.add(list2.get(i).get("name").toString());
+                            strList4.add(list2.get(i).get("fname").toString());
                         }
                     }
                     if(strList2.size()>5){
