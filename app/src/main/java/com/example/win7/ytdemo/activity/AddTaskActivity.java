@@ -98,8 +98,9 @@ public class AddTaskActivity extends BaseActivity {
     Double total  = 0d;
     Double amount = 0d;
     private GridLayoutManager mLayoutManager;
-    private List<Bitmap> mBitmapList = new ArrayList<Bitmap>();//给recyclerview添加的bitmap集合
-    private MyRecAdapter mMyAdapter;
+    private List<Bitmap>      mBitmapList;//给recyclerview添加的bitmap集合
+    private MyRecAdapter      mMyAdapter;
+    private List mSumBitmapList = new ArrayList();//记录总的bitmaplist的集合
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +168,7 @@ public class AddTaskActivity extends BaseActivity {
             //添加初始展示的图片
             Resources res = getResources();
             Bitmap mBm = BitmapFactory.decodeResource(res, R.drawable.add_picture);
+            mBitmapList = new ArrayList<>();
             mBitmapList.add(mBm);
             mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
             mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList);
@@ -556,6 +558,11 @@ public class AddTaskActivity extends BaseActivity {
                     amount = amount + Double.parseDouble(map.get("hanshui"));
                     tv_total.setText(String.valueOf(total));
                     tv_amounts.setText(String.valueOf(amount));
+                    //                    adapter.notifyDataSetChanged();
+                    //图片总集合，添加选择的bitmap集合
+                    mBitmapList.remove(0);
+                    mSumBitmapList.add(mBitmapList);
+                    //跟页面类表刷新
                     adapter.notifyDataSetChanged();
                     dialog.dismiss();
                 }
@@ -662,7 +669,7 @@ public class AddTaskActivity extends BaseActivity {
         ziList = new ArrayList<>();//子表集合
         if (interid.equals("0")) {
             //单据内码为0，表示做新增操作
-            adapter = new ZiAdapter(AddTaskActivity.this, ziList);//ziList一开始为空
+            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList);//ziList一开始为空
             lv_zb.setAdapter(adapter);
             //查询默认显示的字段
             new MRTask().execute();
@@ -2354,7 +2361,7 @@ public class AddTaskActivity extends BaseActivity {
             }
             tv_total.setText(String.valueOf(total));
             tv_amounts.setText(String.valueOf(amount));
-            adapter = new ZiAdapter(AddTaskActivity.this, ziList);
+            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList);
             lv_zb.setAdapter(adapter);
         }
     }

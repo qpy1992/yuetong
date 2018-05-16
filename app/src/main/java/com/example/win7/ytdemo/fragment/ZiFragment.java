@@ -31,16 +31,17 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ZiFragment extends Fragment {
-    Context mContext;
-    View view;
-    ListView lv_zi;
-    TextView tv_zi;
-    ZiAdapter adapter;
-    List<HashMap<String,String>> list;
-    DecimalFormat df = new DecimalFormat("#0.00");
+    Context                       mContext;
+    View                          view;
+    ListView                      lv_zi;
+    TextView                      tv_zi;
+    ZiAdapter                     adapter;
+    List<HashMap<String, String>> list;
+    DecimalFormat df  = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
-    String taskno,qi,zhi,neirong,jiliang,shuliang,danjia,progress,plan,budget,pbudget,note,hanshui,buhan,fuzhu,fuliang,fasong,huikui,pingfen;
+    String taskno, qi, zhi, neirong, jiliang, shuliang, danjia, progress, plan, budget, pbudget, note, hanshui, buhan, fuzhu, fuliang, fasong, huikui, pingfen;
     CustomProgress dialog;
+    private List mSumBitmapList = new ArrayList();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,28 +53,28 @@ public class ZiFragment extends Fragment {
         return view;
     }
 
-    protected void setViews(){
-        lv_zi = (ListView)view.findViewById(R.id.lv_zi);
-        tv_zi = (TextView)view.findViewById(R.id.tv_zi);
+    protected void setViews() {
+        lv_zi = (ListView) view.findViewById(R.id.lv_zi);
+        tv_zi = (TextView) view.findViewById(R.id.tv_zi);
         list = new ArrayList<>();
         taskno = getArguments().getString("taskno");
         new ZITask(taskno).execute();
     }
 
-    protected void setListeners(){
+    protected void setListeners() {
 
     }
 
-    class ZITask extends AsyncTask<Void,String,String>{
+    class ZITask extends AsyncTask<Void, String, String> {
         String Taskno;
 
-        ZITask(String Taskno){
+        ZITask(String Taskno) {
             this.Taskno = Taskno;
         }
 
         @Override
         protected void onPreExecute() {
-            dialog = CustomProgress.show(mContext,"加载中...",true,null);
+            dialog = CustomProgress.show(mContext, "加载中...", true, null);
             super.onPreExecute();
         }
 
@@ -104,7 +105,7 @@ public class ZiFragment extends Fragment {
                     "   left join t_MeasureUnit l on l.FMeasureUnitID=b.FBase2 left join t_Item o on o.FItemID=b.FBase14" +
                     "   left join t_Emp p on p.FItemID=b.FBase5 left join t_Emp q on q.FItemID=b.FBase6" +
                     "   left join t_Emp m on m.FItemID=b.FBase7 left join t_Emp n on n.FItemID=b.fbase8" +
-                    "   left join t_Emp r on r.FItemID=b.FBase9 left join t_MeasureUnit s on s.FMeasureUnitID=k.FSecUnitID where a.fbillno='"+Taskno+"'";
+                    "   left join t_Emp r on r.FItemID=b.FBase9 left join t_MeasureUnit s on s.FMeasureUnitID=k.FSecUnitID where a.fbillno='" + Taskno + "'";
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_BOS200000000");
 
@@ -130,7 +131,7 @@ public class ZiFragment extends Fragment {
             SoapObject object = (SoapObject) envelope.bodyIn;
 
             // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString()+"=========================");
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
 
@@ -174,44 +175,44 @@ public class ZiFragment extends Fragment {
                     String qr3 = recordEle.elementTextTrim("qr3");
                     String qr4 = recordEle.elementTextTrim("qr4");
                     String qr5 = recordEle.elementTextTrim("qr5");
-                    Log.i("审核标志",qr1+qr2+qr3+qr4+qr5);
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("qi",qi);
-                    map.put("zhi",zhi);
-                    map.put("neirong",neirong);
-                    map.put("jiliang",jiliang);
-                    map.put("shuliang",df1.format(Double.parseDouble(shuliang)));
-                    map.put("danjia",df.format(Double.parseDouble(danjia)));
-                    map.put("progress",progress);
-                    map.put("plan",plan);
-                    map.put("budget",budget);
-                    map.put("pbudget",df.format(Double.parseDouble(pbudget)));
-                    map.put("note",note);
-                    map.put("hanshui",df.format(Double.parseDouble(hanshui)));
-                    map.put("buhan",df.format(Double.parseDouble(buhan)));
-                    map.put("fuzhu",fuzhu);
-                    map.put("fuliang",df1.format(Double.parseDouble(fuliang)));
-                    map.put("fasong",fasong);
-                    map.put("huikui",huikui);
-                    map.put("pingfen",pingfen);
-                    map.put("a",a);
-                    map.put("b",b);
-                    map.put("c",c);
-                    map.put("d",d);
-                    map.put("e",e);
-                    map.put("qr1",qr1);
-                    map.put("qr2",qr2);
-                    map.put("qr3",qr3);
-                    map.put("qr4",qr4);
-                    map.put("qr5",qr5);
+                    Log.i("审核标志", qr1 + qr2 + qr3 + qr4 + qr5);
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("qi", qi);
+                    map.put("zhi", zhi);
+                    map.put("neirong", neirong);
+                    map.put("jiliang", jiliang);
+                    map.put("shuliang", df1.format(Double.parseDouble(shuliang)));
+                    map.put("danjia", df.format(Double.parseDouble(danjia)));
+                    map.put("progress", progress);
+                    map.put("plan", plan);
+                    map.put("budget", budget);
+                    map.put("pbudget", df.format(Double.parseDouble(pbudget)));
+                    map.put("note", note);
+                    map.put("hanshui", df.format(Double.parseDouble(hanshui)));
+                    map.put("buhan", df.format(Double.parseDouble(buhan)));
+                    map.put("fuzhu", fuzhu);
+                    map.put("fuliang", df1.format(Double.parseDouble(fuliang)));
+                    map.put("fasong", fasong);
+                    map.put("huikui", huikui);
+                    map.put("pingfen", pingfen);
+                    map.put("a", a);
+                    map.put("b", b);
+                    map.put("c", c);
+                    map.put("d", d);
+                    map.put("e", e);
+                    map.put("qr1", qr1);
+                    map.put("qr2", qr2);
+                    map.put("qr3", qr3);
+                    map.put("qr4", qr4);
+                    map.put("qr5", qr5);
                     list.add(map);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(list.size()==0){
-             return "0";
-            }else {
+            if (list.size() == 0) {
+                return "0";
+            } else {
                 return "1";
             }
         }
@@ -220,10 +221,10 @@ public class ZiFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             dialog.dismiss();
-            if(s.equals("0")){
+            if (s.equals("0")) {
                 tv_zi.setVisibility(View.VISIBLE);
-            }else{
-                adapter = new ZiAdapter(mContext,list);
+            } else {
+                adapter = new ZiAdapter(mContext, list, mSumBitmapList);
                 lv_zi.setAdapter(adapter);
             }
         }
