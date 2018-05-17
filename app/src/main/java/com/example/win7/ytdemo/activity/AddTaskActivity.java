@@ -601,12 +601,6 @@ public class AddTaskActivity extends BaseActivity {
             String mFilePath = Environment.getExternalStorageDirectory().getPath();// 获取SD卡路径
             mFilePath = mFilePath + "/" + "temp123.png";// 指定路径
             showImage(mFilePath);
-            //            try {
-            //                FileInputStream fis = new FileInputStream(mFilePath); // 根据路径获取数据
-            //                Bitmap bitmap = BitmapFactory.decodeStream(fis);    //获取图片
-            //            } catch (FileNotFoundException e) {
-            //                e.printStackTrace();
-            //            }
         }
     }
 
@@ -625,7 +619,6 @@ public class AddTaskActivity extends BaseActivity {
                 .build()
                 .compressToFile(file);
         Bitmap bm = BitmapFactory.decodeFile(newFile.getPath());
-
         //添加到bitmap集合中
         mBitmapList.add(bm);
         mMyAdapter.notifyDataSetChanged();

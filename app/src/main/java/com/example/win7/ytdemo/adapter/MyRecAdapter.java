@@ -68,19 +68,6 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
             holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //                    //第二个参数是需要申请的权限
-                    //                    if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    //                            != PackageManager.PERMISSION_GRANTED) {
-                    //                        //权限还没有授予，需要在这里写申请权限的代码
-                    //                        ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    //                                MY_PERMISSIONS_REQUEST_CALL_PHONE2);
-                    //                    } else {
-                    //                        //权限已经被授予，在这里直接写要执行的相应方法即可
-                    //                        //调用相册
-                    //                        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    //                        Activity activity = (Activity) mContext;
-                    //                        activity.startActivityForResult(intent, IMAGE);
-                    //                    }
                     //弹出popupWindow，选择拍摄还是从相册选取
                     final PopupWindow popupWindow = new PopupWindow(mContext);
                     popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -135,7 +122,6 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                                 activity.startActivityForResult(intent, SHOT_CODE);
                                 popupWindow.dismiss();
                             }
-
                         }
                     });
                 }
