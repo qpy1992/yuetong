@@ -108,6 +108,7 @@ public class AddTaskActivity extends BaseActivity {
     private List<Bitmap>      mBitmapList;//给recyclerview添加的bitmap集合
     private MyRecAdapter      mMyAdapter;
     private List mSumBitmapList = new ArrayList();//记录总的bitmaplist的集合
+    private List mSumBtUrlList  = new ArrayList();//记录总的图片在服务器地址的集合
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -570,14 +571,17 @@ public class AddTaskActivity extends BaseActivity {
                     mBitmapList.remove(0);
                     mSumBitmapList.add(mBitmapList);
                     //跟页面类表刷新
-                    adapter.notifyDataSetChanged();
+                    //上传图片
+                    sendPic(mBitmapList);
                     dialog.dismiss();
+                    adapter.notifyDataSetChanged();
                 }
             });
         }
     }
 
-    private static final int IMAGE = 1;//调用系统相册-选择图片
+    private static final int IMAGE     = 1;//调用系统相册-选择图片
+    private static final int SHOT_CODE = 20;//调用系统相册-选择图片
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -592,6 +596,17 @@ public class AddTaskActivity extends BaseActivity {
             String imagePath = c.getString(columnIndex);
             showImage(imagePath);
             c.close();
+        }
+        if (requestCode == SHOT_CODE && resultCode == Activity.RESULT_OK) {
+            String mFilePath = Environment.getExternalStorageDirectory().getPath();// 获取SD卡路径
+            mFilePath = mFilePath + "/" + "temp123.png";// 指定路径
+            showImage(mFilePath);
+            //            try {
+            //                FileInputStream fis = new FileInputStream(mFilePath); // 根据路径获取数据
+            //                Bitmap bitmap = BitmapFactory.decodeStream(fis);    //获取图片
+            //            } catch (FileNotFoundException e) {
+            //                e.printStackTrace();
+            //            }
         }
     }
 
@@ -614,13 +629,11 @@ public class AddTaskActivity extends BaseActivity {
         //添加到bitmap集合中
         mBitmapList.add(bm);
         mMyAdapter.notifyDataSetChanged();
-        //上传图片
-        sendPic(bm);
     }
 
-    private void sendPic(Bitmap bm) {
-        //        Task2 task2 = new Task2(bm);
-        //        task2.execute();
+    private void sendPic(List<Bitmap> bitmapList) {
+        Task2 task2 = new Task2(bitmapList);
+        task2.execute();
     }
 
     @Override
@@ -2509,10 +2522,10 @@ public class AddTaskActivity extends BaseActivity {
     }
 
     class Task2 extends AsyncTask<Void, Integer, Integer> {
-        Bitmap mBitmap;
+        List<Bitmap> mBitmapList;
 
-        public Task2(Bitmap btm) {
-            this.mBitmap = btm;
+        public Task2(List<Bitmap> btList) {
+            this.mBitmapList = btList;
         }
 
         /**
@@ -2544,11 +2557,10 @@ public class AddTaskActivity extends BaseActivity {
                 //图片
                 Document document2 = DocumentHelper.createDocument();
                 Element rootElement2 = document2.addElement("NewDataSet");
-//                List<Bitmap> btlist = mSumBitmapList.get();
-//                for (Bitmap e : btlist) {
-//                    Element cust2 = rootElement2.addElement("Cust");
-//                    cust2.addElement("fimage").setText(bitmapToBase64(e));
-//                }
+                for (Bitmap e : mBitmapList) {
+                    Element cust2 = rootElement2.addElement("Cust");
+                    cust2.addElement("fimage").setText(bitmapToBase64(e));
+                }
                 //
                 OutputFormat outputFormat = OutputFormat.createPrettyPrint();
                 outputFormat.setSuppressDeclaration(false);
@@ -2585,6 +2597,8 @@ public class AddTaskActivity extends BaseActivity {
                 // 获取返回的结果
                 String result = object.getProperty(0).toString();
                 Log.i("sss", result + "sss");
+                //获取返回的图片网络地址，加入集合中
+                mSumBtUrlList.add(result);
             } catch (Exception e) {
                 Log.i("sss", e.toString() + "sss");
             }
