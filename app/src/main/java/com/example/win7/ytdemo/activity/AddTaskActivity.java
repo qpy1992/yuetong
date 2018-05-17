@@ -807,6 +807,7 @@ public class AddTaskActivity extends BaseActivity {
                         switch (i) {
                             case 0:
                                 ziList.remove(index);
+                                mSumBtUrlList.remove(index);
                                 adapter.notifyDataSetChanged();
                                 break;
                         }
