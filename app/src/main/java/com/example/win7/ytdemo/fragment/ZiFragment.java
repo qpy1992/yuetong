@@ -224,7 +224,7 @@ public class ZiFragment extends Fragment {
             if (s.equals("0")) {
                 tv_zi.setVisibility(View.VISIBLE);
             } else {
-                adapter = new ZiAdapter(mContext, list, mSumBitmapList);
+                adapter = new ZiAdapter(mContext, list);
                 lv_zi.setAdapter(adapter);
             }
         }

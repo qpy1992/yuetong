@@ -31,6 +31,11 @@ public class ZiAdapter extends BaseAdapter {
     List                          mSumBitmapList;
     private int currentItem = -1; //用于记录点击的 Item 的 position，是控制 item 展开的核心
 
+    public ZiAdapter(Context context, List<HashMap<String, String>> list) {
+        this.mContext = context;
+        this.list = list;
+    }
+
     public ZiAdapter(Context context, List<HashMap<String, String>> list, List sumBitmapList) {
         this.mContext = context;
         this.list = list;
@@ -313,13 +318,14 @@ public class ZiAdapter extends BaseAdapter {
                 new AlertDialog.Builder(mContext).setView(tv).show();
             }
         });
-
-        //填充图片
-        List<Bitmap> bitmapList = (ArrayList) mSumBitmapList.get(i);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
-        RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, bitmapList);
-        holder.recview_show.setLayoutManager(mLayoutManager);
-        holder.recview_show.setAdapter(showAdapter);
+        if (null != mSumBitmapList) {
+            //填充图片
+            List<Bitmap> bitmapList = (ArrayList) mSumBitmapList.get(i);
+            GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
+            RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, bitmapList);
+            holder.recview_show.setLayoutManager(mLayoutManager);
+            holder.recview_show.setAdapter(showAdapter);
+        }
         return view;
     }
 

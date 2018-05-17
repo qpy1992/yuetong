@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -47,6 +48,7 @@ import com.example.win7.ytdemo.listener.CallBackListener;
 import com.example.win7.ytdemo.task.SubmitTask;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.PinyinComparator;
+import com.example.win7.ytdemo.util.ProgressDialogUtil;
 import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.util.Utils;
 import com.example.win7.ytdemo.view.CustomDatePicker;
@@ -59,12 +61,17 @@ import com.nanchen.compresshelper.CompressHelper;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -604,12 +611,16 @@ public class AddTaskActivity extends BaseActivity {
                 .compressToFile(file);
         Bitmap bm = BitmapFactory.decodeFile(newFile.getPath());
 
-        //        mImgPath = imgPath;
         //添加到bitmap集合中
         mBitmapList.add(bm);
         mMyAdapter.notifyDataSetChanged();
         //上传图片
-        //        sendPic(NetConfig.UPLOAD_BASE64, bm, mBitmapList.size() - 1);
+        sendPic(bm);
+    }
+
+    private void sendPic(Bitmap bm) {
+        //        Task2 task2 = new Task2(bm);
+        //        task2.execute();
     }
 
     @Override
@@ -2495,5 +2506,138 @@ public class AddTaskActivity extends BaseActivity {
             });
             super.onPostExecute(s);
         }
+    }
+
+    class Task2 extends AsyncTask<Void, Integer, Integer> {
+        Bitmap mBitmap;
+
+        public Task2(Bitmap btm) {
+            this.mBitmap = btm;
+        }
+
+        /**
+         * 运行在UI线程中，在调用doInBackground()之前执行
+         */
+        @Override
+        protected void onPreExecute() {
+            ProgressDialogUtil.startShow(AddTaskActivity.this, "正在上传，请稍等");
+        }
+
+        /**
+         * 后台运行的方法，可以运行非UI线程，可以执行耗时的方法
+         */
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+                // 命名空间
+                String nameSpace = "http://tempuri.org/";
+                // 调用的方法名称
+                String methodName = "PIC_UPLoad";
+                // EndPoint
+                String endPoint = Consts.ENDPOINT;
+                // SOAP Action
+                String soapAction = "http://tempuri.org/PIC_UPLoad";
+
+                // 指定WebService的命名空间和调用的方法名
+                SoapObject rpc = new SoapObject(nameSpace, methodName);
+
+                //图片
+                Document document2 = DocumentHelper.createDocument();
+                Element rootElement2 = document2.addElement("NewDataSet");
+//                List<Bitmap> btlist = mSumBitmapList.get();
+//                for (Bitmap e : btlist) {
+//                    Element cust2 = rootElement2.addElement("Cust");
+//                    cust2.addElement("fimage").setText(bitmapToBase64(e));
+//                }
+                //
+                OutputFormat outputFormat = OutputFormat.createPrettyPrint();
+                outputFormat.setSuppressDeclaration(false);
+                outputFormat.setNewlines(false);
+                StringWriter stringWriter2 = new StringWriter();
+                // xmlWriter是用来把XML文档写入字符串的(工具)
+                XMLWriter xmlWriter2 = new XMLWriter(stringWriter2, outputFormat);
+                // 把创建好的XML文档写入字符串
+                xmlWriter2.write(document2);
+
+                rpc.addProperty("base64string", stringWriter2.toString().substring(38));//<NewDataSet><Cust>fname</Cust><Cust>fname</Cust></NewDataSet>
+                //
+                Log.i("qwe", stringWriter2.toString().substring(38));
+
+                // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+
+                envelope.bodyOut = rpc;
+                // 设置是否调用的是dotNet开发的WebService
+                envelope.dotNet = true;
+                // 等价于envelope.bodyOut = rpc;
+                envelope.setOutputSoapObject(rpc);
+
+                HttpTransportSE transport = new HttpTransportSE(endPoint);
+                try {
+                    // 调用WebService
+                    transport.call(soapAction, envelope);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.i("sss", e.toString() + "sss");
+                }
+                // 获取返回的数据
+                SoapObject object = (SoapObject) envelope.bodyIn;
+                // 获取返回的结果
+                String result = object.getProperty(0).toString();
+                Log.i("sss", result + "sss");
+            } catch (Exception e) {
+                Log.i("sss", e.toString() + "sss");
+            }
+            return 5;
+        }
+
+        /**
+         * 运行在ui线程中，在doInBackground()执行完毕后执行
+         */
+        @Override
+        protected void onPostExecute(Integer integer) {
+            ProgressDialogUtil.hideDialog();
+            Toast.makeText(AddTaskActivity.this, "修改图片成功", Toast.LENGTH_LONG).show();
+
+        }
+
+        /**
+         * 在publishProgress()被调用以后执行，publishProgress()用于更新进度
+         */
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+        }
+    }
+
+    /*
+        *bitmap转base64
+    */
+    public String bitmapToBase64(Bitmap bitmap) {
+        String result = "";
+        ByteArrayOutputStream bos = null;
+        try {
+            if (null != bitmap) {
+                bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bos);//将bitmap放入字节数组流中
+
+                bos.flush();//将bos流缓存在内存中的数据全部输出，清空缓存
+                bos.close();
+
+                byte[] bitmapByte = bos.toByteArray();
+                result = Base64.encodeToString(bitmapByte, Base64.DEFAULT);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
     }
 }
