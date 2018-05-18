@@ -30,7 +30,7 @@ public class ZiAdapter extends BaseAdapter {
     List<HashMap<String, String>> list;
     List<List>                    mSumBitmapList;
     private int currentItem = -1; //用于记录点击的 Item 的 position，是控制 item 展开的核心
-    private int mKind;//1传的是bitmap，2是url；
+    private int mKind;//1传的是bitmap，2是url
 
     public ZiAdapter(Context context, List<HashMap<String, String>> list) {
         this.mContext = context;
