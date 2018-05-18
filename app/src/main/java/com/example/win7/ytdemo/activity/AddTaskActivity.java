@@ -107,8 +107,8 @@ public class AddTaskActivity extends BaseActivity {
     private GridLayoutManager mLayoutManager;
     private List<Bitmap>      mBitmapList;//给recyclerview添加的bitmap集合
     private MyRecAdapter      mMyAdapter;
-    private List mSumBitmapList = new ArrayList();//记录总的bitmaplist的集合
-    private List mSumBtUrlList  = new ArrayList();//记录总的图片在服务器地址的集合
+    private List         mSumBitmapList = new ArrayList();//记录总的bitmaplist的集合
+    private List<String> mSumBtUrlList  = new ArrayList();//记录总的图片在服务器地址的集合
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -686,7 +686,7 @@ public class AddTaskActivity extends BaseActivity {
         ziList = new ArrayList<>();//子表集合
         if (interid.equals("0")) {
             //单据内码为0，表示做新增操作
-            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList);//ziList一开始为空
+            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList,1);//ziList一开始为空
             lv_zb.setAdapter(adapter);
             //查询默认显示的字段
             new MRTask().execute();
@@ -904,6 +904,8 @@ public class AddTaskActivity extends BaseActivity {
                     entry.setFCheckBox4(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr4"))));
                     entry.setFCheckBox5(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr5"))));
                     entry.setId(ziList.get(i).get("id"));
+                    String bitUrl = mSumBtUrlList.get(i);
+                    entry.setBitUrl(bitUrl);
                     list.add(entry);
                     HashMap<String, String> stringStringHashMap = ziList.get(i);
                     String goodsid = "{goodsId}" + stringStringHashMap.get("id");
@@ -2379,7 +2381,7 @@ public class AddTaskActivity extends BaseActivity {
             }
             tv_total.setText(String.valueOf(total));
             tv_amounts.setText(String.valueOf(amount));
-            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList);
+            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList,1);
             lv_zb.setAdapter(adapter);
         }
     }

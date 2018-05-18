@@ -10,6 +10,7 @@ import com.example.win7.ytdemo.entity.TaskEntry;
 import com.example.win7.ytdemo.entity.Tasks;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.view.CustomProgress;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -20,16 +21,17 @@ import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
+
 import java.io.StringWriter;
 
 /**
  * 新增或编辑任务单
  */
-public class SubmitTask extends AsyncTask<Void,String,String>{
-    Tasks tasks;
+public class SubmitTask extends AsyncTask<Void, String, String> {
+    Tasks   tasks;
     Context mContext;
 
-    public SubmitTask(Tasks tasks,Context context){
+    public SubmitTask(Tasks tasks, Context context) {
         this.tasks = tasks;
         this.mContext = context;
     }
@@ -38,7 +40,7 @@ public class SubmitTask extends AsyncTask<Void,String,String>{
 
     @Override
     protected void onPreExecute() {
-        dialog = CustomProgress.show(mContext,"提交中...",true,null);
+        dialog = CustomProgress.show(mContext, "提交中...", true, null);
         super.onPreExecute();
     }
 
@@ -58,8 +60,8 @@ public class SubmitTask extends AsyncTask<Void,String,String>{
             SoapObject rpc = new SoapObject(nameSpace, methodName);
 
             // 设置需调用WebService接口需要传入的参数
-            Log.i("submitTask",tasks.getFinterid());
-            Log.i("submitTask",tasks.getFbillno());
+            Log.i("submitTask", tasks.getFinterid());
+            Log.i("submitTask", tasks.getFbillno());
             rpc.addProperty("InterID", Integer.parseInt(tasks.getFinterid()));
             rpc.addProperty("BillNO", tasks.getFbillno());
 
@@ -141,6 +143,16 @@ public class SubmitTask extends AsyncTask<Void,String,String>{
                 cust2.addElement("FCheckBox5").setText(String.valueOf(taskEntry.getFCheckBox5()));
                 //id
                 cust2.addElement("ID").setText(taskEntry.getId());
+                //pic url
+                String bitUrl = taskEntry.getBitUrl();
+                String[] split = bitUrl.split(",");
+                String url[] = new String[]{"", "", "", "", ""};
+                for (int i = 0; i < split.length - 1; i++) {
+                    url[i] = split[i + 1];
+                }
+                for (int n = 0; n < url.length; n++) {
+                    cust2.addElement("fimage" + (n + 1)).setText(url[n]);
+                }
             }
 
             OutputFormat outputFormat = OutputFormat.createPrettyPrint();
@@ -156,9 +168,9 @@ public class SubmitTask extends AsyncTask<Void,String,String>{
             xmlWriter2.write(document2);
             String fbtouxml = stringWriter.toString().substring(38);
             String fbtixml = stringWriter2.toString().substring(38);
-            Log.i("sss",  fbtouxml+ "***********");
+            Log.i("sss", fbtouxml + "***********");
 
-            Log.i("sss",  fbtixml+ "***********");
+            Log.i("sss", fbtixml + "***********");
             rpc.addProperty("FBtouXMl", fbtouxml);
             rpc.addProperty("FBtiXML", fbtixml);
 
@@ -183,16 +195,16 @@ public class SubmitTask extends AsyncTask<Void,String,String>{
             // 获取返回的数据
             String result = "";
             if (envelope.bodyIn instanceof SoapFault) {
-                Log.i("服务器返回",(SoapObject) envelope.getResponse()+"");
-            } else{
+                Log.i("服务器返回", (SoapObject) envelope.getResponse() + "");
+            } else {
                 SoapObject object = (SoapObject) envelope.bodyIn;
 
-            // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
-            result = object.getProperty(0).toString();
-        }
+                // 获取返回的结果
+                Log.i("返回结果", object.getProperty(0).toString() + "=========================");
+                result = object.getProperty(0).toString();
+            }
             return result;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "0";
         }
@@ -202,11 +214,11 @@ public class SubmitTask extends AsyncTask<Void,String,String>{
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         dialog.dismiss();
-        if(s.equals("成功")) {
-            Toast.makeText(mContext,"提交成功",Toast.LENGTH_SHORT).show();
+        if (s.equals("成功")) {
+            Toast.makeText(mContext, "提交成功", Toast.LENGTH_SHORT).show();
             ((AppCompatActivity) mContext).finish();
-        }else{
-            Toast.makeText(mContext,"提交失败",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mContext, "提交失败", Toast.LENGTH_SHORT).show();
         }
     }
 }

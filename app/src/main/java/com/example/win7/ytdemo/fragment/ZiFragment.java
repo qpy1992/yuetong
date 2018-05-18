@@ -1,6 +1,8 @@
 package com.example.win7.ytdemo.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,6 +26,11 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +48,8 @@ public class ZiFragment extends Fragment {
     DecimalFormat df1 = new DecimalFormat("#0.0000");
     String taskno, qi, zhi, neirong, jiliang, shuliang, danjia, progress, plan, budget, pbudget, note, hanshui, buhan, fuzhu, fuliang, fasong, huikui, pingfen;
     CustomProgress dialog;
-    private List mSumBitmapList = new ArrayList();
+    private List<Bitmap> mBitmapList    = new ArrayList();
+    private List<List>   mSumBitmapList = new ArrayList();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,7 +105,7 @@ public class ZiFragment extends Fragment {
                     "   j.FName contacts,k.FName neirong,l.FName jiliang,b.FDecimal shuliang,b.FDecimal1 danjia,b.FAmount2 hanshui,b.FAmount3 buhan," +
                     "   b.FText fasong,b.FText1 huikui,o.FName pingfen,p.FName js1,b.FCheckBox1 qr1,q.FName js2,b.FCheckBox2 qr2," +
                     "   m.FName js3,b.FCheckBox3 qr3,n.FName js4,b.FCheckBox4 qr4,r.FName js5,b.FCheckBox5 qr5,s.fname fuzhu,b.fdecimal2 fuliang" +
-                    "    from t_BOS200000000 a inner join t_BOS200000000Entry2 b on a.FID=b.FID" +
+                    "   ,b.fimage1,b.fimage2,b.fimage3,b.fimage4,b.fimage5 from t_BOS200000000 a inner join t_BOS200000000Entry2 b on a.FID=b.FID" +
                     "   left join t_Currency c on c.FCurrencyID=a.FBase3 left join t_Item_3001 d on d.FItemID=a.FBase11" +
                     "   left join t_Department e on e.FItemID=a.FBase11 left join t_Item_3006 f on f.FItemID=a.FBase13" +
                     "   left join t_Emp g on g.FItemID=b.FBase4 left join t_Item_3007 h on h.FItemID=b.FBase left join" +
@@ -165,6 +173,18 @@ public class ZiFragment extends Fragment {
                     fasong = recordEle.elementTextTrim("fasong");
                     huikui = recordEle.elementTextTrim("huikui");
                     pingfen = recordEle.elementTextTrim("pingfen");
+                    //                    String fimage1 = recordEle.elementTextTrim("fimage1");
+                    //                    String fimage2 = recordEle.elementTextTrim("fimage2");
+                    //                    String fimage3 = recordEle.elementTextTrim("fimage3");
+                    //                    String fimage4 = recordEle.elementTextTrim("fimage4");
+                    //                    String fimage5 = recordEle.elementTextTrim("fimage5");
+                    for (int i = 0; i < 5; i++) {
+                        String url = recordEle.elementTextTrim("fimage" + (i + 1));
+                        if (!"".equals(url)) {
+                            Bitmap bitmap = decodeUriAsBitmapFromNet(url);
+                            mBitmapList.add(bitmap);
+                        }
+                    }
                     String a = recordEle.elementTextTrim("js1");
                     String b = recordEle.elementTextTrim("js2");
                     String c = recordEle.elementTextTrim("js3");
@@ -207,6 +227,7 @@ public class ZiFragment extends Fragment {
                     map.put("qr5", qr5);
                     list.add(map);
                 }
+                mSumBitmapList.add(mBitmapList);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -224,9 +245,39 @@ public class ZiFragment extends Fragment {
             if (s.equals("0")) {
                 tv_zi.setVisibility(View.VISIBLE);
             } else {
-                adapter = new ZiAdapter(mContext, list);
+                adapter = new ZiAdapter(mContext, list, mSumBitmapList,2);
                 lv_zi.setAdapter(adapter);
             }
         }
+    }
+
+    /**
+     * 根据图片的url路径获得Bitmap对象
+     *
+     * @param url
+     * @return
+     */
+    private Bitmap decodeUriAsBitmapFromNet(String url) {
+        URL fileUrl = null;
+        Bitmap bitmap = null;
+
+        try {
+            fileUrl = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            HttpURLConnection conn = (HttpURLConnection) fileUrl
+                    .openConnection();
+            conn.setDoInput(true);
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            bitmap = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 }

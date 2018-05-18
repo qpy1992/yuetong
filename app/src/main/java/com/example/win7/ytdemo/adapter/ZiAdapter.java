@@ -28,18 +28,20 @@ import java.util.List;
 public class ZiAdapter extends BaseAdapter {
     Context                       mContext;
     List<HashMap<String, String>> list;
-    List                          mSumBitmapList;
+    List<List>                    mSumBitmapList;
     private int currentItem = -1; //用于记录点击的 Item 的 position，是控制 item 展开的核心
+    private int mKind;//1传的是bitmap，2是url；
 
     public ZiAdapter(Context context, List<HashMap<String, String>> list) {
         this.mContext = context;
         this.list = list;
     }
 
-    public ZiAdapter(Context context, List<HashMap<String, String>> list, List sumBitmapList) {
+    public ZiAdapter(Context context, List<HashMap<String, String>> list, List sumBitmapList, int kind) {
         this.mContext = context;
         this.list = list;
         this.mSumBitmapList = sumBitmapList;
+        this.mKind = kind;
     }
 
     @Override
@@ -318,13 +320,23 @@ public class ZiAdapter extends BaseAdapter {
                 new AlertDialog.Builder(mContext).setView(tv).show();
             }
         });
-        if (null != mSumBitmapList) {
-            //填充图片
-            List<Bitmap> bitmapList = (ArrayList) mSumBitmapList.get(i);
-            GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
-            RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, bitmapList);
-            holder.recview_show.setLayoutManager(mLayoutManager);
-            holder.recview_show.setAdapter(showAdapter);
+        if (mKind == 1) {
+            if (null != mSumBitmapList) {
+                //填充图片
+                List<Bitmap> bitmapList = (ArrayList) mSumBitmapList.get(i);
+                GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
+                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, bitmapList,1);
+                holder.recview_show.setLayoutManager(mLayoutManager);
+                holder.recview_show.setAdapter(showAdapter);
+            }
+        } else if (mKind == 2) {
+            if (null != mSumBitmapList) {
+                List<String> urlList = (ArrayList) mSumBitmapList.get(i);
+                GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
+                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, urlList,2);
+                holder.recview_show.setLayoutManager(mLayoutManager);
+                holder.recview_show.setAdapter(showAdapter);
+            }
         }
         return view;
     }

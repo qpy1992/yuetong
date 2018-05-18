@@ -25,11 +25,20 @@ public class TaskEntry {
     String FBase7;//消息+接受3
     String FBase8;//消息+接受4
     String FBase9;//消息+接受5
-    int FCheckBox1;//消息+确认1
-    int FCheckBox2;//消息+确认2
-    int FCheckBox3;//消息+确认3
-    int FCheckBox4;//消息+确认4
-    int FCheckBox5;//消息+确认5
+    int    FCheckBox1;//消息+确认1
+    int    FCheckBox2;//消息+确认2
+    int    FCheckBox3;//消息+确认3
+    int    FCheckBox4;//消息+确认4
+    int    FCheckBox5;//消息+确认5
+    private String mBitUrlList;//每个子表的图片地址
+
+    public String getBitUrl() {
+        return mBitUrlList;
+    }
+
+    public void setBitUrl(String bitUrlList) {
+        this.mBitUrlList = bitUrlList;
+    }
 
     public String getId() {
         return id;
