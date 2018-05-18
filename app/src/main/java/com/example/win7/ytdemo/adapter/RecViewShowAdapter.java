@@ -52,6 +52,12 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
             GlideLoaderUtil.showImageView(mContext, url, holder.img_add_photo);
         }
         holder.img_delet.setVisibility(View.GONE);
+        holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override

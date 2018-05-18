@@ -166,11 +166,6 @@ public class ZiFragment extends Fragment {
                     fasong = recordEle.elementTextTrim("fasong");
                     huikui = recordEle.elementTextTrim("huikui");
                     pingfen = recordEle.elementTextTrim("pingfen");
-                    //                    String fimage1 = recordEle.elementTextTrim("fimage1");
-                    //                    String fimage2 = recordEle.elementTextTrim("fimage2");
-                    //                    String fimage3 = recordEle.elementTextTrim("fimage3");
-                    //                    String fimage4 = recordEle.elementTextTrim("fimage4");
-                    //                    String fimage5 = recordEle.elementTextTrim("fimage5");
                     for (int i = 0; i < 5; i++) {
                         String url = recordEle.elementTextTrim("fimage" + (i + 1));
                         if (!"".equals(url)) {
