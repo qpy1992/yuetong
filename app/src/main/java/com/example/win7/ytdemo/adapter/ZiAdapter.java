@@ -275,7 +275,7 @@ public class ZiAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View view) {
-                //用 currentItem 记录点击位置
+                //用 currentItem 记录点击位置s
                 int tag = (Integer) view.getTag();
                 if (tag == currentItem) { //再次点击
                     currentItem = -1; //给 currentItem 一个无效值
