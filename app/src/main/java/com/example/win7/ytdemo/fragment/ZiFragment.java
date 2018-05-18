@@ -1,8 +1,6 @@
 package com.example.win7.ytdemo.fragment;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,11 +24,6 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +41,7 @@ public class ZiFragment extends Fragment {
     DecimalFormat df1 = new DecimalFormat("#0.0000");
     String taskno, qi, zhi, neirong, jiliang, shuliang, danjia, progress, plan, budget, pbudget, note, hanshui, buhan, fuzhu, fuliang, fasong, huikui, pingfen;
     CustomProgress dialog;
-    private List<Bitmap> mBitmapList    = new ArrayList();
+    private List<String> mBitmapList    = new ArrayList();
     private List<List>   mSumBitmapList = new ArrayList();
 
     @Override
@@ -181,8 +174,7 @@ public class ZiFragment extends Fragment {
                     for (int i = 0; i < 5; i++) {
                         String url = recordEle.elementTextTrim("fimage" + (i + 1));
                         if (!"".equals(url)) {
-                            Bitmap bitmap = decodeUriAsBitmapFromNet(url);
-                            mBitmapList.add(bitmap);
+                            mBitmapList.add(url);
                         }
                     }
                     String a = recordEle.elementTextTrim("js1");
@@ -245,39 +237,9 @@ public class ZiFragment extends Fragment {
             if (s.equals("0")) {
                 tv_zi.setVisibility(View.VISIBLE);
             } else {
-                adapter = new ZiAdapter(mContext, list, mSumBitmapList,2);
+                adapter = new ZiAdapter(mContext, list, mSumBitmapList, 2);
                 lv_zi.setAdapter(adapter);
             }
         }
-    }
-
-    /**
-     * 根据图片的url路径获得Bitmap对象
-     *
-     * @param url
-     * @return
-     */
-    private Bitmap decodeUriAsBitmapFromNet(String url) {
-        URL fileUrl = null;
-        Bitmap bitmap = null;
-
-        try {
-            fileUrl = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            HttpURLConnection conn = (HttpURLConnection) fileUrl
-                    .openConnection();
-            conn.setDoInput(true);
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            bitmap = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
     }
 }
