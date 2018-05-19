@@ -321,19 +321,19 @@ public class ZiAdapter extends BaseAdapter {
             }
         });
         if (mKind == 1) {
-            if (null != mSumBitmapList) {
+            if (null != mSumBitmapList && mSumBitmapList.size() > 0) {
                 //填充图片
                 List<Bitmap> bitmapList = (ArrayList) mSumBitmapList.get(i);
                 GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
-                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, bitmapList,1);
+                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, bitmapList, 1);
                 holder.recview_show.setLayoutManager(mLayoutManager);
                 holder.recview_show.setAdapter(showAdapter);
             }
         } else if (mKind == 2) {
-            if (null != mSumBitmapList) {
+            if (null != mSumBitmapList && mSumBitmapList.size() > 0) {
                 List<String> urlList = (ArrayList) mSumBitmapList.get(i);
                 GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
-                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, urlList,2);
+                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, urlList, 2);
                 holder.recview_show.setLayoutManager(mLayoutManager);
                 holder.recview_show.setAdapter(showAdapter);
             }

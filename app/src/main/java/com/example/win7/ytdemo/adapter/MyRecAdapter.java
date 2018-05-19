@@ -128,24 +128,12 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
             });
         } else {
             holder.img_add_photo.setImageBitmap(mData.get(position));
-            //            holder.tv_pro_uping.setVisibility(View.VISIBLE);
-            //            String upSorF = mState.get(position - 1);
-            //            if (upSorF.equals("")) {
-            //                holder.tv_pro_uping.setText("正在上传");
-            //            } else if (upSorF.equals("成功")) {
-            //                holder.tv_pro_uping.setText("上传成功");
-            //            } else {
-            //                holder.tv_pro_uping.setText("上传失败");
-            //            }
         }
 
         holder.img_delet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mData.remove(position);
-                //                mState.remove(position - 1);
-                //                mPicUrlList.remove(position - 1);
-                //                mImgPath = "";
                 notifyDataSetChanged();
             }
         });

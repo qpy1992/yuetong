@@ -3,7 +3,6 @@ package com.example.win7.ytdemo.activity;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,6 +36,9 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
@@ -105,9 +107,9 @@ public class AddTaskActivity extends BaseActivity {
     Double total  = 0d;
     Double amount = 0d;
     private GridLayoutManager mLayoutManager;
-    private List<Bitmap>      mBitmapList;//给recyclerview添加的bitmap集合
-    private MyRecAdapter      mMyAdapter;
-    private List         mSumBitmapList = new ArrayList();//记录总的bitmaplist的集合
+    private List<Bitmap> mBitmapList = new ArrayList<>();//给recyclerview添加的bitmap集合
+    private MyRecAdapter mMyAdapter;
+    private List<List>   mSumBitmapList = new ArrayList();//记录总的bitmaplist的集合
     private List<String> mSumBtUrlList  = new ArrayList();//记录总的图片在服务器地址的集合
 
     @Override
@@ -152,7 +154,7 @@ public class AddTaskActivity extends BaseActivity {
                     case R.id.action_add:
                         HashMap<String, String> map = new HashMap<>();
                         try {
-                            showDialog(map);
+                            showInfoDialog(map, -1);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -163,7 +165,7 @@ public class AddTaskActivity extends BaseActivity {
         });
     }
 
-    protected void showDialog(final HashMap<String, String> map) throws ParseException {
+    private void showInfoDialog(final HashMap<String, String> map, final int n) throws ParseException {
         if (tv_content.getText().toString().equals("")) {
             Toast.makeText(AddTaskActivity.this, "请先选择内容", Toast.LENGTH_SHORT).show();
         } else {
@@ -174,17 +176,23 @@ public class AddTaskActivity extends BaseActivity {
             final View v = getLayoutInflater().inflate(R.layout.item_zi_add, null);
             RecyclerView recview_add = v.findViewById(R.id.recview_add);
             //添加初始展示的图片
-            Resources res = getResources();
-            Bitmap mBm = BitmapFactory.decodeResource(res, R.drawable.add_picture);
+            Bitmap mBm = BitmapFactory.decodeResource(getResources(), R.drawable.add_picture);
             mBitmapList = new ArrayList<>();
             mBitmapList.add(mBm);
             mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
-            mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList);
+            if (n >= 0) {
+                List list = mSumBitmapList.get(n);
+                list.add(0, mBm);
+                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) list);
+
+            } else {
+                mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
+                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList);
+            }
             // 设置布局管理器
             recview_add.setLayoutManager(mLayoutManager);
             // 设置adapter
             recview_add.setAdapter(mMyAdapter);
-
 
             final TextView tv_fuzhu = (TextView) v.findViewById(R.id.tv_fuzhu_add);
             tv_fuzhu.setText(sup);
@@ -568,11 +576,18 @@ public class AddTaskActivity extends BaseActivity {
                     tv_amounts.setText(String.valueOf(amount));
                     //                    adapter.notifyDataSetChanged();
                     //图片总集合，添加选择的bitmap集合
-                    mBitmapList.remove(0);
-                    mSumBitmapList.add(mBitmapList);
+                    if (n >= 0) {
+                        mBitmapList.clear();
+                        List list = mSumBitmapList.get(n);
+                        list.remove(0);
+                        mBitmapList.addAll(list);
+                    } else {
+                        mBitmapList.remove(0);
+                        mSumBitmapList.add(mBitmapList);
+                    }
                     //跟页面类表刷新
                     //上传图片
-                    sendPic(mBitmapList);
+                    sendPic(mBitmapList, n);
                     dialog.dismiss();
                     adapter.notifyDataSetChanged();
                 }
@@ -624,8 +639,8 @@ public class AddTaskActivity extends BaseActivity {
         mMyAdapter.notifyDataSetChanged();
     }
 
-    private void sendPic(List<Bitmap> bitmapList) {
-        Task2 task2 = new Task2(bitmapList);
+    private void sendPic(List<Bitmap> bitmapList, int n) {
+        Task2 task2 = new Task2(bitmapList, n);
         task2.execute();
     }
 
@@ -686,7 +701,7 @@ public class AddTaskActivity extends BaseActivity {
         ziList = new ArrayList<>();//子表集合
         if (interid.equals("0")) {
             //单据内码为0，表示做新增操作
-            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList,1);//ziList一开始为空
+            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList, 1);//ziList一开始为空
             lv_zb.setAdapter(adapter);
             //查询默认显示的字段
             new MRTask().execute();
@@ -822,7 +837,7 @@ public class AddTaskActivity extends BaseActivity {
                 }
                 jiliang = map.get("jiliang");
                 try {
-                    showDialog(map);
+                    showInfoDialog(map, i);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -2209,7 +2224,7 @@ public class AddTaskActivity extends BaseActivity {
                     "   j.FName contacts,k.FName neirong,l.FName jiliang,l.fitemid jiliangid,b.FDecimal shuliang,b.FDecimal1 danjia,b.FAmount2 hanshui,b.FAmount3 buhan," +
                     "   b.FText fasong,b.FText1 huikui,o.FName pingfen,o.fitemid pfid,p.FName js1,p.fitemid jsid1,b.FCheckBox1 qr1,q.FName js2,q.fitemid jsid2,b.FCheckBox2 qr2," +
                     "   m.FName js3,m.fitemid jsid3,b.FCheckBox3 qr3,n.FName js4,n.fitemid jsid4,b.FCheckBox4 qr4,r.FName js5,r.fitemid jsid5,b.FCheckBox5 qr5,s.fname fuzhu,b.fdecimal2 fuliang,b.id" +
-                    "    from t_BOS200000000 a inner join t_BOS200000000Entry2 b on a.FID=b.FID" +
+                    "   ,b.fimage1,b.fimage2,b.fimage3,b.fimage4,b.fimage5 from t_BOS200000000 a inner join t_BOS200000000Entry2 b on a.FID=b.FID" +
                     "   left join t_Currency c on c.FCurrencyID=a.FBase3 left join t_Item_3001 d on d.FItemID=a.FBase11" +
                     "   left join t_Department e on e.FItemID=a.FBase11 left join t_Item_3006 f on f.FItemID=a.FBase13" +
                     "   left join t_Emp g on g.FItemID=b.FBase4 left join t_Item_3007 h on h.FItemID=b.FBase left join" +
@@ -2280,6 +2295,22 @@ public class AddTaskActivity extends BaseActivity {
                     String fasong = recordEle.elementTextTrim("fasong");
                     String huikui = recordEle.elementTextTrim("huikui");
                     String pingfen = recordEle.elementTextTrim("pingfen");
+                    for (int i = 0; i < 5; i++) {
+                        final String url = recordEle.elementTextTrim("fimage" + (i + 1));
+                        if (!"".equals(url)) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Glide.with(AddTaskActivity.this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+                                        @Override
+                                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                            mBitmapList.add(resource);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
                     String a = recordEle.elementTextTrim("js1");
                     String b = recordEle.elementTextTrim("js2");
                     String c = recordEle.elementTextTrim("js3");
@@ -2337,6 +2368,7 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("id", id);
                     ziList.add(map);
                 }
+                mSumBitmapList.add(mBitmapList);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -2381,7 +2413,7 @@ public class AddTaskActivity extends BaseActivity {
             }
             tv_total.setText(String.valueOf(total));
             tv_amounts.setText(String.valueOf(amount));
-            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList,1);
+            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList, 1);
             lv_zb.setAdapter(adapter);
         }
     }
@@ -2518,10 +2550,12 @@ public class AddTaskActivity extends BaseActivity {
     }
 
     class Task2 extends AsyncTask<Void, Integer, Integer> {
-        List<Bitmap> mBitmapList;
+        private List<Bitmap> mBitmapList;
+        private int          n;
 
-        public Task2(List<Bitmap> btList) {
+        public Task2(List<Bitmap> btList, int n) {
             this.mBitmapList = btList;
+            this.n = n;
         }
 
         /**
@@ -2594,7 +2628,11 @@ public class AddTaskActivity extends BaseActivity {
                 String result = object.getProperty(0).toString();
                 Log.i("sss", result + "sss");
                 //获取返回的图片网络地址，加入集合中
-                mSumBtUrlList.add(result);
+                if (n >= 0) {
+                    mSumBtUrlList.set(n, result);
+                } else {
+                    mSumBtUrlList.add(result);
+                }
             } catch (Exception e) {
                 Log.i("sss", e.toString() + "sss");
             }
