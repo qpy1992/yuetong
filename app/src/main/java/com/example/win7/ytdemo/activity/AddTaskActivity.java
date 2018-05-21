@@ -584,19 +584,12 @@ public class AddTaskActivity extends BaseActivity {
                     tv_amounts.setText(String.valueOf(amount));
                     //                    adapter.notifyDataSetChanged();
                     //图片总集合，添加选择的bitmap集合
+                    mBitmapList.remove(0);
                     if (n >= 0) {
-                        mBitmapList.remove(0);
                         List list = mSumBitmapList.get(n);
                         list.clear();
                         list.addAll(mBitmapList);
-//                        for (int i = 0; i < mSumBtUrlList.size(); i++) {
-//                            if (i != 0) {
-//                                Bitmap bmt = (Bitmap) list.get(i);
-//                                mBitmapList.add(bmt);
-//                            }
-//                        }
                     } else {
-                        mBitmapList.remove(0);
                         mSumBitmapList.add(mBitmapList);
                     }
                     //跟页面类表刷新
@@ -2602,8 +2595,10 @@ public class AddTaskActivity extends BaseActivity {
                 Document document2 = DocumentHelper.createDocument();
                 Element rootElement2 = document2.addElement("NewDataSet");
                 for (Bitmap e : mBitmapList) {
-                    Element cust2 = rootElement2.addElement("Cust");
-                    cust2.addElement("fimage").setText(bitmapToBase64(e));
+                    Element cust = rootElement2.addElement("Cust");
+                    cust.addElement("fimage").setText(bitmapToBase64(e));
+                    String s = bitmapToBase64(e);
+                    System.out.println(bitmapToBase64(e));
                 }
                 //
                 OutputFormat outputFormat = OutputFormat.createPrettyPrint();
@@ -2615,7 +2610,7 @@ public class AddTaskActivity extends BaseActivity {
                 // 把创建好的XML文档写入字符串
                 xmlWriter2.write(document2);
 
-                rpc.addProperty("base64string", stringWriter2.toString().substring(38));//<NewDataSet><Cust>fname</Cust><Cust>fname</Cust></NewDataSet>
+                rpc.addProperty("base64string", stringWriter2.toString().substring(38));//<NewDataSet><Cust><fimage></fimage></Cust><Cust><fimage></fimage></Cust></NewDataSet>
                 //
                 Log.i("qwe", stringWriter2.toString().substring(38));
 
