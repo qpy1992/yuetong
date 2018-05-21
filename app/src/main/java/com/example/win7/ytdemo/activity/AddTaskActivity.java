@@ -430,7 +430,14 @@ public class AddTaskActivity extends BaseActivity {
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE |
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    if (n >= 0) {
+                        mSumBitmapList.get(n).remove(0);
+                    }
+                }
+            });
             tv_submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
