@@ -182,9 +182,8 @@ public class AddTaskActivity extends BaseActivity {
             mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
             if (n >= 0) {
                 List list = mSumBitmapList.get(n);
-                list.add(0, mBm);
-                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) list);
-
+                mBitmapList.addAll(list);
+                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList);
             } else {
                 mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
                 mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList);
@@ -430,14 +429,14 @@ public class AddTaskActivity extends BaseActivity {
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE |
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialogInterface) {
-                    if (n >= 0) {
-                        mSumBitmapList.get(n).remove(0);
-                    }
-                }
-            });
+//            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                @Override
+//                public void onDismiss(DialogInterface dialogInterface) {
+//                    if (n >= 0) {
+//                        mSumBitmapList.get(n).remove(0);
+//                    }
+//                }
+//            });
             tv_submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -500,7 +499,7 @@ public class AddTaskActivity extends BaseActivity {
                     } else {
                         map.put("pfid", pfid);
                     }
-                    if(strList4.size()!=0) {
+                    if (strList4.size() != 0) {
                         switch (strList2.size()) {
                             case 1:
                                 map.put("a", strList4.get(0).toString());
@@ -586,21 +585,23 @@ public class AddTaskActivity extends BaseActivity {
                     //                    adapter.notifyDataSetChanged();
                     //图片总集合，添加选择的bitmap集合
                     if (n >= 0) {
-                        mBitmapList.clear();
+                        mBitmapList.remove(0);
                         List list = mSumBitmapList.get(n);
-                        for (int i = 0; i < mSumBtUrlList.size(); i++) {
-                            if (i != 0) {
-                                Bitmap bmt = (Bitmap) list.get(i);
-                                mBitmapList.add(bmt);
-                            }
-                        }
+                        list.clear();
+                        list.addAll(mBitmapList);
+//                        for (int i = 0; i < mSumBtUrlList.size(); i++) {
+//                            if (i != 0) {
+//                                Bitmap bmt = (Bitmap) list.get(i);
+//                                mBitmapList.add(bmt);
+//                            }
+//                        }
                     } else {
                         mBitmapList.remove(0);
                         mSumBitmapList.add(mBitmapList);
                     }
                     //跟页面类表刷新
                     //上传图片
-                    sendPic(mBitmapList, n);
+                    sendPic(mBitmapList, n);//n小于0时是新增，大于等于0时是点击编辑
                     dialog.dismiss();
                     adapter.notifyDataSetChanged();
                 }
@@ -608,8 +609,8 @@ public class AddTaskActivity extends BaseActivity {
         }
     }
 
-    private static final int IMAGE     = 1;//调用系统相册-选择图片
-    private static final int SHOT_CODE = 20;//调用系统相册-选择图片
+    private static final int IMAGE     = 1;//调用系统相册-选择图片n小于0
+    private static final int SHOT_CODE = 20;//调用系统相册-选择图片n小于0
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -2382,15 +2383,15 @@ public class AddTaskActivity extends BaseActivity {
                     ziList.add(map);
                 }
                 mSumBitmapList.add(mBitmapList);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (list.size() == 0){
+            if (list.size() == 0) {
                 return "0";
             } else {
                 //有人确认过就不能修改
                 int size = lists.size();
-                for (HashMap<String, String> maps : ziList){
+                for (HashMap<String, String> maps : ziList) {
                     lists.add(maps.get("qr1"));
                     lists.add(maps.get("qr2"));
                     lists.add(maps.get("qr3"));
@@ -2417,7 +2418,7 @@ public class AddTaskActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(String s){
+        protected void onPostExecute(String s) {
             super.onPostExecute(s);
             progress.dismiss();
             for (int i = 0; i < ziList.size(); i++) {
@@ -2432,15 +2433,15 @@ public class AddTaskActivity extends BaseActivity {
     }
 
     //查询好友列表
-    class HYTask extends AsyncTask<Void, String, String>{
+    class HYTask extends AsyncTask<Void, String, String> {
         TextView tv;
 
-        public HYTask(TextView tv){
+        public HYTask(TextView tv) {
             this.tv = tv;
         }
 
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             list2.clear();
             strList2.clear();
             strList3.clear();
@@ -2564,7 +2565,7 @@ public class AddTaskActivity extends BaseActivity {
 
     class Task2 extends AsyncTask<Void, Integer, Integer> {
         private List<Bitmap> mBitmapList;
-        private int          n;
+        private int          n;//n小于0时是新增，大于等于0时是点击编辑
 
         public Task2(List<Bitmap> btList, int n) {
             this.mBitmapList = btList;

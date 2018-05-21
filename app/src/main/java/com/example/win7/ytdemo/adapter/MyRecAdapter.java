@@ -39,8 +39,8 @@ import java.util.ArrayList;
 public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> {
     private Context           mContext;
     private ArrayList<Bitmap> mData;
-    private static final int IMAGE     = 1;//调用系统相册-选择图片
-    private static final int SHOT_CODE = 20;//调用系统相册-选择图片
+    private static final int IMAGE      = 1;//调用系统相册-选择图片
+    private static final int SHOT_CODE  = 20;//调用系统相册-选择图片
 
     public MyRecAdapter(Context context, ArrayList<Bitmap> data) {
         this.mContext = context;
