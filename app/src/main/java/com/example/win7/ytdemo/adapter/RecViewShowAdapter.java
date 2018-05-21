@@ -2,15 +2,24 @@ package com.example.win7.ytdemo.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.util.GlideLoaderUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +35,7 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
     private Context mContext;
     private List    mData;
     private int     mType;
+    private ArrayList<Bitmap> mBitmapList = new ArrayList<>();
 
     public RecViewShowAdapter(Context context, List data, int kind) {
         this.mContext = context;
@@ -43,19 +53,58 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         if (mType == 1) {
             Bitmap bitmap = (Bitmap) mData.get(position);
             holder.img_add_photo.setImageBitmap(bitmap);
+            mBitmapList.add(bitmap);
         } else if (mType == 2) {
             String url = (String) mData.get(position);
             GlideLoaderUtil.showImageView(mContext, url, holder.img_add_photo);
+            Glide.with(mContext).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    mBitmapList.add(resource);
+                }
+            });
         }
         holder.img_delet.setVisibility(View.GONE);
         holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //弹出popupwindow展示照片
+                final PopupWindow popupWindow = new PopupWindow(mContext);
+                popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+                popupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+                popupWindow.setContentView(LayoutInflater.from(mContext).inflate(R.layout.dialog_photo_view, null));
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+                popupWindow.setOutsideTouchable(false);
+                popupWindow.setFocusable(true);
+                //显示popupwindow,并指定位置
+                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                //找到pic展示条目
+                ViewPager viewpager = popupWindow.getContentView().findViewById(R.id.viewpager);
+                final TextView tv_title = popupWindow.getContentView().findViewById(R.id.tv_title);
+                MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(mContext, mBitmapList, popupWindow);
+                viewpager.setAdapter(viewPagerAdapter);
+                viewpager.setCurrentItem(position);
+                tv_title.setText((position + 1) + "/" + mBitmapList.size());
+                viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        tv_title.setText((position + 1) + "/" + mBitmapList.size());
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
             }
         });
     }

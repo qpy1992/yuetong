@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -127,7 +128,49 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                 }
             });
         } else {
-            holder.img_add_photo.setImageBitmap(mData.get(position));
+            Bitmap bitmap = mData.get(position);
+            final ArrayList<Bitmap> markList = new ArrayList<>();
+            markList.addAll(mData);
+            markList.remove(0);
+            holder.img_add_photo.setImageBitmap(bitmap);
+            holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //弹出popupwindow展示照片
+                    final PopupWindow popupWindow = new PopupWindow(mContext);
+                    popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+                    popupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+                    popupWindow.setContentView(LayoutInflater.from(mContext).inflate(R.layout.dialog_photo_view, null));
+                    popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+                    popupWindow.setOutsideTouchable(false);
+                    popupWindow.setFocusable(true);
+                    //显示popupwindow,并指定位置
+                    popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                    //找到pic展示条目
+                    ViewPager viewpager = popupWindow.getContentView().findViewById(R.id.viewpager);
+                    final TextView tv_title = popupWindow.getContentView().findViewById(R.id.tv_title);
+                    MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(mContext, markList, popupWindow);
+                    viewpager.setAdapter(viewPagerAdapter);
+                    viewpager.setCurrentItem(position - 1);
+                    tv_title.setText(position + "/" + markList.size());
+                    viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                        }
+
+                        @Override
+                        public void onPageSelected(int position) {
+                            tv_title.setText((position + 1) + "/" + markList.size());
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+
+                        }
+                    });
+                }
+            });
         }
 
         holder.img_delet.setOnClickListener(new View.OnClickListener() {
