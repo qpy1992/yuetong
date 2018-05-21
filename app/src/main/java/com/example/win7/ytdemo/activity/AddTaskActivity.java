@@ -586,8 +586,12 @@ public class AddTaskActivity extends BaseActivity {
                     if (n >= 0) {
                         mBitmapList.clear();
                         List list = mSumBitmapList.get(n);
-                        list.remove(0);
-                        mBitmapList.addAll(list);
+                        for (int i = 0; i < mSumBtUrlList.size(); i++) {
+                            if (i != 0) {
+                                Bitmap bmt = (Bitmap) list.get(i);
+                                mBitmapList.add(bmt);
+                            }
+                        }
                     } else {
                         mBitmapList.remove(0);
                         mSumBitmapList.add(mBitmapList);
