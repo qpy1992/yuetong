@@ -500,78 +500,80 @@ public class AddTaskActivity extends BaseActivity {
                     } else {
                         map.put("pfid", pfid);
                     }
-                    switch (strList2.size()) {
-                        case 1:
-                            map.put("a", strList4.get(0).toString());
-                            map.put("aa", strList3.get(0).toString());
-                            map.put("aid", strList2.get(0));
-                            map.put("bid", "0");
-                            map.put("cid", "0");
-                            map.put("did", "0");
-                            map.put("eid", "0");
-                            break;
-                        case 2:
-                            map.put("a", strList4.get(0).toString());
-                            map.put("b", strList4.get(1).toString());
-                            map.put("aa", strList3.get(0).toString());
-                            map.put("bb", strList3.get(1).toString());
-                            map.put("aid", strList2.get(0));
-                            map.put("bid", strList2.get(1));
-                            map.put("cid", "0");
-                            map.put("did", "0");
-                            map.put("eid", "0");
-                            break;
-                        case 3:
-                            map.put("a", strList4.get(0).toString());
-                            map.put("b", strList4.get(1).toString());
-                            map.put("c", strList4.get(2).toString());
-                            map.put("aa", strList3.get(0).toString());
-                            map.put("bb", strList3.get(1).toString());
-                            map.put("cc", strList3.get(2).toString());
-                            map.put("aid", strList2.get(0));
-                            map.put("bid", strList2.get(1));
-                            map.put("cid", strList2.get(2));
-                            map.put("did", "0");
-                            map.put("eid", "0");
-                            break;
-                        case 4:
-                            map.put("a", strList4.get(0).toString());
-                            map.put("b", strList4.get(1).toString());
-                            map.put("c", strList4.get(2).toString());
-                            map.put("d", strList4.get(3).toString());
-                            map.put("aa", strList3.get(0).toString());
-                            map.put("bb", strList3.get(1).toString());
-                            map.put("cc", strList3.get(2).toString());
-                            map.put("dd", strList3.get(3).toString());
-                            map.put("aid", strList2.get(0));
-                            map.put("bid", strList2.get(1));
-                            map.put("cid", strList2.get(2));
-                            map.put("did", strList2.get(3));
-                            map.put("eid", "0");
-                            break;
-                        case 5:
-                            map.put("a", strList4.get(0).toString());
-                            map.put("b", strList4.get(1).toString());
-                            map.put("c", strList4.get(2).toString());
-                            map.put("d", strList4.get(3).toString());
-                            map.put("e", strList4.get(4).toString());
-                            map.put("aa", strList3.get(0).toString());
-                            map.put("bb", strList3.get(1).toString());
-                            map.put("cc", strList3.get(2).toString());
-                            map.put("dd", strList3.get(3).toString());
-                            map.put("ee", strList3.get(4).toString());
-                            map.put("aid", strList2.get(0));
-                            map.put("bid", strList2.get(1));
-                            map.put("cid", strList2.get(2));
-                            map.put("did", strList2.get(3));
-                            map.put("eid", strList2.get(4));
-                            break;
+                    if(strList4.size()!=0) {
+                        switch (strList2.size()) {
+                            case 1:
+                                map.put("a", strList4.get(0).toString());
+                                map.put("aa", strList3.get(0).toString());
+                                map.put("aid", strList2.get(0));
+                                map.put("bid", "0");
+                                map.put("cid", "0");
+                                map.put("did", "0");
+                                map.put("eid", "0");
+                                break;
+                            case 2:
+                                map.put("a", strList4.get(0).toString());
+                                map.put("b", strList4.get(1).toString());
+                                map.put("aa", strList3.get(0).toString());
+                                map.put("bb", strList3.get(1).toString());
+                                map.put("aid", strList2.get(0));
+                                map.put("bid", strList2.get(1));
+                                map.put("cid", "0");
+                                map.put("did", "0");
+                                map.put("eid", "0");
+                                break;
+                            case 3:
+                                map.put("a", strList4.get(0).toString());
+                                map.put("b", strList4.get(1).toString());
+                                map.put("c", strList4.get(2).toString());
+                                map.put("aa", strList3.get(0).toString());
+                                map.put("bb", strList3.get(1).toString());
+                                map.put("cc", strList3.get(2).toString());
+                                map.put("aid", strList2.get(0));
+                                map.put("bid", strList2.get(1));
+                                map.put("cid", strList2.get(2));
+                                map.put("did", "0");
+                                map.put("eid", "0");
+                                break;
+                            case 4:
+                                map.put("a", strList4.get(0).toString());
+                                map.put("b", strList4.get(1).toString());
+                                map.put("c", strList4.get(2).toString());
+                                map.put("d", strList4.get(3).toString());
+                                map.put("aa", strList3.get(0).toString());
+                                map.put("bb", strList3.get(1).toString());
+                                map.put("cc", strList3.get(2).toString());
+                                map.put("dd", strList3.get(3).toString());
+                                map.put("aid", strList2.get(0));
+                                map.put("bid", strList2.get(1));
+                                map.put("cid", strList2.get(2));
+                                map.put("did", strList2.get(3));
+                                map.put("eid", "0");
+                                break;
+                            case 5:
+                                map.put("a", strList4.get(0).toString());
+                                map.put("b", strList4.get(1).toString());
+                                map.put("c", strList4.get(2).toString());
+                                map.put("d", strList4.get(3).toString());
+                                map.put("e", strList4.get(4).toString());
+                                map.put("aa", strList3.get(0).toString());
+                                map.put("bb", strList3.get(1).toString());
+                                map.put("cc", strList3.get(2).toString());
+                                map.put("dd", strList3.get(3).toString());
+                                map.put("ee", strList3.get(4).toString());
+                                map.put("aid", strList2.get(0));
+                                map.put("bid", strList2.get(1));
+                                map.put("cid", strList2.get(2));
+                                map.put("did", strList2.get(3));
+                                map.put("eid", strList2.get(4));
+                                break;
+                        }
+                        map.put("qr1", "0");
+                        map.put("qr2", "0");
+                        map.put("qr3", "0");
+                        map.put("qr4", "0");
+                        map.put("qr5", "0");
                     }
-                    map.put("qr1", "0");
-                    map.put("qr2", "0");
-                    map.put("qr3", "0");
-                    map.put("qr4", "0");
-                    map.put("qr5", "0");
                     if (map.get("id") == null) {
                         map.put("id", Utils.UUID());
                     }
@@ -2380,15 +2382,15 @@ public class AddTaskActivity extends BaseActivity {
                     ziList.add(map);
                 }
                 mSumBitmapList.add(mBitmapList);
-            } catch (Exception e) {
+            }catch (Exception e){
                 e.printStackTrace();
             }
-            if (list.size() == 0) {
+            if (list.size() == 0){
                 return "0";
             } else {
                 //有人确认过就不能修改
                 int size = lists.size();
-                for (HashMap<String, String> maps : ziList) {
+                for (HashMap<String, String> maps : ziList){
                     lists.add(maps.get("qr1"));
                     lists.add(maps.get("qr2"));
                     lists.add(maps.get("qr3"));
@@ -2415,7 +2417,7 @@ public class AddTaskActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String s){
             super.onPostExecute(s);
             progress.dismiss();
             for (int i = 0; i < ziList.size(); i++) {
@@ -2430,15 +2432,15 @@ public class AddTaskActivity extends BaseActivity {
     }
 
     //查询好友列表
-    class HYTask extends AsyncTask<Void, String, String> {
+    class HYTask extends AsyncTask<Void, String, String>{
         TextView tv;
 
-        public HYTask(TextView tv) {
+        public HYTask(TextView tv){
             this.tv = tv;
         }
 
         @Override
-        protected void onPreExecute() {
+        protected void onPreExecute(){
             list2.clear();
             strList2.clear();
             strList3.clear();
@@ -2669,9 +2671,7 @@ public class AddTaskActivity extends BaseActivity {
         }
     }
 
-    /*
-        *bitmap转base64
-    */
+    /*bitmap转base64*/
     public String bitmapToBase64(Bitmap bitmap) {
         String result = "";
         ByteArrayOutputStream bos = null;
