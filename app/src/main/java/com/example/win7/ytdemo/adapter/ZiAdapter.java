@@ -320,7 +320,7 @@ public class ZiAdapter extends BaseAdapter {
                 new AlertDialog.Builder(mContext).setView(tv).show();
             }
         });
-        if (mKind == 1) {
+        if (mKind == 1) {//bitmapList放入的是图片
             if (null != mSumBitmapList && mSumBitmapList.size() > 0) {
                 //填充图片
                 List<Bitmap> bitmapList = (ArrayList) mSumBitmapList.get(i);
@@ -329,7 +329,7 @@ public class ZiAdapter extends BaseAdapter {
                 holder.recview_show.setLayoutManager(mLayoutManager);
                 holder.recview_show.setAdapter(showAdapter);
             }
-        } else if (mKind == 2) {
+        } else if (mKind == 2) {//bitmapList放入的是url地址
             if (null != mSumBitmapList && mSumBitmapList.size() > 0) {
                 List<String> urlList = (ArrayList) mSumBitmapList.get(i);
                 GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);

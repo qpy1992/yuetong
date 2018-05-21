@@ -13,9 +13,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.util.GlideLoaderUtil;
 
@@ -61,12 +58,6 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
         } else if (mType == 2) {
             String url = (String) mData.get(position);
             GlideLoaderUtil.showImageView(mContext, url, holder.img_add_photo);
-            Glide.with(mContext).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    mBitmapList.add(resource);
-                }
-            });
         }
         holder.img_delet.setVisibility(View.GONE);
         holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
@@ -85,10 +76,10 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
                 //找到pic展示条目
                 ViewPager viewpager = popupWindow.getContentView().findViewById(R.id.viewpager);
                 final TextView tv_title = popupWindow.getContentView().findViewById(R.id.tv_title);
-                MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(mContext, mBitmapList, popupWindow);
+                MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(mContext, mData, popupWindow,2);
                 viewpager.setAdapter(viewPagerAdapter);
                 viewpager.setCurrentItem(position);
-                tv_title.setText((position + 1) + "/" + mBitmapList.size());
+                tv_title.setText((position + 1) + "/" + mData.size());
                 viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                     @Override
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

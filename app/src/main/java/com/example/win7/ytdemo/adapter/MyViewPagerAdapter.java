@@ -11,8 +11,9 @@ import android.widget.PopupWindow;
 
 import com.bm.library.PhotoView;
 import com.example.win7.ytdemo.R;
+import com.example.win7.ytdemo.util.GlideLoaderUtil;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @创建者 AndyYan
@@ -24,14 +25,16 @@ import java.util.ArrayList;
  */
 
 public class MyViewPagerAdapter extends PagerAdapter {
-    private ArrayList<Bitmap> mArrayList;
-    private Context           mContext;
-    private PopupWindow       mPopupWindow;
+    private List        mArrayList;
+    private Context     mContext;
+    private PopupWindow mPopupWindow;
+    private int         mKind;
 
-    public MyViewPagerAdapter(Context context, ArrayList<Bitmap> arrayList, PopupWindow popupWindow) {
+    public MyViewPagerAdapter(Context context, List arrayList, PopupWindow popupWindow, int kind) {
         this.mContext = context;
         this.mArrayList = arrayList;
         this.mPopupWindow = popupWindow;
+        this.mKind = kind;
     }
 
     @Override
@@ -55,7 +58,11 @@ public class MyViewPagerAdapter extends PagerAdapter {
         view.setLayoutParams(lp);
         //设置viewpager中子view显示的数据
         PhotoView img_show = (PhotoView) view.findViewById(R.id.photoview);
-        img_show.setImageBitmap(mArrayList.get(position));
+        if (mKind == 1) {
+            img_show.setImageBitmap((Bitmap) mArrayList.get(position));
+        } else if (mKind == 2) {
+            GlideLoaderUtil.showImageView(mContext, (String) mArrayList.get(position), img_show);
+        }
         img_show.enable();
         img_show.setOnClickListener(new View.OnClickListener() {
             @Override

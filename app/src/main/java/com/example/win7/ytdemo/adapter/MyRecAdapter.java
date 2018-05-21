@@ -149,7 +149,7 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                     //找到pic展示条目
                     ViewPager viewpager = popupWindow.getContentView().findViewById(R.id.viewpager);
                     final TextView tv_title = popupWindow.getContentView().findViewById(R.id.tv_title);
-                    MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(mContext, markList, popupWindow);
+                    MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(mContext, markList, popupWindow,1);
                     viewpager.setAdapter(viewPagerAdapter);
                     viewpager.setCurrentItem(position - 1);
                     tv_title.setText(position + "/" + markList.size());
