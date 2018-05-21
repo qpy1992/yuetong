@@ -76,7 +76,12 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
                 //找到pic展示条目
                 ViewPager viewpager = popupWindow.getContentView().findViewById(R.id.viewpager);
                 final TextView tv_title = popupWindow.getContentView().findViewById(R.id.tv_title);
-                MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(mContext, mData, popupWindow,2);
+                MyViewPagerAdapter viewPagerAdapter;
+                if (mType == 1) {
+                    viewPagerAdapter = new MyViewPagerAdapter(mContext, mData, popupWindow, 1);
+                } else {
+                    viewPagerAdapter = new MyViewPagerAdapter(mContext, mData, popupWindow, 2);
+                }
                 viewpager.setAdapter(viewPagerAdapter);
                 viewpager.setCurrentItem(position);
                 tv_title.setText((position + 1) + "/" + mData.size());
