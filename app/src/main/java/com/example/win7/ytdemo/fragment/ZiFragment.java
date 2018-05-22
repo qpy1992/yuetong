@@ -26,7 +26,6 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -167,9 +166,10 @@ public class ZiFragment extends Fragment {
                     fasong = recordEle.elementTextTrim("fasong");
                     huikui = recordEle.elementTextTrim("huikui");
                     pingfen = recordEle.elementTextTrim("pingfen");
+                    mBitmapList = new ArrayList<>();
                     for (int i = 0; i < 5; i++) {
                         String url = recordEle.elementTextTrim("fimage" + (i + 1));
-                        if (!"".equals(url)) {
+                        if (null != url && !"".equals(url)) {
                             mBitmapList.add(url);
                         }
                     }
@@ -214,8 +214,8 @@ public class ZiFragment extends Fragment {
                     map.put("qr4", qr4);
                     map.put("qr5", qr5);
                     list.add(map);
+                    mSumBitmapList.add(mBitmapList);
                 }
-                mSumBitmapList.add(mBitmapList);
             } catch (Exception e) {
                 e.printStackTrace();
             }
