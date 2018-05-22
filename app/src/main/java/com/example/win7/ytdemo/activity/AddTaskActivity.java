@@ -36,9 +36,6 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
@@ -107,7 +104,7 @@ public class AddTaskActivity extends BaseActivity {
     Double total  = 0d;
     Double amount = 0d;
     private GridLayoutManager mLayoutManager;
-    private List<Bitmap> mBitmapList = new ArrayList<>();//给recyclerview添加的bitmap集合
+    private List mBitmapList = new ArrayList<>();//给recyclerview添加的bitmap集合
     private MyRecAdapter mMyAdapter;
     private List<List>   mSumBitmapList = new ArrayList();//记录总的bitmaplist的集合
     private List<String> mSumBtUrlList  = new ArrayList();//记录总的图片在服务器地址的集合
@@ -2306,21 +2303,22 @@ public class AddTaskActivity extends BaseActivity {
                     String fasong = recordEle.elementTextTrim("fasong");
                     String huikui = recordEle.elementTextTrim("huikui");
                     String pingfen = recordEle.elementTextTrim("pingfen");
-                    mBitmapList=new ArrayList<>();
+                    mBitmapList = new ArrayList<>();
                     for (int i = 0; i < 5; i++) {
                         final String url = recordEle.elementTextTrim("fimage" + (i + 1));
-                        if (!"".equals(url)) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Glide.with(AddTaskActivity.this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
-                                        @Override
-                                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                            mBitmapList.add(resource);
-                                        }
-                                    });
-                                }
-                            });
+                        if (null != url && !"".equals(url)) {
+                            mBitmapList.add(url);
+                            //                            runOnUiThread(new Runnable() {
+                            //                                @Override
+                            //                                public void run() {
+                            //                                    Glide.with(AddTaskActivity.this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+                            //                                        @Override
+                            //                                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            //                                            mBitmapList.add(resource);
+                            //                                        }
+                            //                                    });
+                            //                                }
+                            //                            });
                         }
                     }
                     String a = recordEle.elementTextTrim("js1");
@@ -2425,7 +2423,7 @@ public class AddTaskActivity extends BaseActivity {
             }
             tv_total.setText(String.valueOf(total));
             tv_amounts.setText(String.valueOf(amount));
-            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList, 1);
+            adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList, 2);
             lv_zb.setAdapter(adapter);
         }
     }
