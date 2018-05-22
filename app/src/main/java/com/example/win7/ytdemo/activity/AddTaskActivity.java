@@ -2306,6 +2306,7 @@ public class AddTaskActivity extends BaseActivity {
                     String fasong = recordEle.elementTextTrim("fasong");
                     String huikui = recordEle.elementTextTrim("huikui");
                     String pingfen = recordEle.elementTextTrim("pingfen");
+                    mBitmapList=new ArrayList<>();
                     for (int i = 0; i < 5; i++) {
                         final String url = recordEle.elementTextTrim("fimage" + (i + 1));
                         if (!"".equals(url)) {
@@ -2378,8 +2379,8 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("qr5", qr5);
                     map.put("id", id);
                     ziList.add(map);
+                    mSumBitmapList.add(mBitmapList);
                 }
-                mSumBitmapList.add(mBitmapList);
             } catch (Exception e) {
                 e.printStackTrace();
             }
