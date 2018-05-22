@@ -837,11 +837,13 @@ public class AddTaskActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HashMap<String, String> map = ziList.get(i);
-                if (map.get("qr1").equals("True") || map.get("qr2").equals("True") ||
-                        map.get("qr3").equals("True") || map.get("qr4").equals("True") ||
-                        map.get("qr5").equals("True")) {
-                    Toast.makeText(AddTaskActivity.this, "已确认，无法修改", Toast.LENGTH_SHORT).show();
-                    return;
+                if(map.get("qr1")!=null) {
+                    if (map.get("qr1").equals("True") || map.get("qr2").equals("True") ||
+                            map.get("qr3").equals("True") || map.get("qr4").equals("True") ||
+                            map.get("qr5").equals("True")) {
+                        Toast.makeText(AddTaskActivity.this, "已确认，无法修改", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
                 jiliang = map.get("jiliang");
                 try {
@@ -1919,9 +1921,9 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            progress.dismiss();
             PinyinComparator comparator = new PinyinComparator();
             Collections.sort(list1, comparator);
+            progress.dismiss();
             for (HashMap<String, String> map : list1) {
                 String name = map.get("fname");
                 strList1.add(name);
