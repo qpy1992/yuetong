@@ -162,14 +162,10 @@ public class AddTaskActivity extends BaseActivity {
         });
     }
 
-    private void showInfoDialog(final HashMap<String, String> map, final int n) throws ParseException {
+    private void showInfoDialog(final HashMap<String, String> map, final int n) throws ParseException {//n>=0是编辑，n<0是新增
         if (tv_content.getText().toString().equals("")) {
             Toast.makeText(AddTaskActivity.this, "请先选择内容", Toast.LENGTH_SHORT).show();
         } else {
-            if (!map.isEmpty()) {
-                planid = map.get("planid");
-                pfid = map.get("pfid");
-            }
             final View v = getLayoutInflater().inflate(R.layout.item_zi_add, null);
             RecyclerView recview_add = v.findViewById(R.id.recview_add);
             //添加初始展示的图片
@@ -177,14 +173,30 @@ public class AddTaskActivity extends BaseActivity {
             mBitmapList = new ArrayList<>();
             mBitmapList.add(mBm);
             mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
-            if (n >= 0) {
+            if (!map.isEmpty()) {
+                planid = map.get("planid");
+                pfid = map.get("pfid");
+
                 List list = mSumBitmapList.get(n);
                 mBitmapList.addAll(list);
-                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList);
+                if (interid.equals("0")) {
+                    mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList, 1);
+                } else {
+                    mMyAdapter = new MyRecAdapter(this, (ArrayList<String>) mBitmapList, 2);
+                }
             } else {
                 mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
-                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList);
+                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList, 1);
             }
+
+            //            if (n >= 0) {
+            //                //                List list = mSumBitmapList.get(n);
+            //                //                mBitmapList.addAll(list);
+            //                //                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList,1);
+            //            } else {
+            //                //                mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
+            //                //                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList,1);
+            //            }
             // 设置布局管理器
             recview_add.setLayoutManager(mLayoutManager);
             // 设置adapter
@@ -426,14 +438,6 @@ public class AddTaskActivity extends BaseActivity {
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE |
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-            //            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            //                @Override
-            //                public void onDismiss(DialogInterface dialogInterface) {
-            //                    if (n >= 0) {
-            //                        mSumBitmapList.get(n).remove(0);
-            //                    }
-            //                }
-            //            });
             tv_submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -579,7 +583,6 @@ public class AddTaskActivity extends BaseActivity {
                     amount = amount + Double.parseDouble(map.get("hanshui"));
                     tv_total.setText(String.valueOf(total));
                     tv_amounts.setText(String.valueOf(amount));
-                    //                    adapter.notifyDataSetChanged();
                     //图片总集合，添加选择的bitmap集合
                     mBitmapList.remove(0);
                     if (n >= 0) {
@@ -837,7 +840,7 @@ public class AddTaskActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 HashMap<String, String> map = ziList.get(i);
-                if(map.get("qr1")!=null) {
+                if (map.get("qr1") != null) {
                     if (map.get("qr1").equals("True") || map.get("qr2").equals("True") ||
                             map.get("qr3").equals("True") || map.get("qr4").equals("True") ||
                             map.get("qr5").equals("True")) {
@@ -2306,23 +2309,15 @@ public class AddTaskActivity extends BaseActivity {
                     String huikui = recordEle.elementTextTrim("huikui");
                     String pingfen = recordEle.elementTextTrim("pingfen");
                     mBitmapList = new ArrayList<>();
+                    String btpurl = "";
                     for (int i = 0; i < 5; i++) {
                         final String url = recordEle.elementTextTrim("fimage" + (i + 1));
                         if (null != url && !"".equals(url)) {
                             mBitmapList.add(url);
-                            //                            runOnUiThread(new Runnable() {
-                            //                                @Override
-                            //                                public void run() {
-                            //                                    Glide.with(AddTaskActivity.this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
-                            //                                        @Override
-                            //                                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            //                                            mBitmapList.add(resource);
-                            //                                        }
-                            //                                    });
-                            //                                }
-                            //                            });
+                            btpurl = btpurl + url;
                         }
                     }
+                    mSumBtUrlList.add(btpurl);
                     String a = recordEle.elementTextTrim("js1");
                     String b = recordEle.elementTextTrim("js2");
                     String c = recordEle.elementTextTrim("js3");
@@ -2517,7 +2512,6 @@ public class AddTaskActivity extends BaseActivity {
                         map.put("fitemid", recordEle.elementTextTrim("fitemid"));
                         list2.add(map);
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -2602,8 +2596,6 @@ public class AddTaskActivity extends BaseActivity {
                 for (Bitmap e : mBitmapList) {
                     Element cust = rootElement2.addElement("Cust");
                     cust.addElement("fimage").setText(bitmapToBase64(e));
-                    String s = bitmapToBase64(e);
-                    System.out.println(bitmapToBase64(e));
                 }
                 //
                 OutputFormat outputFormat = OutputFormat.createPrettyPrint();

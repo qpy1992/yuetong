@@ -23,6 +23,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
+import com.example.win7.ytdemo.util.GlideLoaderUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,14 +38,16 @@ import java.util.ArrayList;
  */
 
 public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> {
-    private Context           mContext;
-    private ArrayList<Bitmap> mData;
-    private static final int IMAGE      = 1;//调用系统相册-选择图片
-    private static final int SHOT_CODE  = 20;//调用系统相册-选择图片
+    private Context   mContext;
+    private ArrayList mData;
+    private int       mKind;//1是添加的图片，2是添加的地址
+    private static final int IMAGE     = 1;//调用系统相册-选择图片
+    private static final int SHOT_CODE = 20;//调用系统相册-选择图片
 
-    public MyRecAdapter(Context context, ArrayList<Bitmap> data) {
+    public MyRecAdapter(Context context, ArrayList data, int kind) {
         this.mContext = context;
         this.mData = data;
+        this.mKind = kind;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
             //第一个条目不显示删除按键
             holder.img_delet.setVisibility(View.GONE);
             //            holder.tv_pro_uping.setVisibility(View.GONE);
-            holder.img_add_photo.setImageBitmap(mData.get(position));
+            holder.img_add_photo.setImageBitmap((Bitmap) mData.get(position));
             // 设置点击事件添加图片
             holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,11 +131,25 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                 }
             });
         } else {
-            Bitmap bitmap = mData.get(position);
-            final ArrayList<Bitmap> markList = new ArrayList<>();
-            markList.addAll(mData);
+            final ArrayList markList = new ArrayList<>();
+            Object o = mData.get(position);
+            if (null != o) {
+                if (o instanceof Bitmap) {
+                    holder.img_add_photo.setImageBitmap((Bitmap) o);
+                } else if (o instanceof String) {
+                    GlideLoaderUtil.showImageView(mContext, (String) o, holder.img_add_photo);
+                }
+                //                if (mKind == 1) {
+                //                    Bitmap bitmap = (Bitmap) mData.get(position);
+                //                    holder.img_add_photo.setImageBitmap(bitmap);
+                //                    markList.addAll(mData);
+                //                } else {
+                //                    GlideLoaderUtil.showImageView(mContext, (String) mData.get(position), holder.img_add_photo);
+                //                }
+                markList.add(o);
+            }
+
             markList.remove(0);
-            holder.img_add_photo.setImageBitmap(bitmap);
             holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -149,7 +166,13 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                     //找到pic展示条目
                     ViewPager viewpager = popupWindow.getContentView().findViewById(R.id.viewpager);
                     final TextView tv_title = popupWindow.getContentView().findViewById(R.id.tv_title);
-                    MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(mContext, markList, popupWindow,1);
+                    MyViewPagerAdapter viewPagerAdapter;
+
+                    //                    if (mKind == 1) {
+                    viewPagerAdapter = new MyViewPagerAdapter(mContext, markList, popupWindow);
+                    //                    } else {
+                    //                        viewPagerAdapter = new MyViewPagerAdapter(mContext, markList, popupWindow);
+                    //                    }
                     viewpager.setAdapter(viewPagerAdapter);
                     viewpager.setCurrentItem(position - 1);
                     tv_title.setText(position + "/" + markList.size());

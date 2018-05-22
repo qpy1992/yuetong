@@ -51,13 +51,13 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        if (mType == 1) {
-            Bitmap bitmap = (Bitmap) mData.get(position);
-            holder.img_add_photo.setImageBitmap(bitmap);
-            mBitmapList.add(bitmap);
-        } else if (mType == 2) {
-            String url = (String) mData.get(position);
-            GlideLoaderUtil.showImageView(mContext, url, holder.img_add_photo);
+        Object o = mData.get(position);
+        if (null != o) {
+            if (o instanceof Bitmap) {
+                holder.img_add_photo.setImageBitmap((Bitmap) o);
+            } else if (o instanceof String) {
+                GlideLoaderUtil.showImageView(mContext, (String) o, holder.img_add_photo);
+            }
         }
         holder.img_delet.setVisibility(View.GONE);
         holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
@@ -77,11 +77,7 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
                 ViewPager viewpager = popupWindow.getContentView().findViewById(R.id.viewpager);
                 final TextView tv_title = popupWindow.getContentView().findViewById(R.id.tv_title);
                 MyViewPagerAdapter viewPagerAdapter;
-                if (mType == 1) {
-                    viewPagerAdapter = new MyViewPagerAdapter(mContext, mData, popupWindow, 1);
-                } else {
-                    viewPagerAdapter = new MyViewPagerAdapter(mContext, mData, popupWindow, 2);
-                }
+                viewPagerAdapter = new MyViewPagerAdapter(mContext, mData, popupWindow);
                 viewpager.setAdapter(viewPagerAdapter);
                 viewpager.setCurrentItem(position);
                 tv_title.setText((position + 1) + "/" + mData.size());
