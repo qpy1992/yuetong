@@ -188,15 +188,6 @@ public class AddTaskActivity extends BaseActivity {
                 mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
                 mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList, 1);
             }
-
-            //            if (n >= 0) {
-            //                //                List list = mSumBitmapList.get(n);
-            //                //                mBitmapList.addAll(list);
-            //                //                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList,1);
-            //            } else {
-            //                //                mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
-            //                //                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList,1);
-            //            }
             // 设置布局管理器
             recview_add.setLayoutManager(mLayoutManager);
             // 设置adapter
@@ -577,7 +568,6 @@ public class AddTaskActivity extends BaseActivity {
                     if (map.get("id") == null) {
                         map.put("id", Utils.UUID());
                     }
-
                     ziList.add(map);
                     total = total + Double.parseDouble(map.get("shuliang"));
                     amount = amount + Double.parseDouble(map.get("hanshui"));
@@ -2635,13 +2625,12 @@ public class AddTaskActivity extends BaseActivity {
                 Log.i("sss", result + "sss");
                 //获取返回的图片网络地址，加入集合中
                 if (n >= 0) {
-                    //                    mSumBtUrlList.set(n, result);
-                    String s = mSumBtUrlList.get(n);
-                    if (null == s) {
-                        mSumBtUrlList.add(result);
-                    } else {
-                        mSumBtUrlList.set(n, result);
-                    }
+                    //                    String s = mSumBtUrlList.get(n);
+                    //                    if (null == s) {
+                    //                        mSumBtUrlList.add(n, result);
+                    //                    } else {
+                    mSumBtUrlList.set(n, result);
+                    //                    }
                 } else {
                     mSumBtUrlList.add(result);
                 }

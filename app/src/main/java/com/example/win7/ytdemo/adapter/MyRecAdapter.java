@@ -66,7 +66,6 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
         if (position == 0) {
             //第一个条目不显示删除按键
             holder.img_delet.setVisibility(View.GONE);
-            //            holder.tv_pro_uping.setVisibility(View.GONE);
             holder.img_add_photo.setImageBitmap((Bitmap) mData.get(position));
             // 设置点击事件添加图片
             holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
@@ -139,13 +138,6 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                 } else if (o instanceof String) {
                     GlideLoaderUtil.showImageView(mContext, (String) o, holder.img_add_photo);
                 }
-                //                if (mKind == 1) {
-                //                    Bitmap bitmap = (Bitmap) mData.get(position);
-                //                    holder.img_add_photo.setImageBitmap(bitmap);
-                //                    markList.addAll(mData);
-                //                } else {
-                //                    GlideLoaderUtil.showImageView(mContext, (String) mData.get(position), holder.img_add_photo);
-                //                }
                 markList.add(o);
             }
 

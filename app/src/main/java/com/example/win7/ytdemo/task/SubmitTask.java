@@ -23,6 +23,8 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 新增或编辑任务单
@@ -146,12 +148,21 @@ public class SubmitTask extends AsyncTask<Void, String, String> {
                 //pic url
                 String bitUrl = taskEntry.getBitUrl();
                 String[] split = bitUrl.split(",");
-                String url[] = new String[]{"", "", "", "", ""};
-                for (int i = 0; i < split.length - 1; i++) {
-                    url[i] = split[i + 1];
+                List urlList = new ArrayList();
+                for (int i = 0; i < split.length; i++) {
+                    String s = split[i];
+                    if (!"".equals(s)) {
+                        urlList.add(s);
+                    }
                 }
-                for (int n = 0; n < url.length; n++) {
-                    cust2.addElement("fimage" + (n + 1)).setText(url[n]);
+                urlList.size();
+                int num = 5 - urlList.size();
+                for (int n = 0; n < num; n++) {
+                    urlList.add("");
+                }
+                urlList.size();
+                for (int n = 0; n < 5; n++) {
+                    cust2.addElement("fimage" + (n + 1)).setText((String) urlList.get(n));
                 }
             }
 
