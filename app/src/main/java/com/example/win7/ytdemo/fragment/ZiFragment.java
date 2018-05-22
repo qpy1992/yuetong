@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class ZiFragment extends Fragment {
     Context                       mContext;
@@ -43,6 +44,7 @@ public class ZiFragment extends Fragment {
     CustomProgress dialog;
     private List<String> mBitmapList    = new ArrayList();
     private List<List>   mSumBitmapList = new ArrayList();
+    private Map<String, String> mMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +66,10 @@ public class ZiFragment extends Fragment {
 
     protected void setListeners() {
 
+    }
+
+    public void setInfo(Map<String, String> kkk) {
+        this.mMap = kkk;
     }
 
     class ZITask extends AsyncTask<Void, String, String> {

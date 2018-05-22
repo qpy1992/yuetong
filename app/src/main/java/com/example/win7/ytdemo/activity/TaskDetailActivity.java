@@ -11,14 +11,17 @@ import android.widget.Button;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.fragment.ZhuFragment;
 import com.example.win7.ytdemo.fragment.ZiFragment;
+import com.example.win7.ytdemo.util.ToastUtils;
+
+import java.util.Map;
 
 public class TaskDetailActivity extends BaseActivity {
-    Toolbar toolbar;
+    Toolbar     toolbar;
     ZhuFragment zhu;
-    ZiFragment zi;
-    Button[] btns = new Button[2];
-    Fragment[] frags = null;
-    String taskno,interid="";
+    ZiFragment  zi;
+    Button[]   btns            = new Button[2];
+    Fragment[] frags           = null;
+    String     taskno, interid = "";
     /**
      * 当前显示的fragment
      */
@@ -37,7 +40,7 @@ public class TaskDetailActivity extends BaseActivity {
         setListeners();
     }
 
-    protected void setTool(){
+    protected void setTool() {
         toolbar = (Toolbar) findViewById(R.id.id_toolbar);
         toolbar.setTitle(R.string.taskdetail);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -53,7 +56,7 @@ public class TaskDetailActivity extends BaseActivity {
         });
     }
 
-    protected void setViews(){
+    protected void setViews() {
         taskno = getIntent().getStringExtra("taskno");
         interid = getIntent().getStringExtra("interid");
         btns[0] = (Button) findViewById(R.id.btn_zhu);
@@ -61,7 +64,7 @@ public class TaskDetailActivity extends BaseActivity {
         btns[0].setSelected(true);
         zhu = new ZhuFragment();
         zi = new ZiFragment();
-        frags = new Fragment[]{zhu,zi};
+        frags = new Fragment[]{zhu, zi};
         // 一开始，显示第一个fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -69,13 +72,13 @@ public class TaskDetailActivity extends BaseActivity {
         transaction.show(zhu);
         transaction.commit();
         Bundle bundle = new Bundle();
-        bundle.putString("taskno",taskno);
+        bundle.putString("taskno", taskno);
         zhu.setArguments(bundle);
         zi.setArguments(bundle);
     }
 
-    protected void setListeners(){
-        for(int i=0;i<btns.length;i++){
+    protected void setListeners() {
+        for (int i = 0; i < btns.length; i++) {
             btns[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -96,12 +99,19 @@ public class TaskDetailActivity extends BaseActivity {
                                     .beginTransaction();
                             // 当前hide
                             transaction.hide(frags[currentIndex]);
-                            // show你选中
 
+                            // show你选中
                             if (!frags[selectedIndex].isAdded()) {
                                 // 以前没添加过
                                 transaction.add(R.id.task_fragment,
                                         frags[selectedIndex]);
+                            }
+                            if (selectedIndex == 1) {
+                                ZhuFragment frag1 = (ZhuFragment) frags[0];
+                                Map<String, String> info = frag1.getInfo();
+                                ZiFragment frag = (ZiFragment) frags[1];
+                                frag.setInfo(info);
+                                ToastUtils.showToast(getBaseContext(),"接收到了");
                             }
                             // 事务
                             transaction.show(frags[selectedIndex]);

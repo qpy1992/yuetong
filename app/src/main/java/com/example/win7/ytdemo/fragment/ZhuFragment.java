@@ -4,20 +4,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
-import com.example.win7.ytdemo.entity.Tasks;
-import com.example.win7.ytdemo.task.DepartsTask;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.view.CustomProgress;
 
@@ -30,10 +23,9 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 
 public class ZhuFragment extends Fragment {
@@ -53,7 +45,10 @@ public class ZhuFragment extends Fragment {
         setListeners();
         return view;
     }
+    public Map<String,String> getInfo(){
 
+        return new HashMap<>();
+    }
     protected void setViews(){
         tv_no = (TextView)view.findViewById(R.id.tv_no);
         tv_currency = (TextView)view.findViewById(R.id.tv_currency);
