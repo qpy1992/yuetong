@@ -429,14 +429,14 @@ public class AddTaskActivity extends BaseActivity {
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE |
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-//            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                @Override
-//                public void onDismiss(DialogInterface dialogInterface) {
-//                    if (n >= 0) {
-//                        mSumBitmapList.get(n).remove(0);
-//                    }
-//                }
-//            });
+            //            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            //                @Override
+            //                public void onDismiss(DialogInterface dialogInterface) {
+            //                    if (n >= 0) {
+            //                        mSumBitmapList.get(n).remove(0);
+            //                    }
+            //                }
+            //            });
             tv_submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -587,7 +587,11 @@ public class AddTaskActivity extends BaseActivity {
                     mBitmapList.remove(0);
                     if (n >= 0) {
                         List list = mSumBitmapList.get(n);
-                        list.clear();
+                        if (null == list) {
+                            list = new ArrayList();
+                        } else {
+                            list.clear();
+                        }
                         list.addAll(mBitmapList);
                     } else {
                         mSumBitmapList.add(mBitmapList);
@@ -2638,7 +2642,13 @@ public class AddTaskActivity extends BaseActivity {
                 Log.i("sss", result + "sss");
                 //获取返回的图片网络地址，加入集合中
                 if (n >= 0) {
-                    mSumBtUrlList.set(n, result);
+                    //                    mSumBtUrlList.set(n, result);
+                    String s = mSumBtUrlList.get(n);
+                    if (null == s) {
+                        mSumBtUrlList.add(result);
+                    } else {
+                        mSumBtUrlList.set(n, result);
+                    }
                 } else {
                     mSumBtUrlList.add(result);
                 }
