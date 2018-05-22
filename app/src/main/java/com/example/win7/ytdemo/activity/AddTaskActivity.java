@@ -30,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -167,7 +168,7 @@ public class AddTaskActivity extends BaseActivity {
             Toast.makeText(AddTaskActivity.this, "请先选择内容", Toast.LENGTH_SHORT).show();
         } else {
             final View v = getLayoutInflater().inflate(R.layout.item_zi_add, null);
-            RecyclerView recview_add = v.findViewById(R.id.recview_add);
+            final RecyclerView recview_add = v.findViewById(R.id.recview_add);
             //添加初始展示的图片
             Bitmap mBm = BitmapFactory.decodeResource(getResources(), R.drawable.add_picture);
             mBitmapList = new ArrayList<>();
@@ -588,6 +589,16 @@ public class AddTaskActivity extends BaseActivity {
                     }
                     //跟页面类表刷新
                     //上传图片
+                    int childCount = recview_add.getChildCount();
+                    mBitmapList.clear();
+                    for (int i = 1; i < childCount; i++) {
+                        View childAt = recview_add.getChildAt(i);
+                        ImageView viewbt = childAt.findViewById(R.id.img_add_photo);
+                        viewbt.setDrawingCacheEnabled(true);
+                        Bitmap bitmap =Bitmap.createBitmap( viewbt.getDrawingCache());
+                        mBitmapList.add(bitmap);
+                        viewbt.setDrawingCacheEnabled(false);
+                    }
                     sendPic(mBitmapList, n);//n小于0时是新增，大于等于0时是点击编辑
                     dialog.dismiss();
                     adapter.notifyDataSetChanged();
@@ -2625,12 +2636,7 @@ public class AddTaskActivity extends BaseActivity {
                 Log.i("sss", result + "sss");
                 //获取返回的图片网络地址，加入集合中
                 if (n >= 0) {
-                    //                    String s = mSumBtUrlList.get(n);
-                    //                    if (null == s) {
-                    //                        mSumBtUrlList.add(n, result);
-                    //                    } else {
                     mSumBtUrlList.set(n, result);
-                    //                    }
                 } else {
                     mSumBtUrlList.add(result);
                 }
