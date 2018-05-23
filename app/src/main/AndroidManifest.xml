@@ -100,8 +100,7 @@
         <activity android:name=".activity.NeedCheckActivity"/>
         <activity android:name=".activity.UpdateActivity"/>
         <activity
-            android:name=".activity.FirstActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            android:name=".activity.FirstActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

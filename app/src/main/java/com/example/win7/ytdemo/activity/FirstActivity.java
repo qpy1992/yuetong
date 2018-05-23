@@ -9,7 +9,7 @@ import android.os.Handler;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 
-public class FirstActivity extends Activity {
+public class FirstActivity extends BaseActivity {
     Handler handler = new Handler();
     SharedPreferences sp;
 
@@ -27,14 +27,13 @@ public class FirstActivity extends Activity {
                         String fgroup = sp.getString("fgroup","");
                         String status = sp.getString("status","");
                         //判断是否已登录
-                        if(!status.equals("")){
+                        if(status.equals("")){
+                            startActivity(new Intent(FirstActivity.this, LoginActivity.class));
+                        }else {
                             YApplication.fname = fname;
                             YApplication.fgroup = fgroup;
                             Intent intent = new Intent(FirstActivity.this,MainActivity.class);
                             startActivity(intent);
-                        }else {
-                            startActivity(new Intent(FirstActivity.this,
-                                    LoginActivity.class));
                         }
                         finish();
                     } catch (Exception e) {

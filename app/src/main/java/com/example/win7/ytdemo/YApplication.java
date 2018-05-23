@@ -64,7 +64,7 @@ public class YApplication extends Application {
         super.onCreate();
 //        sp = getSharedPreferences("token", MODE_PRIVATE);
 //        String fname = sp.getString("fname", "");
-        YApplication.fname = fname;
+//        YApplication.fname = fname;
         initHuanxin();
         initSoundPool();
     }

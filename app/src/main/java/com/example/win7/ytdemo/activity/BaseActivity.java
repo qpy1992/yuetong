@@ -43,7 +43,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void protectApp() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, FirstActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//清空栈里MainActivity之上的所有activty
         startActivity(intent);
         finish();
