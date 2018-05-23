@@ -595,11 +595,19 @@ public class AddTaskActivity extends BaseActivity {
                         View childAt = recview_add.getChildAt(i);
                         ImageView viewbt = childAt.findViewById(R.id.img_add_photo);
                         viewbt.setDrawingCacheEnabled(true);
-                        Bitmap bitmap =Bitmap.createBitmap( viewbt.getDrawingCache());
+                        Bitmap bitmap = Bitmap.createBitmap(viewbt.getDrawingCache());
                         mBitmapList.add(bitmap);
                         viewbt.setDrawingCacheEnabled(false);
                     }
-                    sendPic(mBitmapList, n);//n小于0时是新增，大于等于0时是点击编辑
+                    if (mBitmapList.size() > 0) {
+                        sendPic(mBitmapList, n);//n小于0时是新增，大于等于0时是点击编辑
+                    } else {
+                        if (n >= 0) {
+                            mSumBtUrlList.set(n, "");
+                        } else {
+                            mSumBtUrlList.add("");
+                        }
+                    }
                     dialog.dismiss();
                     adapter.notifyDataSetChanged();
                 }
@@ -755,7 +763,7 @@ public class AddTaskActivity extends BaseActivity {
         tv_zeren.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lists.contains("True")){
+                if (lists.contains("True")) {
                     return;
                 }
                 new AreaTask(1).execute();
@@ -949,7 +957,11 @@ public class AddTaskActivity extends BaseActivity {
                     entry.setFCheckBox4(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr4"))));
                     entry.setFCheckBox5(Integer.parseInt(Utils.BooleantoNum(ziList.get(i).get("qr5"))));
                     entry.setId(ziList.get(i).get("id"));
-                    String bitUrl = mSumBtUrlList.get(i);
+                    String s = mSumBtUrlList.get(i);
+                    String bitUrl = "";
+                    if (null != s) {
+                        bitUrl = s;
+                    }
                     entry.setBitUrl(bitUrl);
                     list.add(entry);
                     HashMap<String, String> stringStringHashMap = ziList.get(i);
@@ -1315,7 +1327,7 @@ public class AddTaskActivity extends BaseActivity {
     class AreaTask extends AsyncTask<Void, String, String> {
         int type;
 
-        AreaTask(int type){
+        AreaTask(int type) {
             this.type = type;
         }
 
@@ -1405,7 +1417,7 @@ public class AddTaskActivity extends BaseActivity {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    switch (type){
+                    switch (type) {
                         case 0:
                             quyu = list1.get(i).get("itemid");//保存区域部门id
                             tv_quyu.setText(strList1.get(i));//显示区域部门名称
@@ -2123,7 +2135,7 @@ public class AddTaskActivity extends BaseActivity {
                     "on c.FItemID=a.FBase11 left join t_Department d on d.FItemID=a.FBase12 left join" +
                     " t_Currency e on e.FCurrencyID=a.FBase3 left join t_emp f on f.fitemid=b.fbase4 left join" +
                     " t_emp g on g.fitemid=b.fbase10 left join t_ICItem h on h.FItemID=b.FBase1 left join t_emp i on i.fitemid=b.fbase15 left join t_Item_3006 j on j.FItemID=a.FBase13 left join t_measureunit k on k.fitemid=b.fbase2 " +
-                    "left join t_Department l on l.fitemid=a.fbase16 where a.FBillNo ='"+Taskno+"'";
+                    "left join t_Department l on l.fitemid=a.fbase16 where a.FBillNo ='" + Taskno + "'";
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_user");
 
@@ -2173,8 +2185,8 @@ public class AddTaskActivity extends BaseActivity {
                         map.put("area", recordEle.elementTextTrim("area"));
                         map.put("areaid", recordEle.elementTextTrim("areaid"));
                     }
-                    map.put("zerenid",recordEle.elementTextTrim("zerenid"));
-                    map.put("zeren",recordEle.elementTextTrim("zeren"));
+                    map.put("zerenid", recordEle.elementTextTrim("zerenid"));
+                    map.put("zeren", recordEle.elementTextTrim("zeren"));
                     map.put("neirong", recordEle.elementTextTrim("neirong"));
                     map.put("neirongid", recordEle.elementTextTrim("neirongid"));
                     map.put("respon", recordEle.elementTextTrim("respon"));
