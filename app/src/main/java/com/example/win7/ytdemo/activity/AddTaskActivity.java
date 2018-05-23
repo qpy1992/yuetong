@@ -876,7 +876,11 @@ public class AddTaskActivity extends BaseActivity {
                     return;
                 }
                 if (quyu == null) {
-                    Toast.makeText(AddTaskActivity.this, "请选择区域部门", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddTaskActivity.this, "请选择申请部门", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (zeren == null) {
+                    Toast.makeText(AddTaskActivity.this, "请选择责任部门", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (contentid == null) {
@@ -2114,12 +2118,12 @@ public class AddTaskActivity extends BaseActivity {
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
             String sql = "select top 1 a.FAmount4 rate,c.fname departs,c.fitemid departsid,d.fname area,d.fitemid areaid,e.fname currency,e.fcurrencyid," +
-                    "f.fname respon,f.fitemid responid,g.fname wanglai,g.fitemid wanglid,h.fname neirong,h.fitemid neirongid,h.ftaxrate,h.fseccoefficient,i.fname zhidan,i.fitemid zhidanid,j.fname zhidu1,j.fitemid zhiduid,a.fnote1,k.fname jiliang,k.fitemid jiliangid from t_BOS200000000 a " +
+                    "f.fname respon,f.fitemid responid,g.fname wanglai,g.fitemid wanglid,h.fname neirong,h.fitemid neirongid,h.ftaxrate,h.fseccoefficient,i.fname zhidan,i.fitemid zhidanid,j.fname zhidu1,j.fitemid zhiduid,a.fnote1,k.fname jiliang,k.fitemid jiliangid,a.fbase16 zerenid,l.fname zeren from t_BOS200000000 a " +
                     "left join t_BOS200000000Entry2 b on b.FID=a.FID left join t_Item_3001 c " +
                     "on c.FItemID=a.FBase11 left join t_Department d on d.FItemID=a.FBase12 left join" +
                     " t_Currency e on e.FCurrencyID=a.FBase3 left join t_emp f on f.fitemid=b.fbase4 left join" +
                     " t_emp g on g.fitemid=b.fbase10 left join t_ICItem h on h.FItemID=b.FBase1 left join t_emp i on i.fitemid=b.fbase15 left join t_Item_3006 j on j.FItemID=a.FBase13 left join t_measureunit k on k.fitemid=b.fbase2 " +
-                    "where a.FBillNo ='" + Taskno + "'";
+                    "left join t_Department l on l.fitemid=a.fbase16 where a.FBillNo ='"+Taskno+"'";
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_user");
 
@@ -2169,6 +2173,8 @@ public class AddTaskActivity extends BaseActivity {
                         map.put("area", recordEle.elementTextTrim("area"));
                         map.put("areaid", recordEle.elementTextTrim("areaid"));
                     }
+                    map.put("zerenid",recordEle.elementTextTrim("zerenid"));
+                    map.put("zeren",recordEle.elementTextTrim("zeren"));
                     map.put("neirong", recordEle.elementTextTrim("neirong"));
                     map.put("neirongid", recordEle.elementTextTrim("neirongid"));
                     map.put("respon", recordEle.elementTextTrim("respon"));
@@ -2213,10 +2219,12 @@ public class AddTaskActivity extends BaseActivity {
             tv_zhidan.setText(list.get(0).get("zhidan"));
             tv_contacts.setText(list.get(0).get("wanglai"));
             tv_jl.setText(list.get(0).get("jiliang"));
+            tv_zeren.setText(list.get(0).get("zeren"));
             currencyid = Integer.parseInt(list.get(0).get("fcurrencyid"));
             currency = list.get(0).get("currency");
             zuzhi = list.get(0).get("departsid");
             quyu = list.get(0).get("areaid");
+            zeren = list.get(0).get("zerenid");
             zhidu1 = list.get(0).get("zhiduid");
             zhidu2 = list.get(0).get("fnote1");
             contentid = list.get(0).get("neirongid");

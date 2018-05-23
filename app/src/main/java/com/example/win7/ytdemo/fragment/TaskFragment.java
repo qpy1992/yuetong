@@ -26,7 +26,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.activity.AddTaskActivity;
@@ -37,7 +36,6 @@ import com.example.win7.ytdemo.entity.Tool;
 import com.example.win7.ytdemo.task.Task1;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.view.CustomProgress;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -45,7 +43,6 @@ import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
