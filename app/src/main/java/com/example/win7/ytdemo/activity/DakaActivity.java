@@ -169,7 +169,7 @@ public class DakaActivity extends BaseActivity {
             String buildingname = location.getIndoorLocationSurpportBuidlingName();
             Log.i("是否支持室内",flag+"=======================");
             Log.i("大楼名称",buildingname+"=======================");
-            Log.i("打卡地址",addr);
+            Log.i("打卡地址",addr+"");
             dialog.dismiss();
         }
     }

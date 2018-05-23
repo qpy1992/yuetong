@@ -31,9 +31,9 @@ import java.util.Map;
 public class ZhuFragment extends Fragment {
     Context mContext;
     View view;
-    TextView tv_no,tv_currency,tv_rate,tv_departs,tv_area,tv_content,tv_respon,tv_zhidan,tv_contacts,tv_jiliang;
+    TextView tv_no,tv_currency,tv_rate,tv_departs,tv_area,tv_content,tv_respon,tv_zhidan,tv_contacts,tv_jiliang,tv_zeren;
     CustomProgress dialog;
-    String taskno,currency,rate,departs,area,content,respon,zhidan,contacts,jiliang="";
+    String taskno,currency,rate,departs,area,zeren,content,respon,zhidan,contacts,jiliang="";
     DecimalFormat df = new DecimalFormat("#0.00");
 
     @Override
@@ -45,10 +45,7 @@ public class ZhuFragment extends Fragment {
         setListeners();
         return view;
     }
-    public Map<String,String> getInfo(){
 
-        return new HashMap<>();
-    }
     protected void setViews(){
         tv_no = (TextView)view.findViewById(R.id.tv_no);
         tv_currency = (TextView)view.findViewById(R.id.tv_currency);
@@ -60,12 +57,25 @@ public class ZhuFragment extends Fragment {
         tv_zhidan = (TextView)view.findViewById(R.id.tv_zhidan);
         tv_contacts = (TextView)view.findViewById(R.id.tv_contacts);
         tv_jiliang = (TextView)view.findViewById(R.id.tv_jiliang);
+        tv_zeren = view.findViewById(R.id.tv_zeren);
         taskno = getArguments().getString("taskno");
         new ZHUTask(taskno).execute();
     }
 
     protected void setListeners(){
 
+    }
+
+    public Map<String,String> getInfo(){
+        Map<String,String> map = new HashMap<>();
+        map.put("fbillno",taskno);
+        map.put("zuzhi",departs);
+        map.put("shenqing",area);
+        map.put("zeren",zeren);
+        map.put("respon",respon);
+        map.put("zhidan",zhidan);
+        map.put("contacts",contacts);
+        return map;
     }
 
     class ZHUTask extends AsyncTask<Void,String,String>{
@@ -97,12 +107,12 @@ public class ZhuFragment extends Fragment {
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
             String sql = "select top 1 a.FAmount4 rate,c.fname departs,d.fname area,e.fname currency," +
-                    "f.fname respon,g.fname wanglai,h.fname neirong,i.fname zhidan,j.fname jiliang from t_BOS200000000 a " +
+                    "f.fname respon,g.fname wanglai,h.fname neirong,i.fname zhidan,j.fname jiliang,k.fname zeren from t_BOS200000000 a " +
                     "left join t_BOS200000000Entry2 b on b.FID=a.FID left join t_Item_3001 c " +
                     "on c.FItemID=a.FBase11 left join t_Department d on d.FItemID=a.FBase12 left join" +
                     " t_Currency e on e.FCurrencyID=a.FBase3 left join t_emp f on f.fitemid=b.fbase4 left join" +
                     " t_emp g on g.fitemid=b.fbase10 left join t_ICItem h on h.FItemID=b.FBase1 left join t_emp i on i.fitemid=b.fbase15 " +
-                    "left join t_measureunit j on j.fitemid=h.funitid where a.FBillNo ='"+Taskno+"'";
+                    "left join t_measureunit j on j.fitemid=h.funitid left join t_Department k on k.fitemid=a.FBase16 where a.FBillNo ='"+Taskno+"'";
             Log.i("主表查询语句",sql);
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_Currency");
@@ -154,6 +164,7 @@ public class ZhuFragment extends Fragment {
                     zhidan = recordEle.elementTextTrim("zhidan");
                     contacts = recordEle.elementTextTrim("wanglai");
                     jiliang = recordEle.elementTextTrim("jiliang");
+                    zeren = recordEle.elementTextTrim("zeren");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -174,6 +185,7 @@ public class ZhuFragment extends Fragment {
             tv_zhidan.setText(zhidan);
             tv_contacts.setText(contacts);
             tv_jiliang.setText(jiliang);
+            tv_zeren.setText(zeren);
             super.onPostExecute(s);
         }
     }

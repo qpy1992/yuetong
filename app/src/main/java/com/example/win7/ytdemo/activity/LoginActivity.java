@@ -31,32 +31,17 @@ public class LoginActivity extends BaseActivity {
     LinearLayout ll_login;
     SharedPreferences sp;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        sp = getSharedPreferences("token",MODE_PRIVATE);
-        String fname = sp.getString("fname","");
-        String fgroup = sp.getString("fgroup","");
-        String status = sp.getString("status","");
-        //判断是否已登录
-        if(!status.equals("")){
-            YApplication.fname = fname;
-            YApplication.fgroup = fgroup;
-            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-            startActivity(intent);
-        }else {
-            setViews();
-            setListeners();
-        }
+        setViews();
+        setListeners();
     }
 
     protected void setViews(){
+        sp = getSharedPreferences("token",MODE_PRIVATE);
         ll_login = (LinearLayout)findViewById(R.id.ll_login);
         et_username = (EditText)findViewById(R.id.et_username);
         et_password = (EditText)findViewById(R.id.et_password);

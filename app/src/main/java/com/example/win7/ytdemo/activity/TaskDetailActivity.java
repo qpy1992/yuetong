@@ -111,7 +111,7 @@ public class TaskDetailActivity extends BaseActivity {
                                 Map<String, String> info = frag1.getInfo();
                                 ZiFragment frag = (ZiFragment) frags[1];
                                 frag.setInfo(info);
-                                ToastUtils.showToast(getBaseContext(),"接收到了");
+//                                ToastUtils.showToast(getBaseContext(),"接收到了");
                             }
                             // 事务
                             transaction.show(frags[selectedIndex]);

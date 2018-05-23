@@ -64,14 +64,19 @@ public class Utils {
 
     //boolean转化成0或1
     public static String BooleantoNum(String bool){
-        if(bool.equals("False")){
+        if(bool!=null){
+            if(bool.equals("False")){
+                return "0";
+            }
+            else if(bool.equals("True")){
+                return "1";
+            }else {
+                return "0";
+            }
+        }else{
             return "0";
         }
-        else if(bool.equals("True")){
-            return "1";
-        }else {
-            return "0";
-        }
+
     }
 
     //生成32位UUID

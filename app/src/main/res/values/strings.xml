@@ -37,7 +37,9 @@
     <string name="currency">币别：</string>
     <string name="rate">汇率：</string>
     <string name="departs">组织机构：</string>
-    <string name="area">区域部门：</string>
+    <string name="bumen">部门：</string>
+    <string name="area">申请部门：</string>
+    <string name="zeren">责任部门：</string>
     <string name="qi">启日期：</string>
     <string name="zhi">止日期：</string>
     <string name="respon">责任人：</string>
@@ -81,6 +83,7 @@
     <string name="ncheck">待审核</string>
 
     <string name="cancle">取消</string>
+    <string name="chaosong">抄送</string>
     <string name="title">请选择时间</string>
     <string name="commit">确定</string>
     <string name="year">年</string>

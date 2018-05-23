@@ -8,18 +8,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
+import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
+import com.example.win7.ytdemo.listener.CallBackListener;
 import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.view.CustomProgress;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -35,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CheckActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -44,6 +53,7 @@ public class CheckActivity extends AppCompatActivity {
             tv_supl,tv_send,tv_pf,tv_submit,tv_refuse;
     EditText et_get;
     List<HashMap<String,String>> list1;
+    List<HashMap<String,Object>> list2;
     HashMap<String,String> map;
     String pfid = "230";
     DecimalFormat df  = new DecimalFormat("#0.00");
@@ -73,6 +83,24 @@ public class CheckActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_chaosong:
+                        new HYTask().execute();
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu3, menu);
+        return true;
     }
 
     protected void setViews(){
@@ -102,6 +130,7 @@ public class CheckActivity extends AppCompatActivity {
         et_get = (EditText)findViewById(R.id.et_get);
         map = new HashMap<>();
         list1 = new ArrayList<>();
+        list2 = new ArrayList<>();
         Intent intent = getIntent();
         goodsid = intent.getStringExtra("goodsId");
         new DetailTask(goodsid).execute();
@@ -131,6 +160,23 @@ public class CheckActivity extends AppCompatActivity {
                 new CheckTask(et_get.getText().toString(),pfid,"0",goodsid).execute();
             }
         });
+    }
+
+    private void sendMessegeToShenhe(String msg, String username) {
+        EMMessage emMessage = EMMessage.createTxtSendMessage(msg, username);
+        emMessage.setStatus(EMMessage.Status.INPROGRESS);
+        emMessage.setMessageStatusCallback(new CallBackListener() {
+            @Override
+            public void onMainSuccess() {
+                ToastUtils.showToast(getBaseContext(), "发送成功");
+            }
+
+            @Override
+            public void onMainError(int i, String s) {
+                ToastUtils.showToast(getBaseContext(), "发送失败");
+            }
+        });
+        EMClient.getInstance().chatManager().sendMessage(emMessage);
     }
 
     class CheckTask extends AsyncTask<Void,String,String>{
@@ -523,6 +569,189 @@ public class CheckActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
             });
+        }
+    }
+
+    //查询好友列表
+    class HYTask extends AsyncTask<Void, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            list2.clear();
+            progress = CustomProgress.show(CheckActivity.this, "加载中...", true, null);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                List<String> usernames = EMClient.getInstance().contactManager().getAllContactsFromServer();
+                String s = "(";
+                for (String username : usernames) {
+                    s = s + "'" + username + "',";
+                }
+                s = s.substring(0, s.length() - 1);
+                s = s + ")";
+                Log.i("拼接的数据集", s + "=================================");
+
+                // 命名空间
+                String nameSpace = "http://tempuri.org/";
+                // 调用的方法名称
+                String methodName = "JA_select";
+                // EndPoint
+                String endPoint = Consts.ENDPOINT;
+                // SOAP Action
+                String soapAction = "http://tempuri.org/JA_select";
+
+                // 指定WebService的命名空间和调用的方法名
+                SoapObject rpc = new SoapObject(nameSpace, methodName);
+
+                // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
+                Log.i("昵称查询语句", "select a.fname from t_emp a inner join t_user d on a.fitemid=b.fempid where d.fname in" + s + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                rpc.addProperty("FSql", "select a.fitemid,a.fname,b.fname name from t_emp a inner join t_user b on a.fitemid=b.fempid where b.fname in" + s);
+                rpc.addProperty("FTable", "t_user");
+
+                // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+
+                envelope.bodyOut = rpc;
+                // 设置是否调用的是dotNet开发的WebService
+                envelope.dotNet = true;
+                // 等价于envelope.bodyOut = rpc;
+                envelope.setOutputSoapObject(rpc);
+
+                HttpTransportSE transport = new HttpTransportSE(endPoint);
+                // 调用WebService
+                transport.call(soapAction, envelope);
+                // 获取返回的数据
+                SoapObject object = (SoapObject) envelope.bodyIn;
+
+                // 获取返回的结果
+                Log.i("返回结果", object.getProperty(0).toString() + "=========================");
+                String result = object.getProperty(0).toString();
+                Document doc = null;
+
+                try {
+                    doc = DocumentHelper.parseText(result); // 将字符串转为XML
+
+                    Element rootElt = doc.getRootElement(); // 获取根节点
+
+                    System.out.println("根节点：" + rootElt.getName()); // 拿到根节点的名称
+
+
+                    Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
+
+                    // 遍历head节点
+                    while (iter.hasNext()) {
+                        Element recordEle = (Element) iter.next();
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("fname", recordEle.elementTextTrim("fname"));
+                        map.put("name", recordEle.elementTextTrim("name"));
+                        map.put("ischeck", false);
+                        map.put("fitemid", recordEle.elementTextTrim("fitemid"));
+                        list2.add(map);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progress.dismiss();
+            View v = getLayoutInflater().inflate(R.layout.item_shenhe, null);
+            final ListView lv = (ListView) v.findViewById(R.id.lv_checkbox);
+            CheckBoxAdapter adapter = new CheckBoxAdapter(CheckActivity.this, list2);
+            lv.setAdapter(adapter);
+            final TextView tv_submits = (TextView) v.findViewById(R.id.tv_check_submit);
+            final AlertDialog dialog = new AlertDialog.Builder(CheckActivity.this).setView(v)
+                    .setTitle("请选择").show();
+            tv_submits.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    for (int i = 0; i < list2.size(); i++) {
+                        if (Boolean.valueOf(list2.get(i).get("ischeck").toString())) {
+                            new ChaoSongTask(list2.get(i).get("fitemid").toString()).execute();
+                            sendMessegeToShenhe(goodsid,list2.get(i).get("name").toString());
+                        }
+                    }
+                    dialog.dismiss();
+                }
+            });
+            super.onPostExecute(s);
+        }
+    }
+
+    class ChaoSongTask extends AsyncTask<Void,String,String>{
+        String userid;
+
+        ChaoSongTask(String userid){
+            this.userid = userid;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            // 命名空间
+            String nameSpace = "http://tempuri.org/";
+            // 调用的方法名称
+            String methodName = "UPDATE_t_BOS200000000_CheckID";
+            // EndPoint
+            String endPoint = Consts.ENDPOINT;
+            // SOAP Action
+            String soapAction = "http://tempuri.org/UPDATE_t_BOS200000000_CheckID";
+
+            // 指定WebService的命名空间和调用的方法名
+            SoapObject rpc = new SoapObject(nameSpace, methodName);
+
+            // 设置需调用WebService接口需要传入的参数
+            rpc.addProperty("FUserID", userid);
+            rpc.addProperty("ID", goodsid);
+
+            // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+
+            envelope.bodyOut = rpc;
+            // 设置是否调用的是dotNet开发的WebService
+            envelope.dotNet = true;
+            // 等价于envelope.bodyOut = rpc;
+            envelope.setOutputSoapObject(rpc);
+
+            HttpTransportSE transport = new HttpTransportSE(endPoint);
+            try {
+                // 调用WebService
+                transport.call(soapAction, envelope);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("CheckActivity", e.toString() + "==================================");
+            }
+
+            // 获取返回的数据
+            SoapObject object = (SoapObject) envelope.bodyIn;
+
+            // 获取返回的结果
+            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
+            String result = object.getProperty(0).toString();
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(s.equals("成功")){
+
+            }else{
+
+            }
         }
     }
 }

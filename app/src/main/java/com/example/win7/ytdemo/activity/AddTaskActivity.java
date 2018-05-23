@@ -85,14 +85,14 @@ import java.util.Locale;
 
 public class AddTaskActivity extends BaseActivity {
     Toolbar  toolbar;
-    TextView tv_huilv, tv_zuzhi, tv_quyu, tv_content, tv_respon, tv_zhidan, tv_contacts, tv_bibie, tv_jl, tv_total, tv_amounts;
+    TextView tv_huilv, tv_zuzhi, tv_quyu, tv_content, tv_respon, tv_zhidan, tv_contacts, tv_bibie, tv_jl, tv_total, tv_amounts, tv_zeren;
     MyListView                    lv_zb;
     List<HashMap<String, String>> list, list1, ziList;
     List<HashMap<String, Object>> list2 = new ArrayList<>();
     List<String> strList, strList1, strList2, strList3, strList4, lists;
     DecimalFormat df  = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
-    String interid, taskno, respon, zhidan, contacts, content, contentid, planid, sup, jiliang, jiliangid, pfid, zuzhi, quyu, zhidu1, zhidu2, username, depart, company;
+    String interid, taskno, respon, zhidan, contacts, content, contentid, planid, sup, jiliang, jiliangid, pfid, zuzhi, quyu, zeren, zhidu1, zhidu2, username, depart, company;
     int    currencyid = 1;
     String currency   = "人民币";
     Double huilv      = 1.00;
@@ -703,6 +703,7 @@ public class AddTaskActivity extends BaseActivity {
         tv_contacts = (TextView) findViewById(R.id.tv_contacts_add);//往来
         tv_total = (TextView) findViewById(R.id.tv_total);
         tv_amounts = (TextView) findViewById(R.id.tv_amounts);
+        tv_zeren = findViewById(R.id.tv_zeren);
         if (YApplication.fgroup.contains("仓储")) {
             tv_amounts.setVisibility(View.INVISIBLE);
         }
@@ -739,7 +740,7 @@ public class AddTaskActivity extends BaseActivity {
                 new DepartsTask().execute();
             }
         });
-        //区域部门选择
+        //申请部门选择
         tv_quyu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -747,7 +748,17 @@ public class AddTaskActivity extends BaseActivity {
                     //                    Toast.makeText(AddTaskActivity.this,"已确认，无法修改",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new AreaTask().execute();
+                new AreaTask(0).execute();
+            }
+        });
+        //责任部门选择
+        tv_zeren.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(lists.contains("True")){
+                    return;
+                }
+                new AreaTask(1).execute();
             }
         });
         //责任人和制单人选择
@@ -896,6 +907,7 @@ public class AddTaskActivity extends BaseActivity {
                 tasks.setFAmount4(Double.parseDouble(tv_huilv.getText().toString()));
                 tasks.setFBase11(zuzhi);
                 tasks.setFBase12(quyu);
+                tasks.setFBase16(zeren);
 
                 List<TaskEntry> list = new ArrayList<>();
                 for (int i = 0; i < ziList.size(); i++) {
@@ -1297,6 +1309,11 @@ public class AddTaskActivity extends BaseActivity {
 
     //查区域部门
     class AreaTask extends AsyncTask<Void, String, String> {
+        int type;
+
+        AreaTask(int type){
+            this.type = type;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -1380,12 +1397,21 @@ public class AddTaskActivity extends BaseActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
-                    .setTitle(R.string.area).show();
+                    .setTitle(R.string.bumen).show();
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    quyu = list1.get(i).get("itemid");//保存区域部门id
-                    tv_quyu.setText(strList1.get(i));//显示区域部门名称
+                    switch (type){
+                        case 0:
+                            quyu = list1.get(i).get("itemid");//保存区域部门id
+                            tv_quyu.setText(strList1.get(i));//显示区域部门名称
+                            break;
+                        case 1:
+                            zeren = list1.get(i).get("itemid");
+                            tv_zeren.setText(strList1.get(i));
+                            break;
+                    }
+
                     dialog.dismiss();
                 }
             });

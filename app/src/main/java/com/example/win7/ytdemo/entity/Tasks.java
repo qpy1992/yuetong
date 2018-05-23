@@ -9,6 +9,7 @@ public class Tasks {
     Double FAmount4;//汇率
     String FBase11;//组织机构
     String FBase12;//区域部门
+    String FBase16;//责任部门
     String FBase13;//制度所属部门
     String FNote1;//制度操作细则
     String contentid;
@@ -62,6 +63,14 @@ public class Tasks {
 
     public void setFBase12(String FBase12) {
         this.FBase12 = FBase12;
+    }
+
+    public String getFBase16() {
+        return FBase16;
+    }
+
+    public void setFBase16(String FBase16) {
+        this.FBase16 = FBase16;
     }
 
     public String getFBase13() {

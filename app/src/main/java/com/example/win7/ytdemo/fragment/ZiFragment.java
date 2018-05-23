@@ -1,19 +1,26 @@
 package com.example.win7.ytdemo.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.win7.ytdemo.R;
+import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.adapter.ZiAdapter;
 import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.util.CreateYCMdf;
 import com.example.win7.ytdemo.view.CustomProgress;
 
 import org.dom4j.Document;
@@ -24,6 +31,7 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +48,7 @@ public class ZiFragment extends Fragment {
     List<HashMap<String, String>> list;
     DecimalFormat df  = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
-    String taskno, qi, zhi, neirong, jiliang, shuliang, danjia, progress, plan, budget, pbudget, note, hanshui, buhan, fuzhu, fuliang, fasong, huikui, pingfen;
+    String taskno, qi, zhi, neirong, jiliang, shuliang, danjia, progress, plan, budget, pbudget, note, hanshui, buhan, fuzhu, fuliang, fasong, huikui, pingfen,username;
     CustomProgress dialog;
     private List<String> mBitmapList    = new ArrayList();
     private List<List>   mSumBitmapList = new ArrayList();
@@ -62,14 +70,134 @@ public class ZiFragment extends Fragment {
         list = new ArrayList<>();
         taskno = getArguments().getString("taskno");
         new ZITask(taskno).execute();
+        new MTask().execute();
     }
 
     protected void setListeners() {
+        lv_zi.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                new AlertDialog.Builder(mContext).setItems(new String[]{"生成PDF"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (i) {
+                            case 0:
+                                try {
+                                    String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
+                                    File dir = new File(path);
+                                    if(!dir.exists())
+                                        dir.mkdirs();
+                                    File file = new File(dir, mMap.get("fbillno")+"_"+(i+1)+".pdf");
+                                    System.out.println(dir);
+                                    file.createNewFile();
+                                    Map<String,String> map = list.get(i);
+                                    map.put("username",username);
+                                    map.put("fbillno",mMap.get("fbillno"));
+                                    map.put("zuzhi",mMap.get("zuzhi"));
+                                    map.put("shenqing",mMap.get("shenqing"));
+                                    map.put("zeren",mMap.get("zeren"));
+                                    map.put("respon",mMap.get("respon"));
+                                    map.put("zhidan",mMap.get("zhidan"));
+                                    map.put("contacts",mMap.get("contacts"));
+                                    new CreateYCMdf(file).generateYCMPDF(map);
+                                    Toast.makeText(mContext,"生成成功！",Toast.LENGTH_SHORT).show();
+                                } catch (Exception e) {
+                                    Toast.makeText(mContext,"生成失败！",Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                }
+                                break;
+                        }
+                    }
+                }).show();
+                return true;
+            }
+        });
     }
 
-    public void setInfo(Map<String, String> kkk) {
-        this.mMap = kkk;
+    class MTask extends AsyncTask<Void, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            // 命名空间
+            String nameSpace = "http://tempuri.org/";
+            // 调用的方法名称
+            String methodName = "JA_select";
+            // EndPoint
+            String endPoint = Consts.ENDPOINT;
+            // SOAP Action
+            String soapAction = "http://tempuri.org/JA_select";
+
+            // 指定WebService的命名空间和调用的方法名
+            SoapObject rpc = new SoapObject(nameSpace, methodName);
+
+            // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
+            rpc.addProperty("FSql", "select a.fname username from t_User d inner join  t_Emp a on d.FEmpID=a.fitemid where d.FName='" + YApplication.fname + "'");
+            rpc.addProperty("FTable", "t_user");
+
+            // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+
+            envelope.bodyOut = rpc;
+            // 设置是否调用的是dotNet开发的WebService
+            envelope.dotNet = true;
+            // 等价于envelope.bodyOut = rpc;
+            envelope.setOutputSoapObject(rpc);
+
+            HttpTransportSE transport = new HttpTransportSE(endPoint);
+            try {
+                // 调用WebService
+                transport.call(soapAction, envelope);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MeFragment", e.toString() + "==================================");
+            }
+
+            // 获取返回的数据
+            SoapObject object = (SoapObject) envelope.bodyIn;
+
+            // 获取返回的结果
+            if (null != object) {
+                Log.i("返回结果", object.getProperty(0).toString() + "=========================");
+                String result = object.getProperty(0).toString();
+                Document doc = null;
+
+                try {
+                    doc = DocumentHelper.parseText(result); // 将字符串转为XML
+
+                    Element rootElt = doc.getRootElement(); // 获取根节点
+
+                    System.out.println("根节点：" + rootElt.getName()); // 拿到根节点的名称
+
+
+                    Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
+
+                    // 遍历head节点
+                    while (iter.hasNext()) {
+                        Element recordEle = (Element) iter.next();
+                        username = recordEle.elementTextTrim("username"); // 拿到head节点下的子节点title值
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return username;
+            } else {
+                return "";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
+
+    public void setInfo(Map<String, String> map) {
+        this.mMap = map;
     }
 
     class ZITask extends AsyncTask<Void, String, String> {
@@ -100,7 +228,7 @@ public class ZiFragment extends Fragment {
             SoapObject rpc = new SoapObject(nameSpace, methodName);
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
-            String sql = " select b.FTime qi,b.FTime1 zhi,g.FName respon,h.FName progress,h.F_111 plans,i.FName budget,h.f_107 pbudget,b.FNOTE note," +
+            String sql = " select b.FTime2,b.FTime3,b.FTime4,b.FTime5,b.FTime6,b.FTime qi,b.FTime1 zhi,g.FName respon,h.FName progress,h.F_111 plans,i.FName budget,h.f_107 pbudget,b.FNOTE note," +
                     "   j.FName contacts,k.FName neirong,l.FName jiliang,b.FDecimal shuliang,b.FDecimal1 danjia,b.FAmount2 hanshui,b.FAmount3 buhan," +
                     "   b.FText fasong,b.FText1 huikui,o.FName pingfen,p.FName js1,b.FCheckBox1 qr1,q.FName js2,b.FCheckBox2 qr2," +
                     "   m.FName js3,b.FCheckBox3 qr3,n.FName js4,b.FCheckBox4 qr4,r.FName js5,b.FCheckBox5 qr5,s.fname fuzhu,b.fdecimal2 fuliang" +
@@ -189,6 +317,11 @@ public class ZiFragment extends Fragment {
                     String qr3 = recordEle.elementTextTrim("qr3");
                     String qr4 = recordEle.elementTextTrim("qr4");
                     String qr5 = recordEle.elementTextTrim("qr5");
+                    String ftime2 = recordEle.elementTextTrim("FTime2");
+                    String ftime3 = recordEle.elementTextTrim("FTime3");
+                    String ftime4 = recordEle.elementTextTrim("FTime4");
+                    String ftime5 = recordEle.elementTextTrim("FTime5");
+                    String ftime6 = recordEle.elementTextTrim("FTime6");
                     Log.i("审核标志", qr1 + qr2 + qr3 + qr4 + qr5);
                     HashMap<String, String> map = new HashMap<>();
                     map.put("qi", qi);
@@ -219,6 +352,11 @@ public class ZiFragment extends Fragment {
                     map.put("qr3", qr3);
                     map.put("qr4", qr4);
                     map.put("qr5", qr5);
+                    map.put("fime2",ftime2);
+                    map.put("fime3",ftime3);
+                    map.put("fime4",ftime4);
+                    map.put("fime5",ftime5);
+                    map.put("fime6",ftime6);
                     list.add(map);
                     mSumBitmapList.add(mBitmapList);
                 }

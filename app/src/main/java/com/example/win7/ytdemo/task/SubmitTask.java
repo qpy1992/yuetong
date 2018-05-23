@@ -79,6 +79,8 @@ public class SubmitTask extends AsyncTask<Void, String, String> {
             cust.addElement("FBase11").setText(tasks.getFBase11());
             //区域部门
             cust.addElement("FBase12").setText(tasks.getFBase12());
+            //责任部门
+            cust.addElement("FBase16").setText(tasks.getFBase16());
             //制度所属部门
             cust.addElement("FBase13").setText("0");
             //制度操作细则
