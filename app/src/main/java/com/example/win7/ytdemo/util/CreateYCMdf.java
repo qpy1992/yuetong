@@ -372,7 +372,7 @@ public class CreateYCMdf{
          PdfPCell cell21 = new PdfPCell(new Paragraph("一审",keyfont));
          PdfPCell cell21s;
          if(map.get("qr1").equals("True")){
-            cell21s = new PdfPCell(new Paragraph(map.get("a")+"√",keyfonts));
+            cell21s = new PdfPCell(new Paragraph(map.get("a")+"(已确认)",keyfonts));
          }else{
              cell21s = new PdfPCell(new Paragraph(map.get("a"),keyfonts));
          }
@@ -381,7 +381,7 @@ public class CreateYCMdf{
          PdfPCell cell22 = new PdfPCell(new Paragraph("二审",keyfont));
          PdfPCell cell22s;
          if(map.get("qr2").equals("True")){
-             cell22s = new PdfPCell(new Paragraph(map.get("b")+"√",keyfonts));
+             cell22s = new PdfPCell(new Paragraph(map.get("b")+"(已确认)",keyfonts));
          }else{
              cell22s = new PdfPCell(new Paragraph(map.get("b"),keyfonts));
          }
@@ -417,7 +417,7 @@ public class CreateYCMdf{
          PdfPCell cell23 = new PdfPCell(new Paragraph("三审",keyfont));
          PdfPCell cell23s;
          if(map.get("qr3").equals("True")){
-             cell23s = new PdfPCell(new Paragraph(map.get("c")+"√",keyfonts));
+             cell23s = new PdfPCell(new Paragraph(map.get("c")+"(已确认)",keyfonts));
          }else{
              cell23s = new PdfPCell(new Paragraph(map.get("c"),keyfonts));
          }
@@ -426,7 +426,7 @@ public class CreateYCMdf{
          PdfPCell cell24 = new PdfPCell(new Paragraph("四审",keyfont));
          PdfPCell cell24s;
          if(map.get("qr4").equals("True")){
-             cell24s = new PdfPCell(new Paragraph(map.get("d")+"√",keyfonts));
+             cell24s = new PdfPCell(new Paragraph(map.get("d")+"(已确认)",keyfonts));
          }else{
              cell24s = new PdfPCell(new Paragraph(map.get("d"),keyfonts));
          }
@@ -462,7 +462,7 @@ public class CreateYCMdf{
          PdfPCell cell25 = new PdfPCell(new Paragraph("五审",keyfont));
          PdfPCell cell25s;
          if(map.get("qr5").equals("True")){
-             cell25s = new PdfPCell(new Paragraph(map.get("e")+"√",keyfonts));
+             cell25s = new PdfPCell(new Paragraph(map.get("e")+"(已确认)",keyfonts));
          }else{
              cell25s = new PdfPCell(new Paragraph(map.get("e"),keyfonts));
          }

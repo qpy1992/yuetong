@@ -88,11 +88,14 @@ public class AddTaskActivity extends BaseActivity {
     TextView tv_huilv, tv_zuzhi, tv_quyu, tv_content, tv_respon, tv_zhidan, tv_contacts, tv_bibie, tv_jl, tv_total, tv_amounts, tv_zeren;
     MyListView                    lv_zb;
     List<HashMap<String, String>> list, list1, ziList;
-    List<HashMap<String, Object>> list2 = new ArrayList<>();
-    List<String> strList, strList1, strList2, strList3, strList4, lists;
+    List<String> strList, strList1, strList2, lists;
     DecimalFormat df  = new DecimalFormat("#0.00");
     DecimalFormat df1 = new DecimalFormat("#0.0000");
-    String interid, taskno, respon, zhidan, contacts, content, contentid, planid, sup, jiliang, jiliangid, pfid, zuzhi, quyu, zeren, zhidu1, zhidu2, username, depart, company;
+    String interid, taskno, respon, zhidan, contacts,
+            content, contentid, planid, sup, jiliang,
+            jiliangid, pfid, zuzhi, quyu, zeren,
+            zhidu1, zhidu2, username, depart, company,
+            aid,a,aa,bid,b,bb,cid,c,cc,did,d,dd,eid,e,ee,qr1,qr2,qr3,qr4,qr5;
     int    currencyid = 1;
     String currency   = "人民币";
     Double huilv      = 1.00;
@@ -377,11 +380,39 @@ public class AddTaskActivity extends BaseActivity {
                             }).setNegativeButton("取消", null).show();
                 }
             });
-            final TextView tv_check = (TextView) v.findViewById(R.id.tv_check);
-            tv_check.setOnClickListener(new View.OnClickListener() {
+            final TextView tv_one = v.findViewById(R.id.tv_one);
+            final TextView tv_two = v.findViewById(R.id.tv_two);
+            final TextView tv_three = v.findViewById(R.id.tv_three);
+            final TextView tv_four = v.findViewById(R.id.tv_four);
+            final TextView tv_five = v.findViewById(R.id.tv_five);
+            tv_one.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new HYTask(tv_check).execute();
+                    new HYTask(tv_one,1).execute();
+                }
+            });
+            tv_two.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new HYTask(tv_two,2).execute();
+                }
+            });
+            tv_three.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new HYTask(tv_three,3).execute();
+                }
+            });
+            tv_four.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new HYTask(tv_four,4).execute();
+                }
+            });
+            tv_five.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new HYTask(tv_five,5).execute();
                 }
             });
             final TextView tv_submit = (TextView) v.findViewById(R.id.tv_submit);
@@ -404,24 +435,35 @@ public class AddTaskActivity extends BaseActivity {
                 et_buhan.setText(map.get("buhan"));
                 et_fuliang.setText(map.get("fuliang"));
                 et_fasong.setText(map.get("fasong"));
-                switch (strList2.size()) {
-                    case 0:
-                        break;
-                    case 1:
-                        tv_check.setText(map.get("a"));
-                        break;
-                    case 2:
-                        tv_check.setText(map.get("a") + "," + map.get("b"));
-                        break;
-                    case 3:
-                        tv_check.setText(map.get("a") + "," + map.get("b") + "," + map.get("c"));
-                        break;
-                    case 4:
-                        tv_check.setText(map.get("a") + "," + map.get("b") + "," + map.get("c") + "," + map.get("d"));
-                        break;
-                    case 5:
-                        tv_check.setText(map.get("a") + "," + map.get("b") + "," + map.get("c") + "," + map.get("d") + "," + map.get("e"));
-                        break;
+                tv_one.setText(map.get("a"));
+                tv_two.setText(map.get("b"));
+                tv_three.setText(map.get("c"));
+                tv_four.setText(map.get("d"));
+                tv_five.setText(map.get("e"));
+            }
+            if(map.get("type")!=null){
+                et_shuliang.setEnabled(false);
+                et_danjia.setEnabled(false);
+                et_hanshui.setEnabled(false);
+                et_note.setEnabled(false);
+                tv_qi.setEnabled(false);
+                tv_zhi.setEnabled(false);
+                tv_progress.setEnabled(false);
+                et_fasong.setEnabled(false);
+                if(map.get("qr1").equals("True")){
+                    tv_one.setEnabled(false);
+                }
+                if(map.get("qr2").equals("True")){
+                    tv_two.setEnabled(false);
+                }
+                if(map.get("qr3").equals("True")){
+                    tv_three.setEnabled(false);
+                }
+                if(map.get("qr4").equals("True")){
+                    tv_four.setEnabled(false);
+                }
+                if(map.get("qr5").equals("True")){
+                    tv_five.setEnabled(false);
                 }
             }
             final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
@@ -452,14 +494,14 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("neirong", content);
                     Log.i("计量", jiliangid);
                     map.put("jiliangid", jiliangid);
-                    if (et_shuliang.getText().toString().equals("")) {
+                    if (et_shuliang.getText().toString().equals("")){
                         map.put("shuliang", "0");
                     } else {
                         map.put("shuliang", et_shuliang.getText().toString());
                     }
                     if (et_danjia.getText().toString().equals("")) {
                         map.put("danjia", "0");
-                    } else {
+                    } else{
                         map.put("danjia", et_danjia.getText().toString());
                     }
                     map.put("qi", tv_qi.getText().toString());
@@ -470,9 +512,9 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("budget", tv_budget.getText().toString());
                     map.put("pbudget", tv_pbudget.getText().toString());
                     map.put("note", et_note.getText().toString());
-                    if (et_hanshui.getText().toString().equals("")) {
+                    if (et_hanshui.getText().toString().equals("")){
                         map.put("hanshui", "0");
-                    } else {
+                    } else{
                         map.put("hanshui", et_hanshui.getText().toString());
                     }
                     if (et_buhan.getText().toString().equals("")) {
@@ -492,79 +534,35 @@ public class AddTaskActivity extends BaseActivity {
                     } else {
                         map.put("pfid", pfid);
                     }
-                    if (strList4.size() != 0) {
-                        switch (strList2.size()) {
-                            case 1:
-                                map.put("a", strList4.get(0).toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", "0");
-                                map.put("cid", "0");
-                                map.put("did", "0");
-                                map.put("eid", "0");
-                                break;
-                            case 2:
-                                map.put("a", strList4.get(0).toString());
-                                map.put("b", strList4.get(1).toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("bb", strList3.get(1).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", strList2.get(1));
-                                map.put("cid", "0");
-                                map.put("did", "0");
-                                map.put("eid", "0");
-                                break;
-                            case 3:
-                                map.put("a", strList4.get(0).toString());
-                                map.put("b", strList4.get(1).toString());
-                                map.put("c", strList4.get(2).toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("bb", strList3.get(1).toString());
-                                map.put("cc", strList3.get(2).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", strList2.get(1));
-                                map.put("cid", strList2.get(2));
-                                map.put("did", "0");
-                                map.put("eid", "0");
-                                break;
-                            case 4:
-                                map.put("a", strList4.get(0).toString());
-                                map.put("b", strList4.get(1).toString());
-                                map.put("c", strList4.get(2).toString());
-                                map.put("d", strList4.get(3).toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("bb", strList3.get(1).toString());
-                                map.put("cc", strList3.get(2).toString());
-                                map.put("dd", strList3.get(3).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", strList2.get(1));
-                                map.put("cid", strList2.get(2));
-                                map.put("did", strList2.get(3));
-                                map.put("eid", "0");
-                                break;
-                            case 5:
-                                map.put("a", strList4.get(0).toString());
-                                map.put("b", strList4.get(1).toString());
-                                map.put("c", strList4.get(2).toString());
-                                map.put("d", strList4.get(3).toString());
-                                map.put("e", strList4.get(4).toString());
-                                map.put("aa", strList3.get(0).toString());
-                                map.put("bb", strList3.get(1).toString());
-                                map.put("cc", strList3.get(2).toString());
-                                map.put("dd", strList3.get(3).toString());
-                                map.put("ee", strList3.get(4).toString());
-                                map.put("aid", strList2.get(0));
-                                map.put("bid", strList2.get(1));
-                                map.put("cid", strList2.get(2));
-                                map.put("did", strList2.get(3));
-                                map.put("eid", strList2.get(4));
-                                break;
-                        }
-                        map.put("qr1", "0");
-                        map.put("qr2", "0");
-                        map.put("qr3", "0");
-                        map.put("qr4", "0");
-                        map.put("qr5", "0");
+                    if(!tv_one.getText().toString().equals("")){
+                        map.put("aid",aid);
+                        map.put("a",a);
+                        map.put("aa",aa);
+                        map.put("qr1",qr1);
+                    }
+                    if(!tv_two.getText().toString().equals("")){
+                        map.put("bid",bid);
+                        map.put("b",b);
+                        map.put("bb",bb);
+                        map.put("qr2",qr2);
+                    }
+                    if(!tv_three.getText().toString().equals("")){
+                        map.put("cid",cid);
+                        map.put("c",c);
+                        map.put("c",cc);
+                        map.put("qr3",qr3);
+                    }
+                    if(!tv_four.getText().toString().equals("")){
+                        map.put("did",did);
+                        map.put("d",d);
+                        map.put("dd",dd);
+                        map.put("qr4",qr4);
+                    }
+                    if(!tv_five.getText().toString().equals("")){
+                        map.put("eid",eid);
+                        map.put("e",e);
+                        map.put("ee",ee);
+                        map.put("qr5",qr5);
                     }
                     if (map.get("id") == null) {
                         map.put("id", Utils.UUID());
@@ -696,8 +694,6 @@ public class AddTaskActivity extends BaseActivity {
         strList = new ArrayList<>();
         strList1 = new ArrayList<>();
         strList2 = new ArrayList<>();
-        strList3 = new ArrayList<>();
-        strList4 = new ArrayList<>();
         lists = new ArrayList<>();
         tasks = new Tasks();//任务主表对象
         tv_bibie = (TextView) findViewById(R.id.tv_bibie);//币别
@@ -864,8 +860,7 @@ public class AddTaskActivity extends BaseActivity {
                     if (map.get("qr1").equals("True") || map.get("qr2").equals("True") ||
                             map.get("qr3").equals("True") || map.get("qr4").equals("True") ||
                             map.get("qr5").equals("True")) {
-                        Toast.makeText(AddTaskActivity.this, "已确认，无法修改", Toast.LENGTH_SHORT).show();
-                        return;
+                        map.put("type","1");
                     }
                 }
                 jiliang = map.get("jiliang");
@@ -1088,6 +1083,7 @@ public class AddTaskActivity extends BaseActivity {
                         respon = recordEle.elementTextTrim("responid");//制单人id
                         zhidan = recordEle.elementTextTrim("responid");//制单人和责任人为一人
                         quyu = recordEle.elementTextTrim("departid");//区域部门id
+                        zeren = recordEle.elementTextTrim("departid");
                         zuzhi = recordEle.elementTextTrim("companyid");//组织机构id
                     }
                 } catch (Exception e) {
@@ -1106,6 +1102,7 @@ public class AddTaskActivity extends BaseActivity {
                 tv_respon.setText(username);//责任人
                 tv_zhidan.setText(username);//制单人
                 tv_quyu.setText(depart);//区域部门
+                tv_zeren.setText(depart);
                 tv_zuzhi.setText(company);//组织机构
             }
         }
@@ -2365,21 +2362,21 @@ public class AddTaskActivity extends BaseActivity {
                         }
                     }
                     mSumBtUrlList.add(btpurl);
-                    String a = recordEle.elementTextTrim("js1");
-                    String b = recordEle.elementTextTrim("js2");
-                    String c = recordEle.elementTextTrim("js3");
-                    String d = recordEle.elementTextTrim("js4");
-                    String e = recordEle.elementTextTrim("js5");
-                    String aid = recordEle.elementTextTrim("jsid1");
-                    String bid = recordEle.elementTextTrim("jsid2");
-                    String cid = recordEle.elementTextTrim("jsid3");
-                    String did = recordEle.elementTextTrim("jsid4");
-                    String eid = recordEle.elementTextTrim("jsid5");
-                    String qr1 = recordEle.elementTextTrim("qr1");
-                    String qr2 = recordEle.elementTextTrim("qr2");
-                    String qr3 = recordEle.elementTextTrim("qr3");
-                    String qr4 = recordEle.elementTextTrim("qr4");
-                    String qr5 = recordEle.elementTextTrim("qr5");
+                    a = recordEle.elementTextTrim("js1");
+                    b = recordEle.elementTextTrim("js2");
+                    c = recordEle.elementTextTrim("js3");
+                    d = recordEle.elementTextTrim("js4");
+                    e = recordEle.elementTextTrim("js5");
+                    aid = recordEle.elementTextTrim("jsid1");
+                    bid = recordEle.elementTextTrim("jsid2");
+                    cid = recordEle.elementTextTrim("jsid3");
+                    did = recordEle.elementTextTrim("jsid4");
+                    eid = recordEle.elementTextTrim("jsid5");
+                    qr1 = recordEle.elementTextTrim("qr1");
+                    qr2 = recordEle.elementTextTrim("qr2");
+                    qr3 = recordEle.elementTextTrim("qr3");
+                    qr4 = recordEle.elementTextTrim("qr4");
+                    qr5 = recordEle.elementTextTrim("qr5");
                     String id = recordEle.elementTextTrim("id");
                     Log.i("审核标志", qr1 + qr2 + qr3 + qr4 + qr5);
                     HashMap<String, String> map = new HashMap<>();
@@ -2475,17 +2472,17 @@ public class AddTaskActivity extends BaseActivity {
     //查询好友列表
     class HYTask extends AsyncTask<Void, String, String> {
         TextView tv;
+        int index;
 
-        public HYTask(TextView tv) {
+        public HYTask(TextView tv,int index) {
             this.tv = tv;
+            this.index = index;
         }
 
         @Override
         protected void onPreExecute() {
-            list2.clear();
-            strList2.clear();
-            strList3.clear();
-            strList4.clear();
+            list1.clear();
+            strList1.clear();
             progress = CustomProgress.show(AddTaskActivity.this, "加载中...", true, null);
             super.onPreExecute();
         }
@@ -2552,12 +2549,11 @@ public class AddTaskActivity extends BaseActivity {
                     // 遍历head节点
                     while (iter.hasNext()) {
                         Element recordEle = (Element) iter.next();
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("fname", recordEle.elementTextTrim("fname"));
-                        map.put("name", recordEle.elementTextTrim("name"));
-                        map.put("ischeck", false);
-                        map.put("fitemid", recordEle.elementTextTrim("fitemid"));
-                        list2.add(map);
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("fname", recordEle.elementTextTrim("fname"));//名称
+                        map.put("name", recordEle.elementTextTrim("name"));//用户名
+                        map.put("fitemid", recordEle.elementTextTrim("fitemid"));//代码
+                        list1.add(map);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2571,31 +2567,57 @@ public class AddTaskActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String s) {
             progress.dismiss();
-            View v = getLayoutInflater().inflate(R.layout.item_shenhe, null);
-            final ListView lv = (ListView) v.findViewById(R.id.lv_checkbox);
-            CheckBoxAdapter adapter = new CheckBoxAdapter(AddTaskActivity.this, list2);
+            Utils.sortByInitial(list1);
+            for (HashMap<String, String> map : list1) {
+                String name = map.get("fname");
+                strList1.add(name);
+            }
+            final ListView lv = new ListView(AddTaskActivity.this);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTaskActivity.this, android.R.layout.simple_list_item_1, strList1);
             lv.setAdapter(adapter);
-            final TextView tv_submits = (TextView) v.findViewById(R.id.tv_check_submit);
-            final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(v)
-                    .setTitle("请选择").show();
-            tv_submits.setOnClickListener(new View.OnClickListener() {
+            final AlertDialog dialog = new AlertDialog.Builder(AddTaskActivity.this).setView(lv)
+                    .setTitle(R.string.emp).show();
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onClick(View view) {
-                    StringBuffer sb = new StringBuffer();
-                    for (int i = 0; i < list2.size(); i++) {
-                        if (Boolean.valueOf(list2.get(i).get("ischeck").toString())) {
-                            sb.append(list2.get(i).get("fname").toString()).append(",");
-                            strList2.add(list2.get(i).get("fitemid").toString());
-                            strList3.add(list2.get(i).get("name").toString());
-                            strList4.add(list2.get(i).get("fname").toString());
-                        }
-                    }
-                    if (strList2.size() > 5) {
-                        Toast.makeText(AddTaskActivity.this, "最多可选5人", Toast.LENGTH_SHORT).show();
-                        return;
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    switch(index){
+                        case 1:
+                            aid = list1.get(i).get("fitemid");//审核人id
+                            a = strList1.get(i);//显示审核人名称
+                            aa = list1.get(i).get("name");//审核人用户名
+                            qr1 = "0";
+                            tv.setText(a);
+                            break;
+                        case 2:
+                            bid = list1.get(i).get("fitemid");//审核人id
+                            b = strList1.get(i);//显示审核人名称
+                            bb = list1.get(i).get("name");//审核人用户名
+                            qr2 = "0";
+                            tv.setText(b);
+                            break;
+                        case 3:
+                            cid = list1.get(i).get("fitemid");//审核人id
+                            c = strList1.get(i);//显示审核人名称
+                            cc = list1.get(i).get("name");//审核人用户名
+                            qr3 = "0";
+                            tv.setText(c);
+                            break;
+                        case 4:
+                            did = list1.get(i).get("fitemid");//审核人id
+                            d = strList1.get(i);//显示审核人名称
+                            dd = list1.get(i).get("name");//审核人用户名
+                            qr4 = "0";
+                            tv.setText(d);
+                            break;
+                        case 5:
+                            eid = list1.get(i).get("fitemid");//审核人id
+                            e = strList1.get(i);//显示审核人名称
+                            ee = list1.get(i).get("name");//审核人用户名
+                            qr5 = "0";
+                            tv.setText(e);
+                            break;
                     }
                     dialog.dismiss();
-                    tv.setText(sb.toString());
                 }
             });
             super.onPostExecute(s);

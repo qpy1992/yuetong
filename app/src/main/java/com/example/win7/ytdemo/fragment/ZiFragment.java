@@ -352,11 +352,11 @@ public class ZiFragment extends Fragment {
                     map.put("qr3", qr3);
                     map.put("qr4", qr4);
                     map.put("qr5", qr5);
-                    map.put("fime2",ftime2);
-                    map.put("fime3",ftime3);
-                    map.put("fime4",ftime4);
-                    map.put("fime5",ftime5);
-                    map.put("fime6",ftime6);
+                    map.put("ftime2",ftime2);
+                    map.put("ftime3",ftime3);
+                    map.put("ftime4",ftime4);
+                    map.put("ftime5",ftime5);
+                    map.put("ftime6",ftime6);
                     list.add(map);
                     mSumBitmapList.add(mBitmapList);
                 }

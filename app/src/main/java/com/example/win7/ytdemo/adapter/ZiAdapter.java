@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
+import com.example.win7.ytdemo.util.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -159,111 +160,111 @@ public class ZiAdapter extends BaseAdapter {
         String c = item.get("c");
         String d = item.get("d");
         String e = item.get("e");
-        List<String> l = new ArrayList<>();
-        if (!TextUtils.isEmpty(a)) {
-            l.add(a);
-        }
-        if (!TextUtils.isEmpty(b)) {
-            l.add(b);
-        }
-        if (!TextUtils.isEmpty(c)) {
-            l.add(c);
-        }
-        if (!TextUtils.isEmpty(d)) {
-            l.add(d);
-        }
-        if (!TextUtils.isEmpty(e)) {
-            l.add(e);
-        }
-        switch (l.size()) {
-            case 0:
-                holder.ll_a.setVisibility(View.GONE);
-                holder.ll_b.setVisibility(View.GONE);
-                holder.ll_c.setVisibility(View.GONE);
-                holder.ll_d.setVisibility(View.GONE);
-                holder.ll_e.setVisibility(View.GONE);
-                break;
-            case 1:
+//        List<String> l = new ArrayList<>();
+//        if (!TextUtils.isEmpty(a)) {
+//            l.add(a);
+//        }
+//        if (!TextUtils.isEmpty(b)) {
+//            l.add(b);
+//        }
+//        if (!TextUtils.isEmpty(c)) {
+//            l.add(c);
+//        }
+//        if (!TextUtils.isEmpty(d)) {
+//            l.add(d);
+//        }
+//        if (!TextUtils.isEmpty(e)) {
+//            l.add(e);
+//        }
+//        switch (l.size()) {
+//            case 0:
+//                holder.ll_a.setVisibility(View.GONE);
+//                holder.ll_b.setVisibility(View.GONE);
+//                holder.ll_c.setVisibility(View.GONE);
+//                holder.ll_d.setVisibility(View.GONE);
+//                holder.ll_e.setVisibility(View.GONE);
+//                break;
+//            case 1:
+//                holder.tv_a.setText(a);
+//                if (item.get("qr1").equals("True")) {
+//                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.ll_b.setVisibility(View.INVISIBLE);
+//                holder.ll_c.setVisibility(View.GONE);
+//                holder.ll_d.setVisibility(View.GONE);
+//                holder.ll_e.setVisibility(View.GONE);
+//                break;
+//            case 2:
+//                holder.tv_a.setText(a);
+//                if (item.get("qr1").equals("True")) {
+//                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.tv_b.setText(b);
+//                if (item.get("qr2").equals("True")) {
+//                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.ll_c.setVisibility(View.GONE);
+//                holder.ll_d.setVisibility(View.GONE);
+//                holder.ll_e.setVisibility(View.GONE);
+//                break;
+//            case 3:
+//                holder.tv_a.setText(a);
+//                if (item.get("qr1").equals("True")) {
+//                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.tv_b.setText(b);
+//                if (item.get("qr2").equals("True")) {
+//                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.tv_c.setText(c);
+//                if (item.get("qr3").equals("True")) {
+//                    holder.tv_c.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.ll_d.setVisibility(View.INVISIBLE);
+//                holder.ll_e.setVisibility(View.GONE);
+//                break;
+//            case 4:
+//                holder.tv_a.setText(a);
+//                if (item.get("qr1").equals("True")) {
+//                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.tv_b.setText(b);
+//                if (item.get("qr2").equals("True")) {
+//                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.tv_c.setText(c);
+//                if (item.get("qr3").equals("True")) {
+//                    holder.tv_c.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.tv_d.setText(d);
+//                if (item.get("qr4").equals("True")) {
+//                    holder.tv_d.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
+//                }
+//                holder.ll_e.setVisibility(View.GONE);
+//                break;
+//            case 5:
                 holder.tv_a.setText(a);
-                if (item.get("qr1").equals("True")) {
-                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.ll_b.setVisibility(View.INVISIBLE);
-                holder.ll_c.setVisibility(View.GONE);
-                holder.ll_d.setVisibility(View.GONE);
-                holder.ll_e.setVisibility(View.GONE);
-                break;
-            case 2:
-                holder.tv_a.setText(a);
-                if (item.get("qr1").equals("True")) {
+                if (Utils.BooleantoNum(item.get("qr1")).equals("1")) {
                     holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_b.setText(b);
-                if (item.get("qr2").equals("True")) {
-                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.ll_c.setVisibility(View.GONE);
-                holder.ll_d.setVisibility(View.GONE);
-                holder.ll_e.setVisibility(View.GONE);
-                break;
-            case 3:
-                holder.tv_a.setText(a);
-                if (item.get("qr1").equals("True")) {
-                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.tv_b.setText(b);
-                if (item.get("qr2").equals("True")) {
+                if (Utils.BooleantoNum(item.get("qr2")).equals("1")) {
                     holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_c.setText(c);
-                if (item.get("qr3").equals("True")) {
-                    holder.tv_c.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.ll_d.setVisibility(View.INVISIBLE);
-                holder.ll_e.setVisibility(View.GONE);
-                break;
-            case 4:
-                holder.tv_a.setText(a);
-                if (item.get("qr1").equals("True")) {
-                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.tv_b.setText(b);
-                if (item.get("qr2").equals("True")) {
-                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.tv_c.setText(c);
-                if (item.get("qr3").equals("True")) {
+                if (Utils.BooleantoNum(item.get("qr3")).equals("1")) {
                     holder.tv_c.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_d.setText(d);
-                if (item.get("qr4").equals("True")) {
-                    holder.tv_d.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.ll_e.setVisibility(View.GONE);
-                break;
-            case 5:
-                holder.tv_a.setText(a);
-                if (item.get("qr1").equals("True")) {
-                    holder.tv_a.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.tv_b.setText(b);
-                if (item.get("qr2").equals("True")) {
-                    holder.tv_b.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.tv_c.setText(c);
-                if (item.get("qr3").equals("True")) {
-                    holder.tv_c.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
-                }
-                holder.tv_d.setText(d);
-                if (item.get("qr4").equals("True")) {
+                if (Utils.BooleantoNum(item.get("qr4")).equals("1")) {
                     holder.tv_d.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
                 holder.tv_e.setText(e);
-                if (item.get("qr5").equals("True")) {
+                if (Utils.BooleantoNum(item.get("qr5")).equals("1")) {
                     holder.tv_e.setTextColor(mContext.getResources().getColor(R.color.bottom_button_text_green));
                 }
-                break;
-        }
+//                break;
+//        }
 
         if (currentItem == i) {
             holder.ll_hide.setVisibility(View.VISIBLE);

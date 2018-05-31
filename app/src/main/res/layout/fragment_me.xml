@@ -23,15 +23,11 @@
             android:textColor="@color/bottom_button_text_black"
             android:textSize="18sp"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
         <TextView
             android:id="@+id/tv_user"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="right|center_vertical"
             android:layout_marginRight="10dp"
             android:textSize="18sp"
@@ -59,15 +55,11 @@
             android:textColor="@color/bottom_button_text_black"
             android:textSize="18sp"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
         <TextView
             android:id="@+id/tv_depart"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="right|center_vertical"
             android:layout_marginRight="10dp"
             android:textSize="18sp"
@@ -95,15 +87,11 @@
             android:textColor="@color/bottom_button_text_black"
             android:textSize="18sp"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
         <TextView
             android:id="@+id/tv_zhidu"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="right|center_vertical"
             android:layout_marginRight="10dp"
             android:textSize="18sp"
@@ -131,15 +119,11 @@
             android:textColor="@color/bottom_button_text_black"
             android:textSize="18sp"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
         <TextView
             android:id="@+id/tv_company"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="right|center_vertical"
             android:layout_marginRight="10dp"
             android:textSize="18sp"
@@ -167,15 +151,11 @@
             android:textColor="@color/bottom_button_text_black"
             android:textSize="18sp"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
         <TextView
             android:id="@+id/tv_detail"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="right|center_vertical"
             android:layout_marginRight="10dp"
             android:ellipsize="end"
@@ -204,15 +184,11 @@
             android:textColor="@color/bottom_button_text_black"
             android:textSize="18sp"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
         <TextView
             android:id="@+id/tv_lately"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="right|center_vertical"
             android:layout_marginRight="10dp"
             android:ellipsize="end"
