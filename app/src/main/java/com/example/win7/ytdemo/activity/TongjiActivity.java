@@ -13,15 +13,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bin.david.form.core.SmartTable;
+import com.bin.david.form.data.column.Column;
+import com.bin.david.form.data.table.TableData;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
 import com.example.win7.ytdemo.adapter.ShaixuanAdapter;
 import com.example.win7.ytdemo.entity.Condition;
+import com.example.win7.ytdemo.entity.Statistics;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.SoapUtil;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +40,9 @@ public class TongjiActivity extends BaseActivity {
     List<Condition> l = new ArrayList<>();
     ListView lv1;
     TextView tv_tj;
+    SmartTable mTable;
+    List<Column> columnList;
+    List<Statistics> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +125,26 @@ public class TongjiActivity extends BaseActivity {
     protected void setViews(){
         lv1 = findViewById(R.id.lv1);
         tv_tj = findViewById(R.id.tv_tj);
+        mTable = findViewById(R.id.table);
+        Map<String,String> maps = new HashMap<>();
+        maps.put("单据号","fbillno");
+        maps.put("启日期","qi");
+        maps.put("止日期","zhi");
+        maps.put("组织机构","zuzhi");
+        maps.put("责任部门","zeren");
+        maps.put("往来","wanglai");
+        maps.put("计划预算进度","jihua");
+        maps.put("内容","neirong");
+        maps.put("数量","shuliang");
+        maps.put("单价","danjia");
+        maps.put("金额含税","hanshui");
+        maps.put("人民币不含税额","buhan");
+        columnList = new ArrayList<>();
+        for(String s : maps.keySet()){
+            Column<String> column = new Column<String>(s,maps.get(s));
+            columnList.add(column);
+        }
+        dataList = new ArrayList<>();
     }
 
     protected void setListeners(){
@@ -132,15 +164,15 @@ public class TongjiActivity extends BaseActivity {
                 }
                 sql = sql.substring(0,sql.length()-4) + "order by 组织机构 desc,责任部门 desc,计划预算进度 desc,内容 desc,nm";
                 Log.i("目前的sql语句",sql);
-                new Statistics(sql).execute();
+                new StatisticsTask(sql).execute();
             }
         });
     }
 
-    class Statistics extends AsyncTask<Void,String,String>{
+    class StatisticsTask extends AsyncTask<Void,String,String>{
         String sql;
 
-        Statistics(String sql){
+        StatisticsTask(String sql){
             this.sql = sql;
         }
 
@@ -161,6 +193,33 @@ public class TongjiActivity extends BaseActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.i("统计结果",s);
+            try {
+                Document doc = DocumentHelper.parseText(s);
+                Element ele = doc.getRootElement();
+                Iterator iter = ele.elementIterator("Cust");
+                while (iter.hasNext()) {
+                    Element recordEle = (Element) iter.next();
+                    Statistics sta = new Statistics();
+                    sta.setFbillno(recordEle.elementTextTrim("单据号"));
+                    sta.setQi(recordEle.elementTextTrim("启日期"));
+                    sta.setZhi(recordEle.elementTextTrim("止日期"));
+                    sta.setZuzhi(recordEle.elementTextTrim("组织机构"));
+                    sta.setZeren(recordEle.elementTextTrim("责任部门"));
+                    sta.setWanglai(recordEle.elementTextTrim("往来"));
+                    sta.setJihua(recordEle.elementTextTrim("计划预算进度"));
+                    sta.setNeirong(recordEle.elementTextTrim("内容"));
+                    sta.setShuliang(recordEle.elementTextTrim("数量"));
+                    sta.setDanjia(recordEle.elementTextTrim("单价"));
+                    sta.setHanshui(recordEle.elementTextTrim("金额含税"));
+                    sta.setBuhan(recordEle.elementTextTrim("人民币不含税额"));
+                    dataList.add(sta);
+                }
+                TableData<Statistics> data = new TableData<Statistics>("统计表", dataList, columnList);
+                mTable.setZoom(true);
+                mTable.setTableData(data);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }
