@@ -49,6 +49,7 @@ public class CameraIdSpAdapter extends BaseAdapter {
         if (null == view) {
             viewHolder = new ViewHolder();
             view = View.inflate(mContext, R.layout.spin_item_id, null);
+            viewHolder.tv_title = view.findViewById(R.id.tv_title);
             viewHolder.tv_name = view.findViewById(R.id.tv_name);
             view.setTag(viewHolder);
         } else {
@@ -59,6 +60,6 @@ public class CameraIdSpAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView tv_name;
+        TextView tv_name, tv_title;
     }
 }
