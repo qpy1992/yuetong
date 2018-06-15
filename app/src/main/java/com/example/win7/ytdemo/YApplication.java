@@ -6,6 +6,7 @@ import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.AsyncTask;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.example.win7.ytdemo.activity.BaseActivity;
@@ -67,6 +69,12 @@ public class YApplication extends Application {
 //        YApplication.fname = fname;
         initHuanxin();
         initSoundPool();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private void initHuanxin() {

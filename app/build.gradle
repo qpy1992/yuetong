@@ -5,10 +5,14 @@ android {
     defaultConfig {
         applicationId "com.example.win7.ytdemo"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a"//只支持32位
+        }
     }
     buildTypes {
         release {
@@ -22,6 +26,7 @@ android {
         main {
             jniLibs.srcDir 'libs'
             jni.srcDirs = [] //disable automatic ndk-build
+            jniLibs.srcDirs = ['libs']
         }
     }
 }
@@ -29,6 +34,7 @@ android {
 
 
 dependencies {
+    implementation 'com.android.support:multidex:1.0.1'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -47,4 +53,5 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.bm.photoview:library:1.4.1'
     implementation 'com.github.huangyanbin:SmartTable:2.2.0'
+    implementation 'com.hikvision.ezviz:ezuikit:2.0'
 }

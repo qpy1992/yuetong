@@ -24,7 +24,7 @@ public class Test {
 //                "left join t_item_3007 c on c.fitemid=a.fbase left join t_item d on d.fitemid=c.f_105 " +
 //                "left join t_measureunit e on e.fmeasureunitid=b.fitemid left join t_item f on f.fitemid=a.fbase14 where a.id='"+id+"'";
 //        NeedCheck(sql);
-        Exit("z003");
+        Exit("z001");
 //        UserGroup();
     }
 
