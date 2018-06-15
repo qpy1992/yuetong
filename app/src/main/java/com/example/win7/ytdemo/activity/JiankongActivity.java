@@ -22,7 +22,7 @@ public class JiankongActivity extends BaseActivity {
     private Toolbar    toolbar;
     private EZUIPlayer mPlayer;
     private Spinner    mSp_camid;
-    private String cameraID = "107910291";
+    private String cameraID = "107910292";
     private List<String> mIdData;//存放摄像头ID
 
     @Override
@@ -52,7 +52,7 @@ public class JiankongActivity extends BaseActivity {
     }
 
     protected void setViews() {
-//        mSp_camid = (Spinner) findViewById(R.id.sp_camid);
+        //        mSp_camid = (Spinner) findViewById(R.id.sp_camid);
         //获取EZUIPlayer实例
         mPlayer = (EZUIPlayer) findViewById(R.id.player_ui);
     }
@@ -62,12 +62,12 @@ public class JiankongActivity extends BaseActivity {
         mIdData.add("107910291");
         mIdData.add("107910292");
 
-//        CameraIdSpAdapter spAdapter = new CameraIdSpAdapter(JiankongActivity.this, mIdData);
-//        mSp_camid.setAdapter(spAdapter);
+        //        CameraIdSpAdapter spAdapter = new CameraIdSpAdapter(JiankongActivity.this, mIdData);
+        //        mSp_camid.setAdapter(spAdapter);
         //初始化EZUIKit
         EZUIKit.initWithAppKey(getApplication(), "d55fc8eefc784b9db9acbacd1bab29a2");
         //设置授权token
-        EZUIKit.setAccessToken("at.7ognuaahb0m0em9d855r905k3owsz4gh-32fephnbo7-0f3wlxx-syjzg8eio");
+        EZUIKit.setAccessToken("at.7kilm6c999h0sv1t8d1vp8207h1xqwr5-13j80h6pbi-0qqvku7-ldhf8od2x");
         //设置播放回调callback
         mPlayer.setCallBack(new EZUIPlayer.EZUIPlayerCallBack() {
             @Override
@@ -109,8 +109,7 @@ public class JiankongActivity extends BaseActivity {
         //加载中显示的UI
         //创建loadingview
         ProgressBar mLoadView = new ProgressBar(JiankongActivity.this);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
         mLoadView.setLayoutParams(lp);
         //设置loadingview
@@ -118,20 +117,20 @@ public class JiankongActivity extends BaseActivity {
     }
 
     protected void setListeners() {
-//        mSp_camid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                String camID = mIdData.get(i);
-//                //设置播放参数
-//                mPlayer.setUrl("ezopen://open.ys7.com/" + camID + "/1.hd.live");
-//                mPlayer.startPlay();
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
+        //        mSp_camid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //            @Override
+        //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        //                String camID = mIdData.get(i);
+        //                //设置播放参数
+        //                mPlayer.setUrl("ezopen://open.ys7.com/" + camID + "/1.hd.live");
+        //                mPlayer.startPlay();
+        //            }
+        //
+        //            @Override
+        //            public void onNothingSelected(AdapterView<?> adapterView) {
+        //
+        //            }
+        //        });
     }
 
     @Override

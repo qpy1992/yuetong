@@ -28,7 +28,6 @@
                 android:id="@+id/player_ui"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_marginTop="30dp"
                 android:background="#FF000000">
             </com.ezvizuikit.open.EZUIPlayer>
         </LinearLayout>
