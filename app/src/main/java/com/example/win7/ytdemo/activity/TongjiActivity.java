@@ -23,14 +23,17 @@ import com.example.win7.ytdemo.entity.Condition;
 import com.example.win7.ytdemo.entity.Statistics;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.SoapUtil;
+import com.example.win7.ytdemo.util.Utils;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +46,7 @@ public class TongjiActivity extends BaseActivity {
     SmartTable mTable;
     List<Column> columnList;
     List<Statistics> dataList;
+    DecimalFormat df = new DecimalFormat("0.00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +130,7 @@ public class TongjiActivity extends BaseActivity {
         lv1 = findViewById(R.id.lv1);
         tv_tj = findViewById(R.id.tv_tj);
         mTable = findViewById(R.id.table);
-        Map<String,String> maps = new HashMap<>();
+        Map<String,String> maps = new LinkedHashMap<>();
         maps.put("单据号","fbillno");
         maps.put("启日期","qi");
         maps.put("止日期","zhi");
@@ -160,7 +164,14 @@ public class TongjiActivity extends BaseActivity {
                 tv_tj.setVisibility(View.GONE);
                 String sql = "select * from z_report_t_BOS200000000 where ";
                 for (Condition con: l){
-                    sql = sql + con.getType()+"='"+con.getName()+"' and ";
+                    if(con.getType().equals("日期")){
+                        String[] str = con.getName().split("~");
+                        String s = str[0];
+                        String e = str[1];
+                        sql = sql + "(止日期 between '" + s + "' and '" + e + "' or 止日期 is null) and ";
+                    }else {
+                        sql = sql + con.getType() + "='" + con.getName() + "' and ";
+                    }
                 }
                 sql = sql.substring(0,sql.length()-4) + "order by 组织机构 desc,责任部门 desc,计划预算进度 desc,内容 desc,nm";
                 Log.i("目前的sql语句",sql);
@@ -178,6 +189,7 @@ public class TongjiActivity extends BaseActivity {
 
         @Override
         protected void onPreExecute() {
+            dataList.clear();
             super.onPreExecute();
         }
 
@@ -208,10 +220,10 @@ public class TongjiActivity extends BaseActivity {
                     sta.setWanglai(recordEle.elementTextTrim("往来"));
                     sta.setJihua(recordEle.elementTextTrim("计划预算进度"));
                     sta.setNeirong(recordEle.elementTextTrim("内容"));
-                    sta.setShuliang(recordEle.elementTextTrim("数量"));
-                    sta.setDanjia(recordEle.elementTextTrim("单价"));
-                    sta.setHanshui(recordEle.elementTextTrim("金额含税"));
-                    sta.setBuhan(recordEle.elementTextTrim("人民币不含税额"));
+                    sta.setShuliang(df.format(Double.parseDouble(Utils.NulltoZero(recordEle.elementTextTrim("数量")))));
+                    sta.setDanjia(df.format(Double.parseDouble(Utils.NulltoZero(recordEle.elementTextTrim("单价")))));
+                    sta.setHanshui(df.format(Double.parseDouble(Utils.NulltoZero(recordEle.elementTextTrim("金额含税")))));
+                    sta.setBuhan(df.format(Double.parseDouble(Utils.NulltoZero(recordEle.elementTextTrim("人民币不含税额")))));
                     dataList.add(sta);
                 }
                 TableData<Statistics> data = new TableData<Statistics>("统计表", dataList, columnList);

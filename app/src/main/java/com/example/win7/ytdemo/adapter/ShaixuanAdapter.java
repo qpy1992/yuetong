@@ -1,5 +1,6 @@
 package com.example.win7.ytdemo.adapter;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -8,18 +9,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.entity.Condition;
 import com.example.win7.ytdemo.task.SearchTask;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 public class ShaixuanAdapter extends BaseAdapter{
     Context mContext;
     List<Condition> list;
+    Calendar mycalendar = Calendar.getInstance();
+    int year = mycalendar.get(Calendar.YEAR); //获取Calendar对象中的年
+    int month = mycalendar.get(Calendar.MONTH);//获取Calendar对象中的月
+    int day = mycalendar.get(Calendar.DAY_OF_MONTH);
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public ShaixuanAdapter(Context context, List<Condition> list){
         this.mContext = context;
@@ -60,7 +70,54 @@ public class ShaixuanAdapter extends BaseAdapter{
             @Override
             public void onClick(View view) {
                 if(item.equals("日期")){
-                    Toast.makeText(mContext,"日期",Toast.LENGTH_SHORT).show();
+                    View v = LayoutInflater.from(mContext).inflate(R.layout.item_datepick,null);
+                    final TextView start = v.findViewById(R.id.start);
+                    final TextView end = v.findViewById(R.id.end);
+                    start.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            DatePickerDialog dpd = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                    String s = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                    try {
+                                        java.util.Date date = sdf.parse(s);
+                                        String s1 = sdf.format(date);
+                                        start.setText(s1);
+                                    } catch (Exception e) {
+                                    }
+                                }
+                            }, year, month, day);
+                            dpd.show();//显示DatePickerDialog组件
+                        }
+                    });
+                    end.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            DatePickerDialog dpd = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                    String s = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                                    try {
+                                        java.util.Date date = sdf.parse(s);
+                                        String s1 = sdf.format(date);
+                                        end.setText(s1);
+                                    } catch (Exception e) {
+                                    }
+                                }
+                            }, year, month, day);
+                            dpd.show();//显示DatePickerDialog组件
+                        }
+                    });
+                    new AlertDialog.Builder(mContext).setTitle("日期").setView(v)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String s = start.getText().toString()+"~"+end.getText().toString();
+                                    holder.tv2.setText(s);
+                                    con.setName(s);
+                                }
+                            }).setNegativeButton("取消",null).show();
                 }
                 if(item.equals("组织机构")){
                     String sql = "select fitemid,fname from t_Item_3001 where fitemid>0";

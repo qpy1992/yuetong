@@ -62,6 +62,14 @@ public class Utils {
         }
     }
 
+    public static String NulltoZero(Object object){
+        if(object.equals("")){
+            return "0";
+        }else{
+            return object.toString();
+        }
+    }
+
     //boolean转化成0或1
     public static String BooleantoNum(String bool){
         if(bool!=null){
