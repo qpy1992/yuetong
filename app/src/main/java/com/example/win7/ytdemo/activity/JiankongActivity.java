@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.win7.ytdemo.R;
+import com.example.win7.ytdemo.adapter.CameraIdSpAdapter;
 import com.ezvizuikit.open.EZUIError;
 import com.ezvizuikit.open.EZUIKit;
 import com.ezvizuikit.open.EZUIPlayer;
@@ -52,7 +54,7 @@ public class JiankongActivity extends BaseActivity {
     }
 
     protected void setViews() {
-        //        mSp_camid = (Spinner) findViewById(R.id.sp_camid);
+        mSp_camid = (Spinner) findViewById(R.id.sp_camid);
         //获取EZUIPlayer实例
         mPlayer = (EZUIPlayer) findViewById(R.id.player_ui);
     }
@@ -62,8 +64,8 @@ public class JiankongActivity extends BaseActivity {
         mIdData.add("107910291");
         mIdData.add("107910292");
 
-        //        CameraIdSpAdapter spAdapter = new CameraIdSpAdapter(JiankongActivity.this, mIdData);
-        //        mSp_camid.setAdapter(spAdapter);
+        CameraIdSpAdapter spAdapter = new CameraIdSpAdapter(JiankongActivity.this, mIdData);
+        mSp_camid.setAdapter(spAdapter);
         //初始化EZUIKit
         EZUIKit.initWithAppKey(getApplication(), "d55fc8eefc784b9db9acbacd1bab29a2");
         //设置授权token
@@ -117,20 +119,20 @@ public class JiankongActivity extends BaseActivity {
     }
 
     protected void setListeners() {
-        //        mSp_camid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        //            @Override
-        //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        //                String camID = mIdData.get(i);
-        //                //设置播放参数
-        //                mPlayer.setUrl("ezopen://open.ys7.com/" + camID + "/1.hd.live");
-        //                mPlayer.startPlay();
-        //            }
-        //
-        //            @Override
-        //            public void onNothingSelected(AdapterView<?> adapterView) {
-        //
-        //            }
-        //        });
+        mSp_camid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String camID = mIdData.get(i);
+                //设置播放参数
+                mPlayer.setUrl("ezopen://open.ys7.com/" + camID + "/1.hd.live");
+                mPlayer.startPlay();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override

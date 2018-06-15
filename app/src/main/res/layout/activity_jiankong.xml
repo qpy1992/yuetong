@@ -17,12 +17,13 @@
 
             <include layout="@layout/toolbar"/>
 
-            <!--<Spinner-->
-                <!--android:id="@+id/sp_camid"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:minHeight="40dp">-->
-            <!--</Spinner>-->
+            <Spinner
+                android:id="@+id/sp_camid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"
+                android:minHeight="40dp">
+            </Spinner>
 
             <com.ezvizuikit.open.EZUIPlayer
                 android:id="@+id/player_ui"
