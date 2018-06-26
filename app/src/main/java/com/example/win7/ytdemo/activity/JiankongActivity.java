@@ -228,7 +228,7 @@ public class JiankongActivity extends BaseActivity {
             ProgressDialogUtil.hideDialog();
         }
     }
-    /*
-    *
+    /*查询设备序列号
+    *select fnumber from t_Item where FItemClassID=3015
     * */
 }

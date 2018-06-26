@@ -23,4 +23,9 @@
     <!--mine-->
     <color name="btn_pressed">#00A1DB</color>
     <color name="btn_normal">#00ACFF</color>
+
+    <color name="black">#000000</color>
+    <color name="gray_ef">#EFEFEF</color>
+    <color name="vm_blue_38">#612384fe</color>
+    <color name="deepskyblue">#00BFFF</color>
 </resources>
