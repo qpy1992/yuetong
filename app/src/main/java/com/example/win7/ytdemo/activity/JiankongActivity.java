@@ -37,6 +37,7 @@ public class JiankongActivity extends BaseActivity {
     private String cameraID = "107910292";
     private List<String> mIdData;//存放摄像头ID
     private String token = "at.9bnl7xjt8rpqsd9t0iwgldl48ijivya9-73rejh53j4-0vp0wbc-cen7sk5pi";
+    private CameraIdSpAdapter spAdapter;
 
     @Override
 
@@ -74,6 +75,7 @@ public class JiankongActivity extends BaseActivity {
     }
 
     private void getTokenFromYSY() {
+        ProgressDialogUtil.startShow(JiankongActivity.this,"正在连接，请稍等...");
         String getTokenUrl = "select token from z_token where id=1";
         ItemTask itemTask = new ItemTask(getTokenUrl);
         itemTask.execute();
@@ -84,8 +86,12 @@ public class JiankongActivity extends BaseActivity {
         mIdData.add("107910291");
         mIdData.add("107910292");
 
-        CameraIdSpAdapter spAdapter = new CameraIdSpAdapter(JiankongActivity.this, mIdData);
+        spAdapter = new CameraIdSpAdapter(JiankongActivity.this, mIdData);
         mSp_camid.setAdapter(spAdapter);
+        ProgressDialogUtil.startShow(JiankongActivity.this,"正在查询设备ID，请稍等...");
+        String searchIDUrl = "select fnumber from t_Item where FItemClassID=3015";
+        ItemIDTask itemIDTask = new ItemIDTask(searchIDUrl);
+        itemIDTask.execute();
     }
 
     private void initCamera() {
@@ -133,12 +139,12 @@ public class JiankongActivity extends BaseActivity {
 
         //加载中显示的UI
         //创建loadingview
-//        ProgressBar mLoadView = new ProgressBar(JiankongActivity.this);
-//        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-//        mLoadView.setLayoutParams(lp);
-//        //设置loadingview
-//        mPlayer.setLoadingView(mLoadView);
+        //        ProgressBar mLoadView = new ProgressBar(JiankongActivity.this);
+        //        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        //        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        //        mLoadView.setLayoutParams(lp);
+        //        //设置loadingview
+        //        mPlayer.setLoadingView(mLoadView);
         setListeners();
     }
 
@@ -228,7 +234,55 @@ public class JiankongActivity extends BaseActivity {
             ProgressDialogUtil.hideDialog();
         }
     }
+
     /*查询设备序列号
     *select fnumber from t_Item where FItemClassID=3015
     * */
+    class ItemIDTask extends AsyncTask<Void, String, String> {
+        String sql;
+
+        ItemIDTask(String sql) {
+            this.sql = sql;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            Map<String, String> map = new HashMap<>();
+            map.put("FSql", sql);
+            map.put("FTable", "t_icitem");
+            return SoapUtil.requestWebService(Consts.JA_select, map);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                Document doc = DocumentHelper.parseText(s);
+                Element ele = doc.getRootElement();
+                Iterator iter = ele.elementIterator("Cust");
+                HashMap<String, String> map = new HashMap<>();
+                mIdData.clear();
+                while (iter.hasNext()) {
+                    Element recordEle = (Element) iter.next();
+                    map.put("fnumber", recordEle.elementTextTrim("fnumber"));//物料内码(提交订单用)
+                    mIdData.add(recordEle.elementTextTrim("fnumber"));
+                }
+                int size = mIdData.size();
+                if (size <= 0) {
+                    ToastUtils.showToast(JiankongActivity.this, "未查取到摄像头ID");
+                    finish();
+                }
+                spAdapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+                ToastUtils.showToast(JiankongActivity.this, "查询出错，未查取到摄像头ID");
+            }
+            ProgressDialogUtil.hideDialog();
+        }
+    }
 }
