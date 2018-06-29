@@ -38,6 +38,7 @@ import com.example.win7.ytdemo.activity.TongjiActivity;
 import com.example.win7.ytdemo.adapter.GridViewAdapter;
 import com.example.win7.ytdemo.entity.MainMenuEntity;
 import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.util.ToastUtils;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -229,6 +230,14 @@ public class MeFragment extends Fragment {
                         }
                         break;
                     case 1:
+                        String fgroup = YApplication.fgroup;
+                        if (null==fgroup){
+                            ToastUtils.showToast(getContext(),"获取失败，请退出重新登陆账号。");
+                            return;
+                        }else if (!fgroup.contains("集团")){
+                            ToastUtils.showToast(getContext(),"暂无查看监控权限，请您先申请权限。");
+                            return;
+                        }
                         startActivity(new Intent(mContext, JiankongActivity.class));
                         break;
                     case 2:

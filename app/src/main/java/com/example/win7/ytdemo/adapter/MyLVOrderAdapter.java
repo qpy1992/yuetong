@@ -76,7 +76,6 @@ public class MyLVOrderAdapter extends BaseAdapter {
                 }
                 //通知adapter数据改变需要重新加载
                 notifyDataSetChanged();
-
             }
         });
         return view;
