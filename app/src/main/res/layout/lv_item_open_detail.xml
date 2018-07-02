@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="balabala"
+                android:text=""
                 android:textColor="@color/vm_blue_38"
                 android:textSize="16sp"/>
         </LinearLayout>
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:gravity="right"
-                    android:text="2018-06-26"
+                    android:text=""
                     android:textSize="16sp"/>
             </LinearLayout>
 
@@ -91,6 +91,7 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/view_line"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginTop="2dp"
@@ -122,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -151,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -180,7 +181,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -209,7 +210,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -238,7 +239,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -267,7 +268,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -296,7 +297,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -325,7 +326,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -354,7 +355,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -383,7 +384,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -412,7 +413,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -441,7 +442,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -470,7 +471,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -499,7 +500,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -528,7 +529,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -557,7 +558,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -586,7 +587,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -615,7 +616,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -644,7 +645,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:gravity="right"
-                android:text="2018-06-26"
+                android:text=""
                 android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>

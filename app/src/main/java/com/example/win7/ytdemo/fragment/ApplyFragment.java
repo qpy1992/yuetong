@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.win7.ytdemo.R;
+import com.example.win7.ytdemo.activity.AddOrderActivity;
 import com.example.win7.ytdemo.adapter.MyLVOrderAdapter;
 
 import java.util.ArrayList;
@@ -27,12 +28,15 @@ public class ApplyFragment extends Fragment {
     private ListView lv_order;
     private int mOpenItem = -1;
     private MyLVOrderAdapter orderAdapter;
+    private boolean mEditable = false;//是否可编辑
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_apply_order, null);
         initView();
         initData();
+        AddOrderActivity activity = (AddOrderActivity) getActivity();
+        mEditable = activity.getEditable();
         return mRootView;
     }
 

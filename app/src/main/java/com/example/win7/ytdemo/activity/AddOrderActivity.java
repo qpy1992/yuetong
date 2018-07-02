@@ -1,6 +1,7 @@
 package com.example.win7.ytdemo.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,11 +9,13 @@ import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.adapter.MyPagerAdapter;
 import com.example.win7.ytdemo.fragment.AllOrderFragment;
 import com.example.win7.ytdemo.fragment.ApplyFragment;
+import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.view.MyFixedViewpager;
 
 import java.util.ArrayList;
@@ -28,14 +31,32 @@ import java.util.ArrayList;
 
 public class AddOrderActivity extends BaseActivity implements View.OnClickListener {
     private ImageView        img_back;
+    private TextView         tv_title;
     private TabLayout        mTablayout;//导航标签
     private MyFixedViewpager mView_pager;//自我viewpager可实现禁止滑动
-    private String[] mStrings = {"汇总", "申请"};
+    private String[] mStrings  = {"汇总", "申请"};
+    private boolean  mEditable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_order);
+        Intent intent = getIntent();
+        String kind = intent.getStringExtra("kind");
+        if (null == kind) {
+            ToastUtils.showToast(AddOrderActivity.this, "error:未传递种类");
+            finish();
+            return;
+        }
+        if (kind.equals("check")) {//查看
+            mEditable = false;
+        }
+        if (kind.equals("edit")) {//修改
+            mEditable = true;
+        }
+        if (kind.equals("add")) {//新增
+            mEditable = true;
+        }
         initView();
         initData();
         initListener();
@@ -43,11 +64,14 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
 
     private void initView() {
         img_back = (ImageView) findViewById(R.id.img_back);
+        tv_title = findViewById(R.id.tv_title);
         mTablayout = findViewById(R.id.tablayout);
         mView_pager = findViewById(R.id.view_pager);
     }
 
     private void initData() {
+        String title = getIntent().getStringExtra("title");
+        tv_title.setText(title);
         //初始化导航页
         initTabFragment();
     }
@@ -119,5 +143,9 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
             return false;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public boolean getEditable() {
+        return mEditable;
     }
 }

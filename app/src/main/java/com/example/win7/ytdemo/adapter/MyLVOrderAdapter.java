@@ -52,6 +52,7 @@ public class MyLVOrderAdapter extends BaseAdapter {
         if (null == view) {
             viewHolder = new MyViewHolder();
             view = View.inflate(mContext, R.layout.lv_item_open_detail, null);
+            viewHolder.view_line = view.findViewById(R.id.view_line);
             viewHolder.lin_show = view.findViewById(R.id.lin_show);
             viewHolder.lin_sorh = view.findViewById(R.id.lin_sorh);
             view.setTag(viewHolder);
@@ -60,8 +61,10 @@ public class MyLVOrderAdapter extends BaseAdapter {
         }
         viewHolder.lin_show.setTag(i);
         if (i == mOpenItem) {
+            viewHolder.view_line.setBackgroundColor(mContext.getResources().getColor(R.color.black));
             viewHolder.lin_sorh.setVisibility(View.VISIBLE);
         } else {
+            viewHolder.view_line.setBackgroundColor(mContext.getResources().getColor(R.color.vm_blue_38));
             viewHolder.lin_sorh.setVisibility(View.GONE);
         }
         viewHolder.lin_show.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +85,7 @@ public class MyLVOrderAdapter extends BaseAdapter {
     }
 
     private class MyViewHolder {
+        View         view_line;
         TextView     tv_add;
         LinearLayout lin_show, lin_sorh;
     }
