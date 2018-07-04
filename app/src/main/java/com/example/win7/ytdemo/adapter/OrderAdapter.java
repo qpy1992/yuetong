@@ -23,8 +23,8 @@ import java.util.List;
  */
 
 public class OrderAdapter extends BaseAdapter {
-    private Context mContext;
-    private List    mList;
+    private Context      mContext;
+    private List<String> mList;
 
     public OrderAdapter(Context context, List list) {
         this.mContext = context;
@@ -58,13 +58,14 @@ public class OrderAdapter extends BaseAdapter {
         } else {
             viewHolder = (MyViewHolder) view.getTag();
         }
-        viewHolder.tv_taskno.setText("测试");
+        String cont = mList.get(i);
+        viewHolder.tv_taskno.setText(cont);
         viewHolder.iv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, AddOrderActivity.class);
                 intent.putExtra("kind", "edit");
-                intent.putExtra("title","编辑订单表");
+                intent.putExtra("title", "编辑订单表");
                 mContext.startActivity(intent);
             }
         });

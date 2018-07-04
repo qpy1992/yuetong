@@ -109,18 +109,17 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_back:
-                new AlertDialog.Builder(AddOrderActivity.this)
-                        .setTitle("确认退出？").setNegativeButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                }).setPositiveButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                }).show();
+                if (mEditable) {
+                    new AlertDialog.Builder(AddOrderActivity.this)
+                            .setTitle("确认退出？").setNegativeButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    }).setPositiveButton("取消", null).show();
+                } else {
+                    finish();
+                }
                 break;
         }
     }
@@ -128,18 +127,17 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            new AlertDialog.Builder(AddOrderActivity.this)
-                    .setTitle("确认退出？").setNegativeButton("确认", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                }
-            }).setPositiveButton("取消", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                }
-            }).show();
+            if (mEditable) {
+                new AlertDialog.Builder(AddOrderActivity.this)
+                        .setTitle("确认退出？").setNegativeButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                }).setPositiveButton("取消", null).show();
+            } else {
+                finish();
+            }
             return false;
         }
         return super.onKeyDown(keyCode, event);

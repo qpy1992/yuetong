@@ -24,7 +24,6 @@ import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.activity.AddOrderActivity;
 import com.example.win7.ytdemo.adapter.OrderAdapter;
-import com.example.win7.ytdemo.entity.Tasks;
 import com.example.win7.ytdemo.entity.Tool;
 import com.example.win7.ytdemo.task.Task1;
 import com.example.win7.ytdemo.util.Consts;
@@ -63,7 +62,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
     private String mStartTime = "2018-07-01 10:10";//起始时间yyyy-MM-dd hh:mm
     private String mEndTime   = "2018-07-01 10:10";//终止时间
     private CustomProgress dialog;
-    private List           mDataList;//存放查询结果数据
+    private List<String>   mDataList;//存放查询结果数据
     private OrderAdapter   adapter;//订单表数据设配器
 
     @Override
@@ -108,9 +107,6 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
 
     private void setData() {
         mDataList = new ArrayList();
-        mDataList.add("balabala");
-        mDataList.add("balabala");
-        mDataList.add("balabala");
         adapter = new OrderAdapter(getContext(), mDataList);
         lv_task.setAdapter(adapter);
         lv_task.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -118,7 +114,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(mContext, AddOrderActivity.class);
                 intent.putExtra("kind", "check");
-                intent.putExtra("title","查看订单表");
+                intent.putExtra("title", "查看订单表");
+                intent.putExtra("orderID", mDataList.get(i));
                 mContext.startActivity(intent);
             }
         });
@@ -151,7 +148,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 } else {
                     Intent intent = new Intent(mContext, AddOrderActivity.class);
                     intent.putExtra("kind", "add");
-                    intent.putExtra("title","新增订单表");
+                    intent.putExtra("title", "新增订单表");
                     startActivity(intent);
                 }
                 break;
@@ -219,22 +216,23 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 String searchDataSql = "";
                 switch (index) {
                     case 0:
-                        if (group.contains("集团")) {
-                            searchDataSql = "select fid,fbillno from t_BOS200000000 order by fid desc";
-                        }
-                        if (group.contains("主管") || (group.contains("财务") && !group.contains("集团"))) {
-                            searchDataSql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                    "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='" + group + "') order by a.fid desc";
-                        }
-                        if (group.contains("员") || group.equals(outeruser)) {
-                            searchDataSql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
-                                    "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='" + YApplication.fname + "') order by a.fid desc";
-                        }
-                        if (group.contains("总部")) {
-                            String grouphead = group.substring(0, 2);
-                            searchDataSql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
-                                    "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%" + grouphead + "%') order by a.fid desc";
-                        }
+                        //                        if (group.contains("集团")) {
+                        //                            searchDataSql = "select fid,fbillno from t_BOS200000000 order by fid desc";
+                        //                        }
+                        //                        if (group.contains("主管") || (group.contains("财务") && !group.contains("集团"))) {
+                        //                            searchDataSql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                        //                                    "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname='" + group + "') order by a.fid desc";
+                        //                        }
+                        //                        if (group.contains("员") || group.equals(outeruser)) {
+                        //                            searchDataSql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 = (" +
+                        //                                    "select b.fitemid from t_user a left join t_emp b on a.fempid=b.fitemid where a.fname='" + YApplication.fname + "') order by a.fid desc";
+                        //                        }
+                        //                        if (group.contains("总部")) {
+                        //                            String grouphead = group.substring(0, 2);
+                        //                            searchDataSql = "select distinct a.fid,a.fbillno from t_BOS200000000 a left join t_BOS200000000Entry2 b on a.fid=b.fid where b.fbase15 in (" +
+                        //                                    "select c.fitemid from t_group a inner join t_user b on a.fgroupid=b.fuserid left join t_user d on d.fuserid = a.fuserid left join t_emp c on d.fempid=c.fitemid where a.fgroupid>0 and b.fname like '%" + grouphead + "%') order by a.fid desc";
+                        //                        }
+                        searchDataSql = "select fbillno from t_bos200000011";
                         new ConditionTask(searchDataSql).execute();
                         break;
                 }
@@ -335,7 +333,7 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
             SoapObject rpc = new SoapObject(nameSpace, methodName);
 
             rpc.addProperty("FSql", sql);
-            rpc.addProperty("FTable", "t_BOS200000000");
+            rpc.addProperty("FTable", "t_BOS200000011");
 
             // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
@@ -369,12 +367,8 @@ public class OrderFragment extends Fragment implements View.OnClickListener {
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    Tasks tasks = new Tasks();
-                    String finterid = recordEle.elementTextTrim("fid");
                     String fbillno = recordEle.elementTextTrim("fbillno");
-                    tasks.setFinterid(finterid);
-                    tasks.setFbillno(fbillno);
-                    mDataList.add(tasks);
+                    mDataList.add(fbillno);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
