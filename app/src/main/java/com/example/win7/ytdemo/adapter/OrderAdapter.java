@@ -47,7 +47,7 @@ public class OrderAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         MyViewHolder viewHolder;
         if (null == view) {
             viewHolder = new MyViewHolder();
@@ -63,9 +63,11 @@ public class OrderAdapter extends BaseAdapter {
         viewHolder.iv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String s = mList.get(i);
                 Intent intent = new Intent(mContext, AddOrderActivity.class);
                 intent.putExtra("kind", "edit");
                 intent.putExtra("title", "编辑订单表");
+                intent.putExtra("orderID", s);
                 mContext.startActivity(intent);
             }
         });

@@ -27,6 +27,7 @@
                 android:textSize="20sp"/>
 
             <TextView
+                android:id="@+id/tv_con"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -51,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="horizontal">
 
                 <TextView
@@ -63,6 +64,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -119,6 +121,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_zdr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -148,6 +151,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_sqbm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -177,6 +181,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_zrbm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -206,6 +211,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_wl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -235,6 +241,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_wlyhzh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -264,6 +271,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_jhys"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -293,6 +301,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_yskm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -322,6 +331,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_ysye"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -351,6 +361,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_jl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -380,6 +391,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_sl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -409,6 +421,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_djhs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -438,6 +451,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_jehs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -467,6 +481,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_se"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -496,6 +511,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_rmbbhse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -525,6 +541,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_slpercent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -554,6 +571,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_fz"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -583,6 +601,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_fl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -612,6 +631,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_bz"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -641,6 +661,7 @@
                 android:textSize="16sp"/>
 
             <TextView
+                android:id="@+id/tv_fpswkm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"

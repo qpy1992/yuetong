@@ -2,11 +2,9 @@ package com.example.win7.ytdemo.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,20 +17,10 @@ import android.widget.TextView;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.activity.AddOrderActivity;
 import com.example.win7.ytdemo.adapter.LvShowMoreAdapter;
-import com.example.win7.ytdemo.util.Consts;
+import com.example.win7.ytdemo.entity.OrderDataInfo;
 import com.example.win7.ytdemo.util.ToastUtils;
-import com.example.win7.ytdemo.view.CustomProgress;
-
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -48,9 +36,9 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
     private View   mRootView;
     private Button bt_submit;
     private boolean mEditable = false;//是否可编辑
-    private TextView tv_hsje, tv_fkwl;
+    private TextView tv_hsje, tv_fkwl, tv_orid, tv_RMB, tv_rate, tv_zzjg, tv_nr1, tv_fkze, tv_ljqjx, tv_bdqjx, tv_yfzq, tv_fkl, tv_fkcb, tv_fkhs, tv_jxp, tv_jxfpl, tv_jxfphs, tv_yfk, tv_rckwl, tv_rkcb, tv_ckcb;
+    private TextView tv_bdkccb, tv_ljykp, tv_bdykp, tv_yszq, tv_skwl, tv_ysk, tv_xxpwl, tv_xxfpl, tv_xxkphs;
     private String orderID = "";//订单表id
-    private CustomProgress dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,8 +52,36 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView() {
-        tv_hsje = mRootView.findViewById(R.id.tv_hsje);
+        tv_orid = mRootView.findViewById(R.id.tv_orid);//单据号
+        tv_RMB = mRootView.findViewById(R.id.tv_RMB);//币别
+        tv_rate = mRootView.findViewById(R.id.tv_rate);//汇率
+        tv_zzjg = mRootView.findViewById(R.id.tv_zzjg);//组织机构
+        tv_nr1 = mRootView.findViewById(R.id.tv_nr1);//内容
+        tv_hsje = mRootView.findViewById(R.id.tv_hsje);//含税金额合计
+        tv_fkze = mRootView.findViewById(R.id.tv_fkze);//付款总额合计
+        tv_ljqjx = mRootView.findViewById(R.id.tv_ljqjx);//累计：欠进项发票额
+        tv_bdqjx = mRootView.findViewById(R.id.tv_bdqjx);//本单：欠进项发票额
+        tv_yfzq = mRootView.findViewById(R.id.tv_yfzq);//应付账期天数
         tv_fkwl = mRootView.findViewById(R.id.tv_fkwl);//付款往来
+        tv_fkl = mRootView.findViewById(R.id.tv_fkl);//付款量合计
+        tv_fkcb = mRootView.findViewById(R.id.tv_fkcb);//付款成本不含税合计
+        tv_fkhs = mRootView.findViewById(R.id.tv_fkhs);//付款含税合计
+        tv_jxp = mRootView.findViewById(R.id.tv_jxp);//进项票往来
+        tv_jxfpl = mRootView.findViewById(R.id.tv_jxfpl);//进项发票量合计
+        tv_jxfphs = mRootView.findViewById(R.id.tv_jxfphs);//进项发票含税总额合计
+        tv_yfk = mRootView.findViewById(R.id.tv_yfk);//应付款合计
+        tv_rckwl = mRootView.findViewById(R.id.tv_rckwl);//入出库往来
+        tv_rkcb = mRootView.findViewById(R.id.tv_rkcb);//入库成本合计
+        tv_ckcb = mRootView.findViewById(R.id.tv_ckcb);//出库成本合计
+        tv_bdkccb = mRootView.findViewById(R.id.tv_bdkccb);//本单库存成本
+        tv_ljykp = mRootView.findViewById(R.id.tv_ljykp);//累计：已开票未收款额
+        tv_bdykp = mRootView.findViewById(R.id.tv_bdykp);//本单：已开票未收款额
+        tv_yszq = mRootView.findViewById(R.id.tv_yszq);//应收账期天数
+        tv_skwl = mRootView.findViewById(R.id.tv_skwl);//收款往来
+        tv_ysk = mRootView.findViewById(R.id.tv_ysk);//应收款合计
+        tv_xxpwl = mRootView.findViewById(R.id.tv_xxpwl);//销项票往来
+        tv_xxfpl = mRootView.findViewById(R.id.tv_xxfpl);//销项发票量合计
+        tv_xxkphs = mRootView.findViewById(R.id.tv_xxkphs);//销项开票含税总额合计
         bt_submit = mRootView.findViewById(R.id.bt_submit);
     }
 
@@ -78,26 +94,100 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             getActivity().finish();
             return;
         }
-        if (kind.equals("check")) {//查看
-            bt_submit.setVisibility(View.GONE);
+        if (kind.equals("check") || kind.equals("edit")) {//查看//编辑
+            if (kind.equals("check"))
+                bt_submit.setVisibility(View.GONE);
+            //填入数据
+            writeDataIn();
         }
-        new ZHUTask(orderID).execute();
-        tv_hsje.setOnClickListener(this);
-        tv_fkwl.setOnClickListener(this);
+        //给tv设置点击修改事件
+        setListener();
+        bt_submit.setOnClickListener(this);
+    }
+
+    private void setListener() {
+        if (mEditable) {
+            setTvChangeListener(tv_orid, "单据号");
+            setTvChangeListener(tv_RMB, "币别");
+            setTvChangeListener(tv_rate, "汇率");
+            setTvChangeListener(tv_zzjg, "组织机构");
+            setTvChangeListener(tv_nr1, "内容");
+            setTvChangeListener(tv_hsje, "含税金额合计");
+            setTvChangeListener(tv_fkze, "付款总额合计");
+            setTvChangeListener(tv_ljqjx, "累计：欠进项发票额");
+            setTvChangeListener(tv_bdqjx, "本单：欠进项发票额");
+            setTvChangeListener(tv_yfzq, "应付账期天数");
+            setTvChangeListener(tv_fkwl, "付款往来");
+            setTvChangeListener(tv_fkl, "付款量合计");
+            setTvChangeListener(tv_fkcb, "付款成本不含税合计");
+            setTvChangeListener(tv_fkhs, "付款含税合计");
+            setTvChangeListener(tv_jxp, "进项票往来");
+            setTvChangeListener(tv_jxfpl, "进项发票量合计");
+            setTvChangeListener(tv_jxfphs, "进项发票含税总额合计");
+            setTvChangeListener(tv_yfk, "应付款合计");
+            setTvChangeListener(tv_rckwl, "入出库往来");
+            setTvChangeListener(tv_rkcb, "入库成本合计");
+            setTvChangeListener(tv_ckcb, "出库成本合计");
+            setTvChangeListener(tv_bdkccb, "本单库存成本");
+            setTvChangeListener(tv_ljykp, "累计：已开票未收款额");
+            setTvChangeListener(tv_bdykp, "本单：已开票未收款额");
+            setTvChangeListener(tv_yszq, "应收账期天数");
+            setTvChangeListener(tv_skwl, "收款往来");
+            setTvChangeListener(tv_ysk, "应收款合计");
+            setTvChangeListener(tv_xxpwl, "销项票往来");
+            setTvChangeListener(tv_xxfpl, "销项发票量合计");
+            setTvChangeListener(tv_xxkphs, "销项开票含税总额合计");
+            setTvChangeListener(tv_fkwl, "付款往来");
+        }
+    }
+
+    private void setTvChangeListener(final TextView tv, final String title) {
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeViewContent(tv, title);
+            }
+        });
+    }
+
+    private void writeDataIn() {
+        AddOrderActivity activity = (AddOrderActivity) getActivity();
+        OrderDataInfo orderInfo = activity.getOrderInfo();
+        tv_orid.setText(orderInfo.getFbillNo());
+        tv_zzjg.setText(orderInfo.getOrga());
+        tv_nr1.setText(orderInfo.getContent());
+        tv_hsje.setText(orderInfo.getMoneyTax());
+        //        tv_fkze.setText(orderInfo.get);
+        tv_ljqjx.setText(orderInfo.getOweInvTotal());
+        tv_bdqjx.setText(orderInfo.getThisOweInv());
+        tv_yfzq.setText(orderInfo.getPayDate());
+        tv_fkwl.setText(orderInfo.getPayContact());
+        tv_fkl.setText(orderInfo.getPayAmount());
+        tv_fkcb.setText(orderInfo.getPaynoTax());
+        tv_fkhs.setText(orderInfo.getPaywithTax());
+        tv_jxp.setText(orderInfo.getIncomeCont());
+        tv_jxfpl.setText(orderInfo.getIncomeInv());
+        tv_jxfphs.setText(orderInfo.getInvwithTax());
+        tv_yfk.setText(orderInfo.getSpayTotal());
+        tv_rckwl.setText(orderInfo.getInnerIncome());
+        tv_rkcb.setText(orderInfo.getInnnerCost());
+        tv_ckcb.setText(orderInfo.getOutCost());
+        //        tv_bdkccb.setText(orderInfo.get);
+        tv_ljykp.setText(orderInfo.getTotalUnrece());
+        tv_bdykp.setText(orderInfo.getThisUnrece());
+        tv_yszq.setText(orderInfo.getShRecceData());
+        tv_skwl.setText(orderInfo.getRecIncome());
+        tv_ysk.setText(orderInfo.getShRecTotal());
+        tv_xxpwl.setText(orderInfo.getOutTicIncome());
+        tv_xxfpl.setText(orderInfo.getOutTickTotal());
+        tv_xxkphs.setText(orderInfo.getOutTickWTax());
     }
 
     @Override
     public void onClick(View view) {
-        if (!mEditable) {
-            ToastUtils.showToast(getContext(), "目前是查询页面，不可修改");
-            return;
-        }
         switch (view.getId()) {
-            case R.id.tv_hsje:
-                changeViewContent(tv_hsje, "含税金额合计:");
-                break;
-            case R.id.tv_fkwl:
-                changeViewContent(tv_fkwl, "付款往来");
+            case R.id.bt_submit:
+                //TODO:提交
                 break;
             default:
                 break;
@@ -108,7 +198,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
         //弹出dailog展示修改内容
         final EditText et = new EditText(getContext());
         //写入数据
-        String oldContent = String.valueOf(tv_hsje.getText());
+        String oldContent = String.valueOf(tvcontent.getText());
         et.setText(oldContent);
         new AlertDialog.Builder(getContext()).setView(et).setTitle(title)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -143,169 +233,5 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
                 dialog.dismiss();
             }
         });
-    }
-
-    class ZHUTask extends AsyncTask<Void, String, String> {
-        String mOrderID;
-
-        ZHUTask(String orderID) {
-            this.mOrderID = orderID;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            dialog = CustomProgress.show(getContext(), "加载中...", true, null);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            // 命名空间
-            String nameSpace = "http://tempuri.org/";
-            // 调用的方法名称
-            String methodName = "JA_select";
-            // EndPoint
-            String endPoint = Consts.ENDPOINT;
-            // SOAP Action
-            String soapAction = "http://tempuri.org/JA_select";
-
-            // 指定WebService的命名空间和调用的方法名
-            SoapObject rpc = new SoapObject(nameSpace, methodName);
-            // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
-            String sql = "select a.FBillNo,c.FName,a.FAmount4,d.FName,FAmount36,FAmount29," +
-                    " a.FInteger,e.fname,a.FDecimal8,a.FAmount9,FAmount17,f.FName,FDecimal12,FAmount16,FAmount27,g.FName,h.FName," +
-                    " FAmount12,FAmount13,FAmount37,FAmount30, FInteger1,i.FName,FAmount28,j.FName,FDecimal13,FAmount19," +
-                    " k.FName,b.FNOTE2,FTime2,l.FName,m.FName,n.FName,o.FName,o.FBankAccount,p.FName,q.FName,p.F_109," +
-                    " r.FName,b.FDecimal,b.FDecimal1,b.FAmount2,FAmount, b.FAmount3,b.FAmount10,s.FName,b.FDecimal," +
-                    " b.FTime3,b.FText2, t.FName,u.FName,b.FText,b.FText1 " +
-                    " from t_BOS200000011 a inner join t_BOS200000011Entry2 b on a.FID=b.FID" +
-                    " left join t_Currency c on c.FCurrencyID=a.FBase3 left join t_Item_3001 d on d.FItemID=a.FBase11 left join t_Emp e on e.FItemID=a.FBase24 left join" +
-                    " t_Emp f on f.FItemID=a.FBase13 left join t_Emp g on g.FItemID=a.FBase25 left join t_ICItem h on h.FItemID=a.FBase26 left join" +
-                    " t_Emp i on i.FItemID=a.FBase27 left join t_Emp j on f.FItemID=a.FBase16 left join t_ICItem k on k.FItemID=b.FBase1 left join" +
-                    " t_Emp l on l.FItemID=b.FBase15 left join t_Department m on m.FItemID=b.FBase18 left join t_Department n on n.FItemID=b.FBase14 left join" +
-                    " t_Emp o on o.FItemID=b.FBase10 left join t_Item_3007 p on p.FItemID=b.FBase left join t_Item q on q.FItemID=b.FBase21 left join" +
-                    " t_MeasureUnit r on r.FItemID=b.FBase2 left join t_MeasureUnit s on s.FItemID=k.FSecUnitID left join t_Item t on t.FItemID=b.FBase17" +
-                    " left join t_Item u on u.FItemID=b.FBase14 where a.FBillNo ='" + mOrderID + "'";
-            //            String sql = "select a.FBillNo 单据号,c.FName 币别,a.FAmount4 汇率,d.FName 组织机构,FAmount36 [累计：欠进项发票额！！！],FAmount29 [本单：欠进项发票额！],\n" +
-            //                    " a.FInteger [应付帐期天数（进项发票日算）！],e.fname 付款往来,a.FDecimal8 付款量合计,a.FAmount9 付款成本不含税合计,FAmount17 付款含税合计,\n" +
-            //                    " f.FName 进项票往来,FDecimal12 进项发票量合计,FAmount16 进项发票含税总额合计,FAmount27 应付款合计,g.FName 入出库往来,h.FName 内容,\n" +
-            //                    " FAmount12 入库成本合计,FAmount13 出库成本合计,FAmount37 [累计：已开票未收款额！！],FAmount30 [本单：已开票未收款额！！],\n" +
-            //                    " FInteger1 [应收帐期天数（销项发票日算）！！],i.FName 收款往来,FAmount28 应收款合计,j.FName 销项票往来,FDecimal13 销项发票量合计,FAmount19 销项开票含税总额合计,\n" +
-            //                    " k.FName [内 容],b.FNOTE2 摘要,FTime2 日期,l.FName 制单人,m.FName 申请部门,n.FName [责任部门/考核],o.FName 表体往来,o.FBankAccount [往来-银行及帐号],\n" +
-            //                    " p.FName 计划预算进度,q.FName 预算科目,p.F_109 预算余额,r.FName 计量,b.FDecimal 数量,b.FDecimal1 单价含税,b.FAmount2 金额含税,FAmount 税额,\n" +
-            //                    " b.FAmount3 人民币不含税额,b.FAmount10 [税率%],s.FName 辅助,b.FDecimal 辅量,b.FTime3 [发票日-权责制],b.FText2 [备注-发票号码/税票说明],\n" +
-            //                    " t.FName 发票税务科目,u.FName 评分,b.FText 发送消息,b.FText1 回馈消息 from t_BOS200000011 a inner join t_BOS200000011Entry2 b on a.FID=b.FID\n" +
-            //                    " left join t_Currency c on c.FCurrencyID=a.FBase3 left join t_Item_3001 d on d.FItemID=a.FBase11 left join t_Emp e on e.FItemID=a.FBase24 left join\n" +
-            //                    " t_Emp f on f.FItemID=a.FBase13 left join t_Emp g on g.FItemID=a.FBase25 left join t_ICItem h on h.FItemID=a.FBase26 left join \n" +
-            //                    " t_Emp i on i.FItemID=a.FBase27 left join t_Emp j on f.FItemID=a.FBase16 left join t_ICItem k on k.FItemID=b.FBase1 left join \n" +
-            //                    " t_Emp l on l.FItemID=b.FBase15 left join t_Department m on m.FItemID=b.FBase18 left join t_Department n on n.FItemID=b.FBase14 left join \n" +
-            //                    " t_Emp o on o.FItemID=b.FBase10 left join t_Item_3007 p on p.FItemID=b.FBase left join t_Item q on q.FItemID=b.FBase21 left join \n" +
-            //                    " t_MeasureUnit r on r.FItemID=b.FBase2 left join t_MeasureUnit s on s.FItemID=k.FSecUnitID left join t_Item t on t.FItemID=b.FBase17\n" +
-            //                    " left join t_Item u on u.FItemID=b.FBase14 where a.FBillNo ='" + mOrderID + "'";
-            Log.i("主表查询语句", sql);
-            rpc.addProperty("FSql", sql);
-            rpc.addProperty("FTable", "t_Currency");
-
-            // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
-            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
-
-            envelope.bodyOut = rpc;
-            // 设置是否调用的是dotNet开发的WebService
-            envelope.dotNet = true;
-            // 等价于envelope.bodyOut = rpc;
-            envelope.setOutputSoapObject(rpc);
-
-            HttpTransportSE transport = new HttpTransportSE(endPoint);
-            try {
-                // 调用WebService
-                transport.call(soapAction, envelope);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // 获取返回的数据
-            SoapObject object = (SoapObject) envelope.bodyIn;
-            // 获取返回的结果
-            Log.i("返回结果", object.getProperty(0).toString() + "=========================");
-            String result = object.getProperty(0).toString();
-            Document doc = null;
-
-            try {
-                doc = DocumentHelper.parseText(result); // 将字符串转为XML
-
-                Element rootElt = doc.getRootElement(); // 获取根节点
-
-                Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
-
-                // 遍历head节点
-                while (iter.hasNext()) {
-                    Element recordEle = (Element) iter.next();
-                    String fbillNo = recordEle.elementTextTrim("FBillNo");//单据号
-                    String currency = recordEle.elementTextTrim("FName");//币种
-                    String rate = recordEle.elementTextTrim("FAmount4");//汇率
-                    String orga = recordEle.elementTextTrim("FName1");//组织机构
-                    String oweInvTotal = recordEle.elementTextTrim("FAmount36");//累计欠进项发票额
-                    String thisOweInv = recordEle.elementTextTrim("FAmount29");//本单欠进项发票额
-                    String payDate = recordEle.elementTextTrim("FInteger");//应付账期天数(进项发票日算)
-                    String payContact = recordEle.elementTextTrim("fname2");//付款往来
-                    String payAmount = recordEle.elementTextTrim("FDecimal8");//付款量合计
-                    String paynoTax = recordEle.elementTextTrim("FAmount9");//付款成本不含税合计
-                    String paywithTax = recordEle.elementTextTrim("FAmount17");//付款含税合计
-                    String incomeCont = recordEle.elementTextTrim("FName3");//进项票往来
-                    String incomeInv = recordEle.elementTextTrim("FDecimal12");//进项发票量合计
-                    String invwithTax = recordEle.elementTextTrim("FAmount16");//进项发票含税总额合计
-                    String spayTotal = recordEle.elementTextTrim("FAmount27");//应付款合计
-                    String innerIncome = recordEle.elementTextTrim("FName4");//入出库往来
-                    String content = recordEle.elementTextTrim("FName5");//内容
-                    String innnerCost = recordEle.elementTextTrim("FAmount12");//入库成本合计
-                    String outCost = recordEle.elementTextTrim("FAmount13");//出库成本合计
-                    String totalUnrece = recordEle.elementTextTrim("FAmount37");//累计：已开票未收款额！！
-                    String thisUnrece = recordEle.elementTextTrim("FAmount30");//本单：已开票未收款额！！
-                    String shRecceData = recordEle.elementTextTrim("FInteger1");//应收帐期天数（销项发票日算）！！
-                    String recIncome = recordEle.elementTextTrim("FName6");//收款往来
-                    String shRecTotal = recordEle.elementTextTrim("FAmount28");//应收款合计
-                    String outTicIncome = recordEle.elementTextTrim("FName7");//销项票往来
-                    String outTickTotal = recordEle.elementTextTrim("FDecimal13");//销项发票量合计
-                    String outTickWTax = recordEle.elementTextTrim("FAmount19");//销项开票含税总额合计
-                    String content2 = recordEle.elementTextTrim("FName8");//内 容
-                    String remark = recordEle.elementTextTrim("FNOTE2");//摘要
-                    String data = recordEle.elementTextTrim("FTime2");//日期
-                    String singPerson = recordEle.elementTextTrim("FName9");//制单人
-                    String applyPart = recordEle.elementTextTrim("FName10");//申请部门
-                    String responsPart = recordEle.elementTextTrim("FName11");//责任部门/考核
-                    String bodyIncome = recordEle.elementTextTrim("FName12");//表体往来
-                    String bankIncome = recordEle.elementTextTrim("FBankAccount");//往来-银行及帐号
-                    String planBudget = recordEle.elementTextTrim("FName13");//计划预算进度
-                    String budSub = recordEle.elementTextTrim("FName14");//预算科目
-                    String budBalance = recordEle.elementTextTrim("F_109");//预算余额
-                    String unit = recordEle.elementTextTrim("FName15");//计量
-                    String number = recordEle.elementTextTrim("FDecimal");//数量
-                    String unitPrice = recordEle.elementTextTrim("FDecimal1");//单价含税
-                    String moneyTax = recordEle.elementTextTrim("FAmount2");//金额含税
-                    String taxAmount = recordEle.elementTextTrim("FAmount");//税额
-                    String RMBNoTax = recordEle.elementTextTrim("FAmount3");//人民币不含税额
-                    String TaxRate = recordEle.elementTextTrim("FAmount10");//税率%
-                    String unitOther = recordEle.elementTextTrim("FName16");//辅助
-                    String unitNum = recordEle.elementTextTrim("FDecimal2");//辅量
-                    String ticDataRespon = recordEle.elementTextTrim("FTime3");//发票日-权责制
-                    String remarkTicNO = recordEle.elementTextTrim("FText2");//备注-发票号码/税票说明
-                    String ticTaxSub = recordEle.elementTextTrim("FName17");//发票税务科目
-                    String score = recordEle.elementTextTrim("FName18");//评分
-                    String sendMsg = recordEle.elementTextTrim("FText");//发送消息
-                    String getMsg = recordEle.elementTextTrim("FText1");//回馈消息
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                ToastUtils.showToast(getContext(), "查找出错");
-                getActivity().finish();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            dialog.dismiss();
-        }
     }
 }

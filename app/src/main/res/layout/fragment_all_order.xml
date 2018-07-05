@@ -29,6 +29,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_orid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -65,6 +66,7 @@
                         android:textSize="16sp"/>
 
                     <TextView
+                        android:id="@+id/tv_RMB"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="3dp"
@@ -89,6 +91,7 @@
                         android:textSize="16sp"/>
 
                     <TextView
+                        android:id="@+id/tv_rate"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="3dp"
@@ -96,6 +99,66 @@
                         android:gravity="right"
                         android:text="1.00"/>
                 </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/bottom_button_text_gray"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="组织机构："
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tv_zzjg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:gravity="right"
+                    android:text=""
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/bottom_button_text_gray"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="内容："
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tv_nr1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:gravity="right"
+                    android:text=""
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <View
@@ -149,6 +212,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_fkze"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -178,6 +242,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_ljqjx"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -207,6 +272,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_bdqjx"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -236,6 +302,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_yfzq"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -295,6 +362,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_fkl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -324,6 +392,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_fkcb"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -353,6 +422,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_fkhs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -382,6 +452,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_jxp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -411,6 +482,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_jxfpl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -440,6 +512,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_jxfphs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -469,6 +542,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_yfk"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -498,35 +572,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:gravity="right"
-                    android:text=""
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="2dp"
-                android:background="@color/bottom_button_text_gray"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="内容："
-                    android:textColor="@color/black"
-                    android:textSize="16sp"/>
-
-                <TextView
+                    android:id="@+id/tv_rckwl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -556,6 +602,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_rkcb"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -585,6 +632,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_ckcb"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -614,6 +662,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_bdkccb"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -643,6 +692,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_ljykp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -672,6 +722,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_bdykp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -701,6 +752,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_yszq"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -730,6 +782,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_skwl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -759,6 +812,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_ysk"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -788,6 +842,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_xxpwl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -817,6 +872,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_xxfpl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -846,6 +902,7 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/tv_xxkphs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
