@@ -92,12 +92,15 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
     private void initData() {
         String title = getIntent().getStringExtra("title");
         tv_title.setText(title);
+        orderInfo = new OrderDataInfo();
         if (kind.equals("check") || kind.equals("edit")) {
-            orderInfo = new OrderDataInfo();
             //获取订单表详情
             new ZHUTask(orderID).execute();
         }
         if (kind.equals("add")) {
+            orderInfo.setInnerid("0");
+            orderInfo.setFbillNo("a");
+            //初始化导航页
             initTabFragment();
         }
     }
@@ -258,7 +261,8 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
             Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
-
+            //子订单存放列表list
+            List<OrderDataInfo.ListsonBean> listson = new ArrayList<>();
             try {
                 doc = DocumentHelper.parseText(result); // 将字符串转为XML
                 Element rootElt = doc.getRootElement(); // 获取根节点
@@ -266,6 +270,7 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
+                    //表头
                     String fbillNo = recordEle.elementTextTrim("FBillNo");//单据号
                     String currency = recordEle.elementTextTrim("FName");//币种
                     String rate = recordEle.elementTextTrim("FAmount4");//汇率
@@ -293,6 +298,7 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     String outTicIncome = recordEle.elementTextTrim("FName7");//销项票往来
                     String outTickTotal = recordEle.elementTextTrim("FDecimal13");//销项发票量合计
                     String outTickWTax = recordEle.elementTextTrim("FAmount19");//销项开票含税总额合计
+                    //表体
                     String content2 = recordEle.elementTextTrim("FName8");//内 容
                     String remark = recordEle.elementTextTrim("FNOTE2");//摘要
                     String data = recordEle.elementTextTrim("FTime2");//日期
@@ -347,9 +353,9 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     orderInfo.setOutTicIncome(outTicIncome);
                     orderInfo.setOutTickTotal(outTickTotal);
                     orderInfo.setOutTickWTax(outTickWTax);
-                    List<OrderDataInfo.ListsonBean> listson = new ArrayList<>();
                     OrderDataInfo.ListsonBean bean = new OrderDataInfo.ListsonBean();
                     bean.setContentX(content2);
+                    bean.setRemark(remark);
                     bean.setDate(data);
                     bean.setSinPerson(singPerson);
                     bean.setApplyPartX(applyPart);
@@ -370,38 +376,116 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     bean.setUnitNumX(unitNum);
                     bean.setRemarkTicNOX(remarkTicNO);
                     bean.setTicTaxSubX(ticTaxSub);
+                    bean.setTicDataRespon(ticDataRespon);
                     listson.add(bean);
-                    orderInfo.setListson(listson);
-                    orderInfo.setContent2(content2);
-                    orderInfo.setRemark(remark);
-                    orderInfo.setData(data);
-                    orderInfo.setSingPerson(singPerson);
-                    orderInfo.setApplyPart(applyPart);
-                    orderInfo.setResponsPart(responsPart);
-                    orderInfo.setBodyIncome(bodyIncome);
-                    orderInfo.setBankIncome(bankIncome);
-                    orderInfo.setPlanBudget(planBudget);
-                    orderInfo.setBudSub(budSub);
-                    orderInfo.setBudBalance(budBalance);
-                    orderInfo.setUnit(unit);
-                    orderInfo.setNumber(number);
-                    orderInfo.setUnitPrice(unitPrice);
-                    orderInfo.setMoneyTax(moneyTax);
-                    orderInfo.setTaxAmount(taxAmount);
-                    orderInfo.setRMBNoTax(RMBNoTax);
-                    orderInfo.setTaxRate(taxRate);
-                    orderInfo.setUnitOther(unitOther);
-                    orderInfo.setUnitNum(unitNum);
-                    orderInfo.setTicDataRespon(ticDataRespon);//
-                    orderInfo.setRemarkTicNO(remarkTicNO);
-                    orderInfo.setTicTaxSub(ticTaxSub);
-                    orderInfo.setScore(score);//
-                    orderInfo.setSendMsg(sendMsg);//
-                    orderInfo.setGetMsg(getMsg);//
                 }
+                orderInfo.setListson(listson);
             } catch (Exception e) {
                 e.printStackTrace();
                 ToastUtils.showToast(AddOrderActivity.this, "查找详情出错");
+                finish();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            dialog.dismiss();
+            //            //初始化导航页
+            //            initTabFragment();
+            //根据fbillNo查询innerid
+            String fbillNo = orderInfo.getFbillNo();
+            searchForInnerID(fbillNo);
+        }
+    }
+
+    private void searchForInnerID(String fbillNo) {
+        InnerIDTask idTask = new InnerIDTask(fbillNo);
+        idTask.execute();
+    }
+
+    class InnerIDTask extends AsyncTask<Void, String, String> {
+        String mFbillNo;
+
+        InnerIDTask(String fbillNo) {
+            this.mFbillNo = fbillNo;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog = CustomProgress.show(AddOrderActivity.this, "加载中...", true, null);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            // 命名空间
+            String nameSpace = "http://tempuri.org/";
+            // 调用的方法名称
+            String methodName = "JA_select";
+            // EndPoint
+            String endPoint = Consts.ENDPOINT;
+            // SOAP Action
+            String soapAction = "http://tempuri.org/JA_select";
+
+            // 指定WebService的命名空间和调用的方法名
+            SoapObject rpc = new SoapObject(nameSpace, methodName);
+            // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
+            String sql = "select fid from t_BOS200000011  where fbillno='" + mFbillNo + "'";
+            //            String sql = "select a.FBillNo 单据号,c.FName 币别,a.FAmount4 汇率,d.FName 组织机构,FAmount36 [累计：欠进项发票额！！！],FAmount29 [本单：欠进项发票额！],\n" +
+            //                    " a.FInteger [应付帐期天数（进项发票日算）！],e.fname 付款往来,a.FDecimal8 付款量合计,a.FAmount9 付款成本不含税合计,FAmount17 付款含税合计,\n" +
+            //                    " f.FName 进项票往来,FDecimal12 进项发票量合计,FAmount16 进项发票含税总额合计,FAmount27 应付款合计,g.FName 入出库往来,h.FName 内容,\n" +
+            //                    " FAmount12 入库成本合计,FAmount13 出库成本合计,FAmount37 [累计：已开票未收款额！！],FAmount30 [本单：已开票未收款额！！],\n" +
+            //                    " FInteger1 [应收帐期天数（销项发票日算）！！],i.FName 收款往来,FAmount28 应收款合计,j.FName 销项票往来,FDecimal13 销项发票量合计,FAmount19 销项开票含税总额合计,\n" +
+            //                    " k.FName [内 容],b.FNOTE2 摘要,FTime2 日期,l.FName 制单人,m.FName 申请部门,n.FName [责任部门/考核],o.FName 表体往来,o.FBankAccount [往来-银行及帐号],\n" +
+            //                    " p.FName 计划预算进度,q.FName 预算科目,p.F_109 预算余额,r.FName 计量,b.FDecimal 数量,b.FDecimal1 单价含税,b.FAmount2 金额含税,FAmount 税额,\n" +
+            //                    " b.FAmount3 人民币不含税额,b.FAmount10 [税率%],s.FName 辅助,b.FDecimal 辅量,b.FTime3 [发票日-权责制],b.FText2 [备注-发票号码/税票说明],\n" +
+            //                    " t.FName 发票税务科目,u.FName 评分,b.FText 发送消息,b.FText1 回馈消息 from t_BOS200000011 a inner join t_BOS200000011Entry2 b on a.FID=b.FID\n" +
+            //                    " left join t_Currency c on c.FCurrencyID=a.FBase3 left join t_Item_3001 d on d.FItemID=a.FBase11 left join t_Emp e on e.FItemID=a.FBase24 left join\n" +
+            //                    " t_Emp f on f.FItemID=a.FBase13 left join t_Emp g on g.FItemID=a.FBase25 left join t_ICItem h on h.FItemID=a.FBase26 left join \n" +
+            //                    " t_Emp i on i.FItemID=a.FBase27 left join t_Emp j on f.FItemID=a.FBase16 left join t_ICItem k on k.FItemID=b.FBase1 left join \n" +
+            //                    " t_Emp l on l.FItemID=b.FBase15 left join t_Department m on m.FItemID=b.FBase18 left join t_Department n on n.FItemID=b.FBase14 left join \n" +
+            //                    " t_Emp o on o.FItemID=b.FBase10 left join t_Item_3007 p on p.FItemID=b.FBase left join t_Item q on q.FItemID=b.FBase21 left join \n" +
+            //                    " t_MeasureUnit r on r.FItemID=b.FBase2 left join t_MeasureUnit s on s.FItemID=k.FSecUnitID left join t_Item t on t.FItemID=b.FBase17\n" +
+            //                    " left join t_Item u on u.FItemID=b.FBase14 where a.FBillNo ='" + mOrderID + "'";
+            Log.i("主表查询语句", sql);
+            rpc.addProperty("FSql", sql);
+            rpc.addProperty("FTable", "t_Currency");
+
+            // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+            envelope.bodyOut = rpc;
+            // 设置是否调用的是dotNet开发的WebService
+            envelope.dotNet = true;
+            // 等价于envelope.bodyOut = rpc;
+            envelope.setOutputSoapObject(rpc);
+            HttpTransportSE transport = new HttpTransportSE(endPoint);
+            try {
+                // 调用WebService
+                transport.call(soapAction, envelope);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            // 获取返回的数据
+            SoapObject object = (SoapObject) envelope.bodyIn;
+            // 获取返回的结果
+            String result = object.getProperty(0).toString();
+            Document doc = null;
+
+            try {
+                doc = DocumentHelper.parseText(result); // 将字符串转为XML
+                Element rootElt = doc.getRootElement(); // 获取根节点
+                Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
+                // 遍历head节点
+                while (iter.hasNext()) {
+                    Element recordEle = (Element) iter.next();
+                    String fid = recordEle.elementTextTrim("fid");//InnerID
+                    orderInfo.setInnerid(fid);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                ToastUtils.showToast(AddOrderActivity.this, "未查找到InnerID");
                 finish();
             }
             return null;

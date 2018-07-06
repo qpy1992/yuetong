@@ -18,6 +18,7 @@ import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.activity.AddOrderActivity;
 import com.example.win7.ytdemo.adapter.LvShowMoreAdapter;
 import com.example.win7.ytdemo.entity.OrderDataInfo;
+import com.example.win7.ytdemo.task.SubmitOrder;
 import com.example.win7.ytdemo.util.ToastUtils;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
     private TextView tv_hsje, tv_fkwl, tv_orid, tv_RMB, tv_rate, tv_zzjg, tv_nr1, tv_fkze, tv_ljqjx, tv_bdqjx, tv_yfzq, tv_fkl, tv_fkcb, tv_fkhs, tv_jxp, tv_jxfpl, tv_jxfphs, tv_yfk, tv_rckwl, tv_rkcb, tv_ckcb;
     private TextView tv_bdkccb, tv_ljykp, tv_bdykp, tv_yszq, tv_skwl, tv_ysk, tv_xxpwl, tv_xxfpl, tv_xxkphs;
     private String orderID = "";//订单表id
+    private OrderDataInfo mOrderDataInfo;//整个订单表信息
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
         AddOrderActivity activity = (AddOrderActivity) getActivity();
         mEditable = activity.getEditable();
         orderID = activity.getIntent().getStringExtra("orderID");
+        mOrderDataInfo = activity.getOrderInfo();
         initView();
         initData();
         return mRootView;
@@ -82,7 +85,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
         tv_xxpwl = mRootView.findViewById(R.id.tv_xxpwl);//销项票往来
         tv_xxfpl = mRootView.findViewById(R.id.tv_xxfpl);//销项发票量合计
         tv_xxkphs = mRootView.findViewById(R.id.tv_xxkphs);//销项开票含税总额合计
-        bt_submit = mRootView.findViewById(R.id.bt_submit);
+        bt_submit = mRootView.findViewById(R.id.bt_submit);//提交
     }
 
     private void initData() {
@@ -151,36 +154,36 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
     }
 
     private void writeDataIn() {
-        AddOrderActivity activity = (AddOrderActivity) getActivity();
-        OrderDataInfo orderInfo = activity.getOrderInfo();
-        tv_orid.setText(orderInfo.getFbillNo());
-        tv_zzjg.setText(orderInfo.getOrga());
-        tv_nr1.setText(orderInfo.getContent());
-        tv_hsje.setText(orderInfo.getMoneyTax());
+//        AddOrderActivity activity = (AddOrderActivity) getActivity();
+//        OrderDataInfo orderInfo = activity.getOrderInfo();
+        tv_orid.setText(mOrderDataInfo.getFbillNo());
+        tv_zzjg.setText(mOrderDataInfo.getOrga());
+        tv_nr1.setText(mOrderDataInfo.getContent());
+        //        tv_hsje.setText(orderInfo.getMoneyTax());
         //        tv_fkze.setText(orderInfo.get);
-        tv_ljqjx.setText(orderInfo.getOweInvTotal());
-        tv_bdqjx.setText(orderInfo.getThisOweInv());
-        tv_yfzq.setText(orderInfo.getPayDate());
-        tv_fkwl.setText(orderInfo.getPayContact());
-        tv_fkl.setText(orderInfo.getPayAmount());
-        tv_fkcb.setText(orderInfo.getPaynoTax());
-        tv_fkhs.setText(orderInfo.getPaywithTax());
-        tv_jxp.setText(orderInfo.getIncomeCont());
-        tv_jxfpl.setText(orderInfo.getIncomeInv());
-        tv_jxfphs.setText(orderInfo.getInvwithTax());
-        tv_yfk.setText(orderInfo.getSpayTotal());
-        tv_rckwl.setText(orderInfo.getInnerIncome());
-        tv_rkcb.setText(orderInfo.getInnnerCost());
-        tv_ckcb.setText(orderInfo.getOutCost());
+        tv_ljqjx.setText(mOrderDataInfo.getOweInvTotal());
+        tv_bdqjx.setText(mOrderDataInfo.getThisOweInv());
+        tv_yfzq.setText(mOrderDataInfo.getPayDate());
+        tv_fkwl.setText(mOrderDataInfo.getPayContact());
+        tv_fkl.setText(mOrderDataInfo.getPayAmount());
+        tv_fkcb.setText(mOrderDataInfo.getPaynoTax());
+        tv_fkhs.setText(mOrderDataInfo.getPaywithTax());
+        tv_jxp.setText(mOrderDataInfo.getIncomeCont());
+        tv_jxfpl.setText(mOrderDataInfo.getIncomeInv());
+        tv_jxfphs.setText(mOrderDataInfo.getInvwithTax());
+        tv_yfk.setText(mOrderDataInfo.getSpayTotal());
+        tv_rckwl.setText(mOrderDataInfo.getInnerIncome());
+        tv_rkcb.setText(mOrderDataInfo.getInnnerCost());
+        tv_ckcb.setText(mOrderDataInfo.getOutCost());
         //        tv_bdkccb.setText(orderInfo.get);
-        tv_ljykp.setText(orderInfo.getTotalUnrece());
-        tv_bdykp.setText(orderInfo.getThisUnrece());
-        tv_yszq.setText(orderInfo.getShRecceData());
-        tv_skwl.setText(orderInfo.getRecIncome());
-        tv_ysk.setText(orderInfo.getShRecTotal());
-        tv_xxpwl.setText(orderInfo.getOutTicIncome());
-        tv_xxfpl.setText(orderInfo.getOutTickTotal());
-        tv_xxkphs.setText(orderInfo.getOutTickWTax());
+        tv_ljykp.setText(mOrderDataInfo.getTotalUnrece());
+        tv_bdykp.setText(mOrderDataInfo.getThisUnrece());
+        tv_yszq.setText(mOrderDataInfo.getShRecceData());
+        tv_skwl.setText(mOrderDataInfo.getRecIncome());
+        tv_ysk.setText(mOrderDataInfo.getShRecTotal());
+        tv_xxpwl.setText(mOrderDataInfo.getOutTicIncome());
+        tv_xxfpl.setText(mOrderDataInfo.getOutTickTotal());
+        tv_xxkphs.setText(mOrderDataInfo.getOutTickWTax());
     }
 
     @Override
@@ -188,10 +191,16 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.bt_submit:
                 //TODO:提交
+                sendInfo();
                 break;
             default:
                 break;
         }
+    }
+
+    private void sendInfo() {
+        SubmitOrder submitOrder = new SubmitOrder(mOrderDataInfo, getContext());
+        submitOrder.execute();
     }
 
     private void changeViewContent(final TextView tvcontent, final String title) {

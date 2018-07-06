@@ -41,32 +41,6 @@ public class OrderDataInfo {
      * outTicIncome : 销项票往来
      * outTickTotal : 销项发票量合计
      * outTickWTax : 销项开票含税总额合计
-     * content2 : 内 容
-     * remark : 摘要
-     * data : 日期
-     * singPerson : 制单人
-     * applyPart : 申请部门
-     * responsPart : 责任部门/考核
-     * bodyIncome : 表体往来
-     * bankIncome : 往来-银行及帐号
-     * planBudget : 计划预算进度
-     * budSub : 预算科目
-     * budBalance : 预算余额
-     * unit : 计量
-     * number : 数量
-     * unitPrice : 单价含税
-     * moneyTax : 金额含税
-     * taxAmount : 税额
-     * RMBNoTax : 人民币不含税额
-     * taxRate : 税率
-     * unitOther : 辅助
-     * unitNum : 辅量
-     * ticDataRespon : 发票日-权责制
-     * remarkTicNO : 备注-发票号码/税票说明
-     * ticTaxSub : 发票税务科目
-     * score : 评分
-     * sendMsg : 发送消息
-     * getMsg : 回馈消息
      */
 
     private String            fbillNo;
@@ -96,33 +70,13 @@ public class OrderDataInfo {
     private String            outTicIncome;
     private String            outTickTotal;
     private String            outTickWTax;
-    private String            content2;
-    private String            remark;
     private String            data;
-    private String            singPerson;
-    private String            applyPart;
-    private String            responsPart;
-    private String            bodyIncome;
-    private String            bankIncome;
-    private String            planBudget;
-    private String            budSub;
-    private String            budBalance;
-    private String            unit;
-    private String            number;
-    private String            unitPrice;
-    private String            moneyTax;
-    private String            taxAmount;
-    private String            RMBNoTax;
-    private String            taxRate;
-    private String            unitOther;
-    private String            unitNum;
-    private String            ticDataRespon;
-    private String            remarkTicNO;
-    private String            ticTaxSub;
-    private String            score;
-    private String            sendMsg;
-    private String            getMsg;
     private List<ListsonBean> listson;
+    /**
+     * innerid : fid
+     */
+
+    private String            innerid;
 
     public String getFbillNo() {
         return fbillNo;
@@ -340,212 +294,12 @@ public class OrderDataInfo {
         this.outTickWTax = outTickWTax;
     }
 
-    public String getContent2() {
-        return content2;
-    }
-
-    public void setContent2(String content2) {
-        this.content2 = content2;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
     public String getData() {
         return data;
     }
 
     public void setData(String data) {
         this.data = data;
-    }
-
-    public String getSingPerson() {
-        return singPerson;
-    }
-
-    public void setSingPerson(String singPerson) {
-        this.singPerson = singPerson;
-    }
-
-    public String getApplyPart() {
-        return applyPart;
-    }
-
-    public void setApplyPart(String applyPart) {
-        this.applyPart = applyPart;
-    }
-
-    public String getResponsPart() {
-        return responsPart;
-    }
-
-    public void setResponsPart(String responsPart) {
-        this.responsPart = responsPart;
-    }
-
-    public String getBodyIncome() {
-        return bodyIncome;
-    }
-
-    public void setBodyIncome(String bodyIncome) {
-        this.bodyIncome = bodyIncome;
-    }
-
-    public String getBankIncome() {
-        return bankIncome;
-    }
-
-    public void setBankIncome(String bankIncome) {
-        this.bankIncome = bankIncome;
-    }
-
-    public String getPlanBudget() {
-        return planBudget;
-    }
-
-    public void setPlanBudget(String planBudget) {
-        this.planBudget = planBudget;
-    }
-
-    public String getBudSub() {
-        return budSub;
-    }
-
-    public void setBudSub(String budSub) {
-        this.budSub = budSub;
-    }
-
-    public String getBudBalance() {
-        return budBalance;
-    }
-
-    public void setBudBalance(String budBalance) {
-        this.budBalance = budBalance;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(String unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public String getMoneyTax() {
-        return moneyTax;
-    }
-
-    public void setMoneyTax(String moneyTax) {
-        this.moneyTax = moneyTax;
-    }
-
-    public String getTaxAmount() {
-        return taxAmount;
-    }
-
-    public void setTaxAmount(String taxAmount) {
-        this.taxAmount = taxAmount;
-    }
-
-    public String getRMBNoTax() {
-        return RMBNoTax;
-    }
-
-    public void setRMBNoTax(String RMBNoTax) {
-        this.RMBNoTax = RMBNoTax;
-    }
-
-    public String getTaxRate() {
-        return taxRate;
-    }
-
-    public void setTaxRate(String taxRate) {
-        this.taxRate = taxRate;
-    }
-
-    public String getUnitOther() {
-        return unitOther;
-    }
-
-    public void setUnitOther(String unitOther) {
-        this.unitOther = unitOther;
-    }
-
-    public String getUnitNum() {
-        return unitNum;
-    }
-
-    public void setUnitNum(String unitNum) {
-        this.unitNum = unitNum;
-    }
-
-    public String getTicDataRespon() {
-        return ticDataRespon;
-    }
-
-    public void setTicDataRespon(String ticDataRespon) {
-        this.ticDataRespon = ticDataRespon;
-    }
-
-    public String getRemarkTicNO() {
-        return remarkTicNO;
-    }
-
-    public void setRemarkTicNO(String remarkTicNO) {
-        this.remarkTicNO = remarkTicNO;
-    }
-
-    public String getTicTaxSub() {
-        return ticTaxSub;
-    }
-
-    public void setTicTaxSub(String ticTaxSub) {
-        this.ticTaxSub = ticTaxSub;
-    }
-
-    public String getScore() {
-        return score;
-    }
-
-    public void setScore(String score) {
-        this.score = score;
-    }
-
-    public String getSendMsg() {
-        return sendMsg;
-    }
-
-    public void setSendMsg(String sendMsg) {
-        this.sendMsg = sendMsg;
-    }
-
-    public String getGetMsg() {
-        return getMsg;
-    }
-
-    public void setGetMsg(String getMsg) {
-        this.getMsg = getMsg;
     }
 
     public List<ListsonBean> getListson() {
@@ -556,9 +310,18 @@ public class OrderDataInfo {
         this.listson = listson;
     }
 
+    public String getInnerid() {
+        return innerid;
+    }
+
+    public void setInnerid(String innerid) {
+        this.innerid = innerid;
+    }
+
     public static class ListsonBean {
         /**
          * content : 内容
+         * remark : 摘要
          * date : 日期
          * sinPerson : 制单人
          * applyPart : 申请部门
@@ -577,6 +340,7 @@ public class OrderDataInfo {
          * taxRate : 税率
          * unitOther : 辅助
          * unitNum : 辅量
+         * ticDataRespon : 发票日-权责制
          * remarkTicNO : 备注
          * ticTaxSub : 发票税务科目
          */
@@ -621,6 +385,8 @@ public class OrderDataInfo {
         private String remarkTicNOX;
         //        @SerializedName("ticTaxSub")
         private String ticTaxSubX;
+        private String ticDataRespon;
+        private String remark;
 
         public String getContentX() {
             return contentX;
@@ -788,6 +554,22 @@ public class OrderDataInfo {
 
         public void setTicTaxSubX(String ticTaxSubX) {
             this.ticTaxSubX = ticTaxSubX;
+        }
+
+        public String getTicDataRespon() {
+            return ticDataRespon;
+        }
+
+        public void setTicDataRespon(String ticDataRespon) {
+            this.ticDataRespon = ticDataRespon;
+        }
+
+        public String getRemark() {
+            return remark;
+        }
+
+        public void setRemark(String remark) {
+            this.remark = remark;
         }
     }
 }

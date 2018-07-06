@@ -37,6 +37,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
     private MyLVOrderAdapter orderAdapter;
     private AddOrderActivity orderActivity;
     private boolean mEditable = false;//是否可编辑
+    private OrderDataInfo                   orderInfo;//整个订单表信息
     private List<OrderDataInfo.ListsonBean> mData;//存放子表详情对象
 
     @Override
@@ -62,12 +63,12 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
             return;
         }
         mData = new ArrayList();
+        orderInfo = orderActivity.getOrderInfo();
         //区分进入类别
         if (kind.equals("add")) {
 
         }
         if (kind.equals("edit") || kind.equals("check")) {//查看和编辑//是有查询数据的,填入当前fragment中的数据集合
-            OrderDataInfo orderInfo = orderActivity.getOrderInfo();
             List<OrderDataInfo.ListsonBean> listson = orderInfo.getListson();
             mData.addAll(listson);
         }
@@ -86,14 +87,14 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_add:
-                //弹出dailog然用户填写子表
-                showAlogToChange();
+                //弹出dailog让用户填写子表
+                showAlogToChange("新增");
                 break;
         }
     }
 
-    private void showAlogToChange() {
-        View view = View.inflate(getContext(), R.layout.lv_item_open_detail, null);
+    private void showAlogToChange(String title) {
+        View view = View.inflate(getContext(), R.layout.view_add_zibiao, null);
         final TextView tv_con = view.findViewById(R.id.tv_con);//内容
         final TextView tv_date = view.findViewById(R.id.tv_date);//日期
         final TextView tv_zdr = view.findViewById(R.id.tv_zdr);//制单人
@@ -115,7 +116,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         final TextView tv_fl = view.findViewById(R.id.tv_fl);//辅量
         final TextView tv_bz = view.findViewById(R.id.tv_bz);//备注
         final TextView tv_fpswkm = view.findViewById(R.id.tv_fpswkm);//发票税务科目
-        new AlertDialog.Builder(getContext()).setView(view).setTitle("修改")
+        new AlertDialog.Builder(getContext()).setView(view).setTitle(title)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -146,27 +147,29 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                         orderAdapter.notifyDataSetChanged();
                     }
                 }).setNegativeButton("取消", null).show();
+        List<OrderDataInfo.ListsonBean> listson = orderInfo.getListson();
+        OrderDataInfo.ListsonBean listsonBean = listson.get(0);
         setChangeListener(tv_con, "内容");
-        setChangeListener(tv_date, "日期");
-        setChangeListener(tv_zdr, "制单人");
-        setChangeListener(tv_sqbm, "申请部门");
-        setChangeListener(tv_zrbm, "责任部门");
-        setChangeListener(tv_wl, "往来");
-        setChangeListener(tv_wlyhzh, "往来银行及账号");
-        setChangeListener(tv_jhys, "计划预算进度");
-        setChangeListener(tv_yskm, "预算科目");
-        setChangeListener(tv_ysye, "预算余额");
-        setChangeListener(tv_jl, "计量");
-        setChangeListener(tv_sl, "数量");
-        setChangeListener(tv_djhs, "单价含税");
-        setChangeListener(tv_jehs, "金额含税");
-        setChangeListener(tv_se, "税额");
-        setChangeListener(tv_rmbbhse, "人民币不含税额");
-        setChangeListener(tv_slpercent, "税率%");
-        setChangeListener(tv_fz, "辅助");
-        setChangeListener(tv_fl, "辅量");
-        setChangeListener(tv_bz, "备注");
-        setChangeListener(tv_fpswkm, "发票税务科目");
+//        setChangeListener(tv_date, "日期");
+//        setChangeListener(tv_zdr, "制单人");
+//        setChangeListener(tv_sqbm, "申请部门");
+//        setChangeListener(tv_zrbm, "责任部门");
+//        setChangeListener(tv_wl, "往来");
+//        setChangeListener(tv_wlyhzh, "往来银行及账号");
+//        setChangeListener(tv_jhys, "计划预算进度");
+//        setChangeListener(tv_yskm, "预算科目");
+//        setChangeListener(tv_ysye, "预算余额");
+//        setChangeListener(tv_jl, "计量");
+//        setChangeListener(tv_sl, "数量");
+//        setChangeListener(tv_djhs, "单价含税");
+//        setChangeListener(tv_jehs, "金额含税");
+//        setChangeListener(tv_se, "税额");
+//        setChangeListener(tv_rmbbhse, "人民币不含税额");
+//        setChangeListener(tv_slpercent, "税率%");
+//        setChangeListener(tv_fz, "辅助");
+//        setChangeListener(tv_fl, "辅量");
+//        setChangeListener(tv_bz, "备注");
+//        setChangeListener(tv_fpswkm, "发票税务科目",);
     }
 
     private void setChangeListener(final TextView tv, final String title) {
@@ -183,6 +186,9 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                                 //修改tv的数据
                                 String et_con = String.valueOf(et.getText());
                                 tv.setText(et_con);
+                                //修改订单表中数据信息
+                                //TODO:
+
                             }
                         }).setNegativeButton("取消", null).show();
             }
