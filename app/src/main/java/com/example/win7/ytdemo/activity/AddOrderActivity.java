@@ -32,8 +32,9 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @创建者 AndyYan
@@ -98,8 +99,11 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
             new ZHUTask(orderID).execute();
         }
         if (kind.equals("add")) {
-            orderInfo.setInnerid("0");
-            orderInfo.setFbillNo("a");
+            orderInfo.getHeadData().put("innerid","0");
+            orderInfo.getHeadData().put("FBillNo","a");
+            //初始设置maplist
+//            List<Map<String, String>> dataMap = new ArrayList<>();
+//            orderInfo.setMapListson(dataMap);
             //初始化导航页
             initTabFragment();
         }
@@ -261,8 +265,8 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
             Log.i("返回结果", object.getProperty(0).toString() + "=========================");
             String result = object.getProperty(0).toString();
             Document doc = null;
-            //子订单存放列表list
-            List<OrderDataInfo.ListsonBean> listson = new ArrayList<>();
+            //子订单存放列表maplist
+//            List<Map<String, String>> mapList = new ArrayList<>();
             try {
                 doc = DocumentHelper.parseText(result); // 将字符串转为XML
                 Element rootElt = doc.getRootElement(); // 获取根节点
@@ -298,6 +302,64 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     String outTicIncome = recordEle.elementTextTrim("FName7");//销项票往来
                     String outTickTotal = recordEle.elementTextTrim("FDecimal13");//销项发票量合计
                     String outTickWTax = recordEle.elementTextTrim("FAmount19");//销项开票含税总额合计
+
+                    //                    orderInfo.setFbillNo(fbillNo);
+                    //                    orderInfo.setCurrency(currency);
+                    //                    orderInfo.setRate(rate);
+                    //                    orderInfo.setOrga(orga);
+                    //                    orderInfo.setOweInvTotal(oweInvTotal);
+                    //                    orderInfo.setThisOweInv(thisOweInv);
+                    //                    orderInfo.setPayDate(payDate);
+                    //                    orderInfo.setPayContact(payContact);
+                    //                    orderInfo.setPayAmount(payAmount);
+                    //                    orderInfo.setPaynoTax(paynoTax);
+                    //                    orderInfo.setPaywithTax(paywithTax);
+                    //                    orderInfo.setIncomeCont(incomeCont);
+                    //                    orderInfo.setIncomeInv(incomeInv);
+                    //                    orderInfo.setInvwithTax(invwithTax);
+                    //                    orderInfo.setSpayTotal(spayTotal);
+                    //                    orderInfo.setInnerIncome(innerIncome);
+                    //                    orderInfo.setContent(content);
+                    //                    orderInfo.setInnnerCost(innnerCost);
+                    //                    orderInfo.setOutCost(outCost);
+                    //                    orderInfo.setTotalUnrece(totalUnrece);
+                    //                    orderInfo.setThisUnrece(thisUnrece);
+                    //                    orderInfo.setShRecceData(shRecceData);
+                    //                    orderInfo.setRecIncome(recIncome);
+                    //                    orderInfo.setShRecTotal(shRecTotal);
+                    //                    orderInfo.setOutTicIncome(outTicIncome);
+                    //                    orderInfo.setOutTickTotal(outTickTotal);
+                    //                    orderInfo.setOutTickWTax(outTickWTax);
+
+                    Map<String, String> headMapData = orderInfo.getHeadData();
+                    headMapData.put("FBillNo", fbillNo);
+                    headMapData.put("FName", currency);
+                    headMapData.put("FAmount4", rate);
+                    headMapData.put("FName1", orga);
+                    headMapData.put("FAmount36", oweInvTotal);
+                    headMapData.put("FAmount29", thisOweInv);
+                    headMapData.put("FInteger", payDate);
+                    headMapData.put("fname2", payContact);
+                    headMapData.put("FDecimal8", payAmount);
+                    headMapData.put("FAmount9", paynoTax);
+                    headMapData.put("FAmount17", paywithTax);
+                    headMapData.put("FName3", incomeCont);
+                    headMapData.put("FDecimal12", incomeInv);
+                    headMapData.put("FAmount16", invwithTax);
+                    headMapData.put("FAmount27", spayTotal);
+                    headMapData.put("FName4",innerIncome );
+                    headMapData.put("FName5", content);
+                    headMapData.put("FAmount12", innnerCost);
+                    headMapData.put("FAmount13", outCost);
+                    headMapData.put("FAmount37",totalUnrece );
+                    headMapData.put("FAmount30",thisUnrece );
+                    headMapData.put("FInteger1", shRecceData);
+                    headMapData.put("FName6", recIncome);
+                    headMapData.put("FAmount28", shRecTotal);
+                    headMapData.put("FName7", outTicIncome);
+                    headMapData.put("FDecimal13", outTickTotal);
+                    headMapData.put("FAmount19", outTickWTax);
+
                     //表体
                     String content2 = recordEle.elementTextTrim("FName8");//内 容
                     String remark = recordEle.elementTextTrim("FNOTE2");//摘要
@@ -326,60 +388,37 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     String sendMsg = recordEle.elementTextTrim("FText");//发送消息
                     String getMsg = recordEle.elementTextTrim("FText1");//回馈消息
 
-                    orderInfo.setFbillNo(fbillNo);
-                    orderInfo.setCurrency(currency);
-                    orderInfo.setRate(rate);
-                    orderInfo.setOrga(orga);
-                    orderInfo.setOweInvTotal(oweInvTotal);
-                    orderInfo.setThisOweInv(thisOweInv);
-                    orderInfo.setPayDate(payDate);
-                    orderInfo.setPayContact(payContact);
-                    orderInfo.setPayAmount(payAmount);
-                    orderInfo.setPaynoTax(paynoTax);
-                    orderInfo.setPaywithTax(paywithTax);
-                    orderInfo.setIncomeCont(incomeCont);
-                    orderInfo.setIncomeInv(incomeInv);
-                    orderInfo.setInvwithTax(invwithTax);
-                    orderInfo.setSpayTotal(spayTotal);
-                    orderInfo.setInnerIncome(innerIncome);
-                    orderInfo.setContent(content);
-                    orderInfo.setInnnerCost(innnerCost);
-                    orderInfo.setOutCost(outCost);
-                    orderInfo.setTotalUnrece(totalUnrece);
-                    orderInfo.setThisUnrece(thisUnrece);
-                    orderInfo.setShRecceData(shRecceData);
-                    orderInfo.setRecIncome(recIncome);
-                    orderInfo.setShRecTotal(shRecTotal);
-                    orderInfo.setOutTicIncome(outTicIncome);
-                    orderInfo.setOutTickTotal(outTickTotal);
-                    orderInfo.setOutTickWTax(outTickWTax);
-                    OrderDataInfo.ListsonBean bean = new OrderDataInfo.ListsonBean();
-                    bean.setContentX(content2);
-                    bean.setRemark(remark);
-                    bean.setDate(data);
-                    bean.setSinPerson(singPerson);
-                    bean.setApplyPartX(applyPart);
-                    bean.setResponsPartX(responsPart);
-                    bean.setBodyIncomeX(bodyIncome);
-                    bean.setBankIncomeX(bankIncome);
-                    bean.setPlanBudgetX(planBudget);
-                    bean.setBudSubX(budSub);
-                    bean.setBudBalanceX(budBalance);
-                    bean.setUnitX(unit);
-                    bean.setNumberX(number);
-                    bean.setUnitPriceX(unitPrice);
-                    bean.setMoneyTaxX(moneyTax);
-                    bean.setTaxAmountX(taxAmount);
-                    bean.setRMBNoTaxX(RMBNoTax);
-                    bean.setTaxRateX(taxRate);
-                    bean.setUnitOtherX(unitOther);
-                    bean.setUnitNumX(unitNum);
-                    bean.setRemarkTicNOX(remarkTicNO);
-                    bean.setTicTaxSubX(ticTaxSub);
-                    bean.setTicDataRespon(ticDataRespon);
-                    listson.add(bean);
+                    Map dataMap = new HashMap();
+                    dataMap.put("FName8", content2);
+                    dataMap.put("FNOTE2", remark);
+                    dataMap.put("FTime2", data);
+                    dataMap.put("FName9", singPerson);
+                    dataMap.put("FName10", applyPart);
+                    dataMap.put("FName11", responsPart);
+                    dataMap.put("FName12", bodyIncome);
+                    dataMap.put("FBankAccount", bankIncome);
+                    dataMap.put("FName13", planBudget);
+                    dataMap.put("FName14", budSub);
+                    dataMap.put("F_109", budBalance);
+                    dataMap.put("FName15", unit);
+                    dataMap.put("FDecimal", number);
+                    dataMap.put("FDecimal1", unitPrice);
+                    dataMap.put("FAmount2", moneyTax);
+                    dataMap.put("FAmount", taxAmount);
+                    dataMap.put("FAmount3", RMBNoTax);
+                    dataMap.put("FAmount10", taxRate);
+                    dataMap.put("FName16", unitOther);
+                    dataMap.put("FDecimal2", unitNum);
+                    dataMap.put("FTime3", ticDataRespon);
+                    dataMap.put("FText2", remarkTicNO);
+                    dataMap.put("FName17", ticTaxSub);
+                    dataMap.put("FName18", score);
+                    dataMap.put("FText", sendMsg);
+                    dataMap.put("FText1", getMsg);
+//                    mapList.add(dataMap);
+                    orderInfo.getMapListson().add(dataMap);
                 }
-                orderInfo.setListson(listson);
+//                orderInfo.setMapListson(mapList);
             } catch (Exception e) {
                 e.printStackTrace();
                 ToastUtils.showToast(AddOrderActivity.this, "查找详情出错");
@@ -393,9 +432,8 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
             super.onPostExecute(s);
             dialog.dismiss();
             //            //初始化导航页
-            //            initTabFragment();
             //根据fbillNo查询innerid
-            String fbillNo = orderInfo.getFbillNo();
+            String fbillNo = orderInfo.getHeadData().get("FBillNo");
             searchForInnerID(fbillNo);
         }
     }
@@ -472,7 +510,6 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
             // 获取返回的结果
             String result = object.getProperty(0).toString();
             Document doc = null;
-
             try {
                 doc = DocumentHelper.parseText(result); // 将字符串转为XML
                 Element rootElt = doc.getRootElement(); // 获取根节点
@@ -481,7 +518,7 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
                     String fid = recordEle.elementTextTrim("fid");//InnerID
-                    orderInfo.setInnerid(fid);
+                    orderInfo.getHeadData().put("innerid",fid);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

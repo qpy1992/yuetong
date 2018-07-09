@@ -8,9 +8,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
-import com.example.win7.ytdemo.entity.OrderDataInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @创建者 AndyYan
@@ -22,9 +22,10 @@ import java.util.List;
  */
 
 public class MyLVOrderAdapter extends BaseAdapter {
-    private Context                         mContext;
-    private List<OrderDataInfo.ListsonBean> mList;
-    private int                             mOpenItem;
+    private Context                   mContext;
+    //    private List<OrderDataInfo.ListsonBean> mList;
+    private List<Map<String, String>> mList;
+    private int                       mOpenItem;
 
     public MyLVOrderAdapter(Context context, List list, int openItem) {
         this.mContext = context;
@@ -57,54 +58,56 @@ public class MyLVOrderAdapter extends BaseAdapter {
             viewHolder.lin_open = view.findViewById(R.id.lin_open);
             viewHolder.lin_sorh = view.findViewById(R.id.lin_sorh);
             //需填充数据的view
-            viewHolder.tv_con = view.findViewById(R.id.tv_con);
-            viewHolder.tv_date = view.findViewById(R.id.tv_date);
-            viewHolder.tv_zdr = view.findViewById(R.id.tv_zdr);
-            viewHolder.tv_sqbm = view.findViewById(R.id.tv_sqbm);
-            viewHolder.tv_zrbm = view.findViewById(R.id.tv_zrbm);
-            viewHolder.tv_wl = view.findViewById(R.id.tv_wl);
-            viewHolder.tv_wlyhzh = view.findViewById(R.id.tv_wlyhzh);
-            viewHolder.tv_jhys = view.findViewById(R.id.tv_jhys);
-            viewHolder.tv_yskm = view.findViewById(R.id.tv_yskm);
-            viewHolder.tv_ysye = view.findViewById(R.id.tv_ysye);
-            viewHolder.tv_jl = view.findViewById(R.id.tv_jl);
-            viewHolder.tv_sl = view.findViewById(R.id.tv_sl);
-            viewHolder.tv_djhs = view.findViewById(R.id.tv_djhs);
-            viewHolder.tv_jehs = view.findViewById(R.id.tv_jehs);
-            viewHolder.tv_se = view.findViewById(R.id.tv_se);
-            viewHolder.tv_rmbbhse = view.findViewById(R.id.tv_rmbbhse);
-            viewHolder.tv_slpercent = view.findViewById(R.id.tv_slpercent);
-            viewHolder.tv_fz = view.findViewById(R.id.tv_fz);
-            viewHolder.tv_fl = view.findViewById(R.id.tv_fl);
-            viewHolder.tv_bz = view.findViewById(R.id.tv_bz);
-            viewHolder.tv_fpswkm = view.findViewById(R.id.tv_fpswkm);
+            viewHolder.tv_con = view.findViewById(R.id.tv_con);//内 容
+            viewHolder.tv_date = view.findViewById(R.id.tv_date);//日期
+            viewHolder.tv_zdr = view.findViewById(R.id.tv_zdr);//制单人
+            viewHolder.tv_sqbm = view.findViewById(R.id.tv_sqbm);//申请部门
+            viewHolder.tv_zrbm = view.findViewById(R.id.tv_zrbm);//责任部门/考核
+            viewHolder.tv_wl = view.findViewById(R.id.tv_wl);//表体往来
+            viewHolder.tv_wlyhzh = view.findViewById(R.id.tv_wlyhzh);//往来-银行及帐号
+            viewHolder.tv_jhys = view.findViewById(R.id.tv_jhys);//计划预算进度
+            viewHolder.tv_yskm = view.findViewById(R.id.tv_yskm);//预算科目
+            viewHolder.tv_ysye = view.findViewById(R.id.tv_ysye);//预算余额
+            viewHolder.tv_jl = view.findViewById(R.id.tv_jl);//计量
+            viewHolder.tv_sl = view.findViewById(R.id.tv_sl);//数量
+            viewHolder.tv_djhs = view.findViewById(R.id.tv_djhs);//单价含税
+            viewHolder.tv_jehs = view.findViewById(R.id.tv_jehs);//金额含税
+            viewHolder.tv_se = view.findViewById(R.id.tv_se);//税额
+            viewHolder.tv_rmbbhse = view.findViewById(R.id.tv_rmbbhse);//人民币不含税额
+            viewHolder.tv_slpercent = view.findViewById(R.id.tv_slpercent);//税率%
+            viewHolder.tv_fz = view.findViewById(R.id.tv_fz);//辅助
+            viewHolder.tv_fl = view.findViewById(R.id.tv_fl);//辅量
+            viewHolder.tv_bz = view.findViewById(R.id.tv_bz);//备注-发票号码/税票说明
+            viewHolder.tv_fpswkm = view.findViewById(R.id.tv_fpswkm);//发票税务科目
             view.setTag(viewHolder);
         } else {
             viewHolder = (MyViewHolder) view.getTag();
         }
         //填充数据
-        OrderDataInfo.ListsonBean bean = mList.get(i);
-        viewHolder.tv_con.setText(bean.getContentX());
-        viewHolder.tv_date.setText(bean.getDate());
-        viewHolder.tv_zdr.setText(bean.getSinPerson());
-        viewHolder.tv_sqbm.setText(bean.getApplyPartX());
-        viewHolder.tv_zrbm.setText(bean.getResponsPartX());
-        viewHolder.tv_wl.setText(bean.getBodyIncomeX());
-        viewHolder.tv_wlyhzh.setText(bean.getBankIncomeX());
-        viewHolder.tv_jhys.setText(bean.getPlanBudgetX());
-        viewHolder.tv_yskm.setText(bean.getBudSubX());
-        viewHolder.tv_ysye.setText(bean.getBudBalanceX());
-        viewHolder.tv_jl.setText(bean.getUnitX());
-        viewHolder.tv_sl.setText(bean.getNumberX());
-        viewHolder.tv_djhs.setText(bean.getUnitPriceX());
-        viewHolder.tv_jehs.setText(bean.getMoneyTaxX());
-        viewHolder.tv_se.setText(bean.getTaxAmountX());
-        viewHolder.tv_rmbbhse.setText(bean.getRMBNoTaxX());
-        viewHolder.tv_slpercent.setText(bean.getTaxRateX());
-        viewHolder.tv_fz.setText(bean.getUnitOtherX());
-        viewHolder.tv_fl.setText(bean.getUnitNumX());
-        viewHolder.tv_bz.setText(bean.getRemarkTicNOX());
-        viewHolder.tv_fpswkm.setText(bean.getTicTaxSubX());
+//        OrderDataInfo.ListsonBean bean = mList.get(i);
+        Map<String, String> dataMap = mList.get(i);
+
+        viewHolder.tv_con.setText(dataMap.get("FName8"));
+        viewHolder.tv_date.setText(dataMap.get("FTime2"));
+        viewHolder.tv_zdr.setText(dataMap.get("FName9"));
+        viewHolder.tv_sqbm.setText(dataMap.get("FName10"));
+        viewHolder.tv_zrbm.setText(dataMap.get("FName11"));
+        viewHolder.tv_wl.setText(dataMap.get("FName12"));
+        viewHolder.tv_wlyhzh.setText(dataMap.get("FBankAccount"));
+        viewHolder.tv_jhys.setText(dataMap.get("FName13"));
+        viewHolder.tv_yskm.setText(dataMap.get("FName14"));
+        viewHolder.tv_ysye.setText(dataMap.get("F_109"));
+        viewHolder.tv_jl.setText(dataMap.get("FName15"));
+        viewHolder.tv_sl.setText(dataMap.get("FDecimal"));
+        viewHolder.tv_djhs.setText(dataMap.get("FDecimal1"));
+        viewHolder.tv_jehs.setText(dataMap.get("FAmount2"));
+        viewHolder.tv_se.setText(dataMap.get("FAmount"));
+        viewHolder.tv_rmbbhse.setText(dataMap.get("FAmount3"));
+        viewHolder.tv_slpercent.setText(dataMap.get("FAmount10"));
+        viewHolder.tv_fz.setText(dataMap.get("FName16"));
+        viewHolder.tv_fl.setText(dataMap.get("FDecimal2"));
+        viewHolder.tv_bz.setText(dataMap.get("FText2"));
+        viewHolder.tv_fpswkm.setText(dataMap.get("FName17"));
         //隐藏展示
         viewHolder.lin_open.setTag(i);
         if (i == mOpenItem) {

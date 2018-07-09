@@ -22,6 +22,7 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.io.StringWriter;
+import java.util.Map;
 
 /**
  * @创建者 AndyYan
@@ -64,124 +65,122 @@ public class SubmitOrder extends AsyncTask<Void, String, String> {
             // 指定WebService的命名空间和调用的方法名
             SoapObject rpc = new SoapObject(nameSpace, methodName);
             // 设置需调用WebService接口需要传入的参数
-            rpc.addProperty("InterID", mOrderDataInfo.getInnerid());//mr.0
-            rpc.addProperty("BillNO", mOrderDataInfo.getFbillNo());//mr.a
-
+            rpc.addProperty("InterID", mOrderDataInfo.getHeadData().get("innerid"));//mr.0
+            rpc.addProperty("BillNO", mOrderDataInfo.getHeadData().get("FBillNo"));//mr.a
             //表头
             Document document = DocumentHelper.createDocument();
             Element rootElement = document.addElement("NewDataSet");
             Element cust = rootElement.addElement("Cust");
             //币别
-            cust.addElement("FBase3").setText(mOrderDataInfo.getCurrency());//....
+            cust.addElement("FBase3").setText(mOrderDataInfo.getHeadData().get("FName"));//....
             //汇率
-            cust.addElement("FAmount4").setText(mOrderDataInfo.getRate());
+            cust.addElement("FAmount4").setText(mOrderDataInfo.getHeadData().get("FAmount4"));
             //组织机构
-            cust.addElement("FBase11").setText(mOrderDataInfo.getOrga());//...
+            cust.addElement("FBase11").setText(mOrderDataInfo.getHeadData().get("FName1"));//...
             //累计：欠进项发票额！！
-            cust.addElement("FAmount36").setText(mOrderDataInfo.getOweInvTotal());
+            cust.addElement("FAmount36").setText(mOrderDataInfo.getHeadData().get("FAmount36"));
             //本单：欠进项发票额！
-            cust.addElement("FAmount29").setText(mOrderDataInfo.getThisOweInv());
+            cust.addElement("FAmount29").setText(mOrderDataInfo.getHeadData().get("FAmount29"));
             //应付帐期天数（进项发票日算）！
-            cust.addElement("FInteger").setText(mOrderDataInfo.getPayDate());
+            cust.addElement("FInteger").setText(mOrderDataInfo.getHeadData().get("FInteger"));
             //付款往来
-            cust.addElement("FBase24").setText(mOrderDataInfo.getPayContact());//...
+            cust.addElement("FBase24").setText(mOrderDataInfo.getHeadData().get("fname2"));//...
             //付款量合计
-            cust.addElement("FDecimal8").setText(mOrderDataInfo.getPayAmount());
+            cust.addElement("FDecimal8").setText(mOrderDataInfo.getHeadData().get("FDecimal8"));
             //付款成本不含税合计
-            cust.addElement("FAmount9").setText(mOrderDataInfo.getPaynoTax());
+            cust.addElement("FAmount9").setText(mOrderDataInfo.getHeadData().get("FAmount9"));
             //付款含税合计
-            cust.addElement("FAmount17").setText(mOrderDataInfo.getPaywithTax());
+            cust.addElement("FAmount17").setText(mOrderDataInfo.getHeadData().get("FAmount17"));
             //进项票往来
-            cust.addElement("FBase13").setText(mOrderDataInfo.getIncomeCont());//..
+            cust.addElement("FBase13").setText(mOrderDataInfo.getHeadData().get("FName3"));//..
             //进项发票量合计
-            cust.addElement("FDecimal12").setText(mOrderDataInfo.getIncomeInv());
+            cust.addElement("FDecimal12").setText(mOrderDataInfo.getHeadData().get("FDecimal12"));
             //进项发票含税总额合计
-            cust.addElement("FAmount16").setText(mOrderDataInfo.getInvwithTax());
+            cust.addElement("FAmount16").setText(mOrderDataInfo.getHeadData().get("FAmount16"));
             //应付款合计
-            cust.addElement("FAmount27").setText(mOrderDataInfo.getSpayTotal());
+            cust.addElement("FAmount27").setText(mOrderDataInfo.getHeadData().get("FAmount27"));
             //入出库往来
-            cust.addElement("FBase25").setText(mOrderDataInfo.getInnerIncome());//...
+            cust.addElement("FBase25").setText(mOrderDataInfo.getHeadData().get("FName4"));//...
             //内容
-            cust.addElement("FBase26").setText(mOrderDataInfo.getContent());//...
+            cust.addElement("FBase26").setText(mOrderDataInfo.getHeadData().get("FName5"));//...
             //入库成本合计
-            cust.addElement("FAmount12").setText(mOrderDataInfo.getInnnerCost());
+            cust.addElement("FAmount12").setText(mOrderDataInfo.getHeadData().get("FAmount12"));
             //出库成本合计
-            cust.addElement("FAmount13").setText(mOrderDataInfo.getOutCost());
+            cust.addElement("FAmount13").setText(mOrderDataInfo.getHeadData().get("FAmount13"));
             //累计：已开票未收款额！！
-            cust.addElement("FAmount37").setText(mOrderDataInfo.getTotalUnrece());
+            cust.addElement("FAmount37").setText(mOrderDataInfo.getHeadData().get("FAmount37"));
             //本单：已开票未收款额！！
-            cust.addElement("FAmount30").setText(mOrderDataInfo.getThisUnrece());
+            cust.addElement("FAmount30").setText(mOrderDataInfo.getHeadData().get("FAmount30"));
             //应收帐期天数（销项发票日算）！！
-            cust.addElement("FInteger1").setText(mOrderDataInfo.getShRecceData());
+            cust.addElement("FInteger1").setText(mOrderDataInfo.getHeadData().get("FInteger1"));
             //收款往来
-            cust.addElement("FBase27").setText(mOrderDataInfo.getRecIncome());//...
+            cust.addElement("FBase27").setText(mOrderDataInfo.getHeadData().get("FName6"));//...
             //应收款合计
-            cust.addElement("FAmount28").setText(mOrderDataInfo.getShRecTotal());
+            cust.addElement("FAmount28").setText(mOrderDataInfo.getHeadData().get("FAmount28"));
             //销项票往来
-            cust.addElement("FBase16").setText(mOrderDataInfo.getOutTicIncome());//...
+            cust.addElement("FBase16").setText(mOrderDataInfo.getHeadData().get("FName7"));//...
             //销项发票量合计
-            cust.addElement("FDecimal13").setText(mOrderDataInfo.getOutTickTotal());
+            cust.addElement("FDecimal13").setText(mOrderDataInfo.getHeadData().get("FDecimal13"));
             //销项开票含税总额合计
-            cust.addElement("FAmount19").setText(mOrderDataInfo.getOutTickWTax());
+            cust.addElement("FAmount19").setText(mOrderDataInfo.getHeadData().get("FAmount19"));
             //表体
             Document document2 = DocumentHelper.createDocument();
             Element rootElement2 = document2.addElement("NewDataSet");
-            for (OrderDataInfo.ListsonBean listsonBean : mOrderDataInfo.getListson()) {
+            for (Map<String, String> dataMap : mOrderDataInfo.getMapListson()) {
                 Element cust2 = rootElement2.addElement("Cust");
                 //内容
-                cust2.addElement("FBase1").setText(listsonBean.getContentX());//...
+                cust2.addElement("FBase1").setText(dataMap.get("FName8"));//...
                 //摘要
-                cust2.addElement("FNOTE2").setText(listsonBean.getRemark());
+                cust2.addElement("FNOTE2").setText(dataMap.get("FNOTE2"));
                 //日期
-                cust2.addElement("FTime2").setText(listsonBean.getDate());
+                cust2.addElement("FTime2").setText(dataMap.get("FTime2"));
                 //制单人
-                cust2.addElement("FBase15").setText(listsonBean.getSinPerson());//...
+                cust2.addElement("FBase15").setText(dataMap.get("FName9"));//...
                 //申请部门
-                cust2.addElement("FBase18").setText(listsonBean.getApplyPartX());//...
+                cust2.addElement("FBase18").setText(dataMap.get("FName10"));//...
                 //评分
                 cust2.addElement("FBase14").setText("10");
                 //表体往来
-                cust2.addElement("FBase10").setText(listsonBean.getBodyIncomeX());//...
+                cust2.addElement("FBase10").setText(dataMap.get("FName12"));//...
                 //往来-银行及帐号
-                cust2.addElement("FBase").setText(listsonBean.getBankIncomeX());//...
+                cust2.addElement("FBase").setText(dataMap.get("FBankAccount"));//...
                 //
                 cust2.addElement("FBase21").setText("0");
                 //计划预算进度
-                cust2.addElement("FName13").setText(listsonBean.getPlanBudgetX());
+                cust2.addElement("FName13").setText(dataMap.get("FName13"));
                 //预算科目
-                cust2.addElement("FName14").setText(listsonBean.getBudSubX());
+                cust2.addElement("FName14").setText(dataMap.get("FName14"));
                 //预算余额
-                cust2.addElement("F_109").setText(listsonBean.getBudBalanceX());
+                cust2.addElement("F_109").setText(dataMap.get("F_109"));
                 //计量
-                cust2.addElement("FBase2").setText(listsonBean.getUnitX());//...
+                cust2.addElement("FBase2").setText(dataMap.get("FName15"));//...
                 //数量
-                cust2.addElement("FDecimal").setText(listsonBean.getNumberX());
+                cust2.addElement("FDecimal").setText(dataMap.get("FDecimal"));
                 //单价
-                cust2.addElement("FDecimal1").setText(listsonBean.getUnitPriceX());
+                cust2.addElement("FDecimal1").setText(dataMap.get("FDecimal1"));
                 //金额含税
-                cust2.addElement("FAmount2").setText(listsonBean.getMoneyTaxX());
+                cust2.addElement("FAmount2").setText(dataMap.get("FAmount2"));
                 //税额
-                cust2.addElement("FAmount").setText(listsonBean.getTaxAmountX());
+                cust2.addElement("FAmount").setText(dataMap.get("FAmount"));
                 //人民币不含税额
-                cust2.addElement("FAmount3").setText(listsonBean.getRMBNoTaxX());
+                cust2.addElement("FAmount3").setText(dataMap.get("FAmount3"));
                 //税率%
-                cust2.addElement("FAmount10").setText(listsonBean.getTaxRateX());
+                cust2.addElement("FAmount10").setText(dataMap.get("FAmount10"));
                 //辅助
-                cust2.addElement("FName16").setText(listsonBean.getUnitOtherX());
+                cust2.addElement("FName16").setText(dataMap.get("FName16"));
                 //辅量
-                cust2.addElement("FDecimal2").setText(listsonBean.getUnitNumX());
+                cust2.addElement("FDecimal2").setText(dataMap.get("FDecimal2"));
                 //发票日-权责制
-                cust2.addElement("FTime3").setText(listsonBean.getTicDataRespon());
+                cust2.addElement("FTime3").setText(dataMap.get("FTime3"));
                 //备注-发票号码/税票说明
-                cust2.addElement("FText2").setText(listsonBean.getRemarkTicNOX());
+                cust2.addElement("FText2").setText(dataMap.get("FText2"));
                 //发票税务科目
-                cust2.addElement("FBase17").setText(listsonBean.getTicTaxSubX());//...
+                cust2.addElement("FBase17").setText(dataMap.get("FName17"));//...
                 //发送消息
                 cust2.addElement("FText").setText("");
                 //回馈消息
                 cust2.addElement("FText1").setText("");
             }
-
             OutputFormat outputFormat = OutputFormat.createPrettyPrint();
             outputFormat.setSuppressDeclaration(false);
             outputFormat.setNewlines(false);

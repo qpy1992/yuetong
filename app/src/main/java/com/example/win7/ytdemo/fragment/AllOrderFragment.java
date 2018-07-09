@@ -2,6 +2,7 @@ package com.example.win7.ytdemo.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -19,10 +20,25 @@ import com.example.win7.ytdemo.activity.AddOrderActivity;
 import com.example.win7.ytdemo.adapter.LvShowMoreAdapter;
 import com.example.win7.ytdemo.entity.OrderDataInfo;
 import com.example.win7.ytdemo.task.SubmitOrder;
+import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.ToastUtils;
+import com.example.win7.ytdemo.view.CustomProgress;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @创建者 AndyYan
@@ -40,7 +56,10 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
     private TextView tv_hsje, tv_fkwl, tv_orid, tv_RMB, tv_rate, tv_zzjg, tv_nr1, tv_fkze, tv_ljqjx, tv_bdqjx, tv_yfzq, tv_fkl, tv_fkcb, tv_fkhs, tv_jxp, tv_jxfpl, tv_jxfphs, tv_yfk, tv_rckwl, tv_rkcb, tv_ckcb;
     private TextView tv_bdkccb, tv_ljykp, tv_bdykp, tv_yszq, tv_skwl, tv_ysk, tv_xxpwl, tv_xxfpl, tv_xxkphs;
     private String orderID = "";//订单表id
-    private OrderDataInfo mOrderDataInfo;//整个订单表信息
+    private OrderDataInfo             mOrderDataInfo;//整个订单表信息
+    private List<Map<String, String>> mShowData;//临时存放内码
+    private LvShowMoreAdapter         showMoreAdapter;
+    private CustomProgress            dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -110,87 +129,92 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
 
     private void setListener() {
         if (mEditable) {
-            setTvChangeListener(tv_orid, "单据号");
-            setTvChangeListener(tv_RMB, "币别");
-            setTvChangeListener(tv_rate, "汇率");
-            setTvChangeListener(tv_zzjg, "组织机构");
-            setTvChangeListener(tv_nr1, "内容");
-            setTvChangeListener(tv_hsje, "含税金额合计");
-            setTvChangeListener(tv_fkze, "付款总额合计");
-            setTvChangeListener(tv_ljqjx, "累计：欠进项发票额");
-            setTvChangeListener(tv_bdqjx, "本单：欠进项发票额");
-            setTvChangeListener(tv_yfzq, "应付账期天数");
-            setTvChangeListener(tv_fkwl, "付款往来");
-            setTvChangeListener(tv_fkl, "付款量合计");
-            setTvChangeListener(tv_fkcb, "付款成本不含税合计");
-            setTvChangeListener(tv_fkhs, "付款含税合计");
-            setTvChangeListener(tv_jxp, "进项票往来");
-            setTvChangeListener(tv_jxfpl, "进项发票量合计");
-            setTvChangeListener(tv_jxfphs, "进项发票含税总额合计");
-            setTvChangeListener(tv_yfk, "应付款合计");
-            setTvChangeListener(tv_rckwl, "入出库往来");
-            setTvChangeListener(tv_rkcb, "入库成本合计");
-            setTvChangeListener(tv_ckcb, "出库成本合计");
-            setTvChangeListener(tv_bdkccb, "本单库存成本");
-            setTvChangeListener(tv_ljykp, "累计：已开票未收款额");
-            setTvChangeListener(tv_bdykp, "本单：已开票未收款额");
-            setTvChangeListener(tv_yszq, "应收账期天数");
-            setTvChangeListener(tv_skwl, "收款往来");
-            setTvChangeListener(tv_ysk, "应收款合计");
-            setTvChangeListener(tv_xxpwl, "销项票往来");
-            setTvChangeListener(tv_xxfpl, "销项发票量合计");
-            setTvChangeListener(tv_xxkphs, "销项开票含税总额合计");
-            setTvChangeListener(tv_fkwl, "付款往来");
+            setTvChangeListener(tv_orid, "单据号", "", "FBillNo");
+            setTvChangeListener(tv_RMB, "币别", "search", "FName");
+            setTvChangeListener(tv_rate, "汇率", "", "FAmount4");
+            setTvChangeListener(tv_zzjg, "组织机构", "search", "FName1");
+            setTvChangeListener(tv_nr1, "内容", "search", "FName5");
+            setTvChangeListener(tv_hsje, "含税金额合计", "search", "");
+            setTvChangeListener(tv_fkze, "付款总额合计", "search", "");
+            setTvChangeListener(tv_ljqjx, "累计：欠进项发票额", "", "FAmount36");
+            setTvChangeListener(tv_bdqjx, "本单：欠进项发票额", "", "FAmount29");
+            setTvChangeListener(tv_yfzq, "应付账期天数", "", "FInteger");
+            setTvChangeListener(tv_fkwl, "付款往来", "search", "fname2");
+            setTvChangeListener(tv_fkl, "付款量合计", "", "FDecimal8");
+            setTvChangeListener(tv_fkcb, "付款成本不含税合计", "", "FAmount9");
+            setTvChangeListener(tv_fkhs, "付款含税合计", "", "FAmount17");
+            setTvChangeListener(tv_jxp, "进项票往来", "search", "FName3");
+            setTvChangeListener(tv_jxfpl, "进项发票量合计", "", "FDecimal12");
+            setTvChangeListener(tv_jxfphs, "进项发票含税总额合计", "", "FAmount16");
+            setTvChangeListener(tv_yfk, "应付款合计", "", "FAmount27");
+            setTvChangeListener(tv_rckwl, "入出库往来", "search", "FName4");
+            setTvChangeListener(tv_rkcb, "入库成本合计", "", "FAmount12");
+            setTvChangeListener(tv_ckcb, "出库成本合计", "", "FAmount13");
+            //            setTvChangeListener(tv_bdkccb, "本单库存成本", "", "");
+            setTvChangeListener(tv_ljykp, "累计：已开票未收款额", "", "FAmount37");
+            setTvChangeListener(tv_bdykp, "本单：已开票未收款额", "", "FAmount30");
+            setTvChangeListener(tv_yszq, "应收账期天数", "search", "FInteger1");
+            setTvChangeListener(tv_skwl, "收款往来", "search", "FName6");
+            setTvChangeListener(tv_ysk, "应收款合计", "", "FAmount28");
+            setTvChangeListener(tv_xxpwl, "销项票往来", "search", "FName7");
+            setTvChangeListener(tv_xxfpl, "销项发票量合计", "", "FDecimal13");
+            setTvChangeListener(tv_xxkphs, "销项开票含税总额合计", "", "FAmount19");
         }
     }
 
-    private void setTvChangeListener(final TextView tv, final String title) {
+    private void setTvChangeListener(final TextView tv, final String title, final String writekind, final String which) {
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeViewContent(tv, title);
+                changeViewContent(tv, title, writekind, which);
             }
         });
     }
 
     private void writeDataIn() {
-//        AddOrderActivity activity = (AddOrderActivity) getActivity();
-//        OrderDataInfo orderInfo = activity.getOrderInfo();
-        tv_orid.setText(mOrderDataInfo.getFbillNo());
-        tv_zzjg.setText(mOrderDataInfo.getOrga());
-        tv_nr1.setText(mOrderDataInfo.getContent());
+        tv_orid.setText(mOrderDataInfo.getHeadData().get("FBillNo"));
+        tv_zzjg.setText(mOrderDataInfo.getHeadData().get("FName1"));
+        tv_nr1.setText(mOrderDataInfo.getHeadData().get("FName5"));
         //        tv_hsje.setText(orderInfo.getMoneyTax());
         //        tv_fkze.setText(orderInfo.get);
-        tv_ljqjx.setText(mOrderDataInfo.getOweInvTotal());
-        tv_bdqjx.setText(mOrderDataInfo.getThisOweInv());
-        tv_yfzq.setText(mOrderDataInfo.getPayDate());
-        tv_fkwl.setText(mOrderDataInfo.getPayContact());
-        tv_fkl.setText(mOrderDataInfo.getPayAmount());
-        tv_fkcb.setText(mOrderDataInfo.getPaynoTax());
-        tv_fkhs.setText(mOrderDataInfo.getPaywithTax());
-        tv_jxp.setText(mOrderDataInfo.getIncomeCont());
-        tv_jxfpl.setText(mOrderDataInfo.getIncomeInv());
-        tv_jxfphs.setText(mOrderDataInfo.getInvwithTax());
-        tv_yfk.setText(mOrderDataInfo.getSpayTotal());
-        tv_rckwl.setText(mOrderDataInfo.getInnerIncome());
-        tv_rkcb.setText(mOrderDataInfo.getInnnerCost());
-        tv_ckcb.setText(mOrderDataInfo.getOutCost());
+        tv_ljqjx.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount36")));
+        tv_bdqjx.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount29")));
+        tv_yfzq.setText(mOrderDataInfo.getHeadData().get("FInteger"));
+        tv_fkwl.setText(mOrderDataInfo.getHeadData().get("fname2"));
+        tv_fkl.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FDecimal8")));
+        tv_fkcb.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount9")));
+        tv_fkhs.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount17")));
+        tv_jxp.setText(mOrderDataInfo.getHeadData().get("FName3"));
+        tv_jxfpl.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FDecimal12")));
+        tv_jxfphs.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount16")));
+        tv_yfk.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount27")));
+        tv_rckwl.setText(mOrderDataInfo.getHeadData().get("FName4"));
+        tv_rkcb.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount12")));
+        tv_ckcb.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount13")));
         //        tv_bdkccb.setText(orderInfo.get);
-        tv_ljykp.setText(mOrderDataInfo.getTotalUnrece());
-        tv_bdykp.setText(mOrderDataInfo.getThisUnrece());
-        tv_yszq.setText(mOrderDataInfo.getShRecceData());
-        tv_skwl.setText(mOrderDataInfo.getRecIncome());
-        tv_ysk.setText(mOrderDataInfo.getShRecTotal());
-        tv_xxpwl.setText(mOrderDataInfo.getOutTicIncome());
-        tv_xxfpl.setText(mOrderDataInfo.getOutTickTotal());
-        tv_xxkphs.setText(mOrderDataInfo.getOutTickWTax());
+        tv_ljykp.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount37")));
+        tv_bdykp.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount30")));
+        tv_yszq.setText(mOrderDataInfo.getHeadData().get("FInteger1"));
+        tv_skwl.setText(mOrderDataInfo.getHeadData().get("FName6"));
+        tv_ysk.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount28")));
+        tv_xxpwl.setText(mOrderDataInfo.getHeadData().get("FName7"));
+        tv_xxfpl.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FDecimal13")));
+        tv_xxkphs.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount19")));
+    }
+
+    public String getTowPoint(String numString) {
+        double price = Double.parseDouble(numString);
+        DecimalFormat df = new DecimalFormat("0.00");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        String format = df.format(price);
+        return format;
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_submit:
-                //TODO:提交
+                //提交
                 sendInfo();
                 break;
             default:
@@ -203,7 +227,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
         submitOrder.execute();
     }
 
-    private void changeViewContent(final TextView tvcontent, final String title) {
+    private void changeViewContent(final TextView tvcontent, final String title, final String writekind, final String whichkey) {
         //弹出dailog展示修改内容
         final EditText et = new EditText(getContext());
         //写入数据
@@ -215,32 +239,172 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //修改改变内容的textview
                         String content = String.valueOf(et.getText()).trim();
-                        if (content.equals("")) {
-                            //为空，弹出选择菜单列表
-                            showMoreWriteInfo(tvcontent, title);
-                        } else {
+                        if (null == writekind || "".equals(writekind)) {
                             tvcontent.setText(content);
+                            mOrderDataInfo.getHeadData().put(whichkey, content);
+                        }
+                        if ("search".equals(writekind)) {
+                            //为空，弹出选择菜单列表
+                            showMoreWriteInfo(tvcontent, title, content, whichkey);
                         }
                     }
                 }).setNegativeButton("取消", null).show();
     }
 
-    private void showMoreWriteInfo(final TextView tvcontent, String title) {
+    private void showMoreWriteInfo(final TextView tvcontent, String title, final String cont, final String whichkey) {//cont查找内容是否为空
         View view = View.inflate(getContext(), R.layout.view_only_list, null);
         ListView lv_showmore = view.findViewById(R.id.lv_showmore);
-        final List<String> mShowData = new ArrayList();
-        mShowData.add("1052");
-        mShowData.add("9527");
-        mShowData.add("89757");
-        final LvShowMoreAdapter showMoreAdapter = new LvShowMoreAdapter(getContext(), mShowData);
+        if (null == mShowData) {
+            mShowData = new ArrayList();
+        } else {
+            mShowData.clear();
+        }
+        showMoreAdapter = new LvShowMoreAdapter(getContext(), mShowData);
         lv_showmore.setAdapter(showMoreAdapter);
+        //TODO:根据确定的内容查找内码
+        String sql = "";
+        if (whichkey.equals("FName")) {//币别
+            if (null == cont || "".equals(cont)) {
+                sql = "select fcurrencyid,FName,FExchangeRate from t_Currency where fcurrencyid>0";
+            } else {
+                sql = "select fcurrencyid,FName,FExchangeRate from t_Currency where fcurrencyid>0 and FName like '%" + cont + "%'";
+            }
+        }
+        if (whichkey.equals("FName1")) {//组织机构
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Item_3001 where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Item_3001 where fitemid>0 and fname like '%" + cont + "%'";
+            }
+        }
+        if (whichkey.equals("fname2")) {//付款往来
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Emp where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Emp where fitemid>0 and fname like '%" + cont + "%'";
+            }
+        }
+        if (whichkey.equals("FName3")) {//进项票往来
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Emp where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Emp where fitemid>0 and fname like '%" + cont + "%'";
+            }
+        }
+        if (whichkey.equals("FName4")) {//入出库往来
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Emp where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Emp where fitemid>0 and fname like '%" + cont + "%'";
+            }
+        }
+        if (whichkey.equals("FName5")) {//内容
+            if (null == cont || "".equals(cont)) {
+                sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0 order by a.fnumber";
+            } else {
+                sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0 and a.fname like '%" + cont + "%' order by a.fnumber";
+            }
+        }
+        if (whichkey.equals("FName6")) {//收款往来
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Emp where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Emp where fitemid>0 and fname like '%" + cont + "%'";
+            }
+        }
+        if (whichkey.equals("FName7")) {//销项票往来
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Emp where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Emp where fitemid>0 and fname like '%" + cont + "%'";
+            }
+        }
+        SearchMoreTask moreTask = new SearchMoreTask(sql);
+        moreTask.execute();
         final AlertDialog dialog = new AlertDialog.Builder(getContext()).setView(view).setTitle(title).show();
         lv_showmore.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                tvcontent.setText(mShowData.get(i));
+                tvcontent.setText(mShowData.get(i).get("fname"));
+                mOrderDataInfo.getHeadData().put(whichkey, mShowData.get(i).get("fitemid"));
                 dialog.dismiss();
             }
         });
+    }
+
+    //查询更多
+    class SearchMoreTask extends AsyncTask<Void, String, String> {
+        private String mSql;
+
+        public SearchMoreTask(String sql) {
+            this.mSql = sql;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog = CustomProgress.show(getContext(), "查找中...", true, null);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            // 命名空间
+            String nameSpace = "http://tempuri.org/";
+            // 调用的方法名称
+            String methodName = "JA_select";
+            // EndPoint
+            String endPoint = Consts.ENDPOINT;
+            // SOAP Action
+            String soapAction = "http://tempuri.org/JA_select";
+            // 指定WebService的命名空间和调用的方法名
+            SoapObject rpc = new SoapObject(nameSpace, methodName);
+            // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
+            rpc.addProperty("FSql", mSql);
+            rpc.addProperty("FTable", "t_user");
+
+            // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+            envelope.bodyOut = rpc;
+            // 设置是否调用的是dotNet开发的WebService
+            envelope.dotNet = true;
+            // 等价于envelope.bodyOut = rpc;
+            envelope.setOutputSoapObject(rpc);
+            HttpTransportSE transport = new HttpTransportSE(endPoint);
+            try {
+                // 调用WebService
+                transport.call(soapAction, envelope);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            // 获取返回的数据
+            SoapObject object = (SoapObject) envelope.bodyIn;
+
+            // 获取返回的结果
+            String result = object.getProperty(0).toString();
+            Document doc = null;
+            try {
+                doc = DocumentHelper.parseText(result); // 将字符串转为XML
+                Element rootElt = doc.getRootElement(); // 获取根节点
+                Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
+                // 遍历head节点
+                while (iter.hasNext()) {
+                    Element recordEle = (Element) iter.next();
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                    map.put("fname", recordEle.elementTextTrim("fname"));
+                    mShowData.add(map);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "0";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            dialog.dismiss();
+            showMoreAdapter.notifyDataSetChanged();
+        }
     }
 }

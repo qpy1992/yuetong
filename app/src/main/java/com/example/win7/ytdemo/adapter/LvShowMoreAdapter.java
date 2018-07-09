@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.example.win7.ytdemo.R;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @创建者 AndyYan
@@ -20,8 +21,8 @@ import java.util.List;
  */
 
 public class LvShowMoreAdapter extends BaseAdapter {
-    private Context      mContext;
-    private List<String> mList;
+    private Context                   mContext;
+    private List<Map<String, String>> mList;
 
     public LvShowMoreAdapter(Context context, List list) {
         this.mContext = context;
@@ -54,7 +55,7 @@ public class LvShowMoreAdapter extends BaseAdapter {
         } else {
             viewholder = (MyViewholder) view.getTag();
         }
-        viewholder.tv_cont.setText(mList.get(i));
+        viewholder.tv_cont.setText(mList.get(i).get("fname"));
         return view;
     }
 
