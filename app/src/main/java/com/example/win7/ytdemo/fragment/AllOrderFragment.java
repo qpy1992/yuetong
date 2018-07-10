@@ -217,11 +217,40 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_submit:
+                //提交前先判断，需提交内码的不能为空
+                Map<String, String> headData = mOrderDataInfo.getHeadData();
+                //判断是否为空
+                isNullStr(headData.get("FNameid"), "币别");
+                isNullStr(headData.get("FName1id"), "组织机构");
+                isNullStr(headData.get("fname2id"), "付款往来");
+                isNullStr(headData.get("FName3id"), "进项票往来");
+                isNullStr(headData.get("FName4id"), "入出库往来");
+                isNullStr(headData.get("FName5id"), "内容");
+                isNullStr(headData.get("FName6id"), "收款往来");
+                isNullStr(headData.get("FName7id"), "销项票往来");
+                List<Map<String, String>> mapListson = mOrderDataInfo.getMapListson();
+                for (int i = 0; i < mapListson.size(); i++) {
+                    Map<String, String> dataMap = mapListson.get(i);
+                    isNullStr(dataMap.get("FName8id"), "第" + (i + 1) + "子表的" + "内容");
+                    isNullStr(dataMap.get("FName9id"), "第" + (i + 1) + "子表的" + "制单人");
+                    isNullStr(dataMap.get("FName10id"), "第" + (i + 1) + "子表的" + "申请部门");
+                    isNullStr(dataMap.get("FName12id"), "第" + (i + 1) + "子表的" + "往来");
+                    isNullStr(dataMap.get("FBankAccountid"), "第" + (i + 1) + "子表的" + "往来-银行及帐号");
+                    isNullStr(dataMap.get("FName15id"), "第" + (i + 1) + "子表的" + "计量");
+                    isNullStr(dataMap.get("FName17id"), "第" + (i + 1) + "子表的" + "发票税务科目");
+                }
                 //提交
                 sendInfo();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void isNullStr(String str, String name) {
+        if (null == str || "".equals(str)) {
+            ToastUtils.showToast(getContext(), name + "不能为空");
+            return;
         }
     }
 
