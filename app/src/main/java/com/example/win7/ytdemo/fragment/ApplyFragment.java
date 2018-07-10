@@ -227,7 +227,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         setChangeListener(tv_fpswkm, "发票税务科目", "search", "FName17", item, sBodyMap);
     }
 
-    private void setChangeListener(final TextView tv, final String title, final String writeKind, final String whichkey, final int item, final Map sBodyMap) {
+    private void setChangeListener(final TextView tv, final String title, final String writeKind, final String whichkey, final int item, final Map<String,String> sBodyMap) {
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -265,7 +265,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
 
     private LvShowMoreAdapter showMoreAdapter;
 
-    private void showMoreWriteInfo(final TextView tvcontent, String title, final String cont, final String whichkey, final int item, final Map bodyMap) {//cont查找内容是否为空
+    private void showMoreWriteInfo(final TextView tvcontent, String title, final String cont, final String whichkey, final int item, final Map<String, String> bodyMap) {//cont查找内容是否为空
         View view = View.inflate(getContext(), R.layout.view_only_list, null);
         ListView lv_showmore = view.findViewById(R.id.lv_showmore);
         //新建的，存放更多，查询的内码
@@ -307,7 +307,11 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("FBankAccount")) {//往来-银行及帐号
-
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Item_3007 where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Item_3007 where fitemid>0 and fname like '%" + cont + "%'";
+            }
         }
         if (whichkey.equals("FName15")) {//计量
             if (null == cont || "".equals(cont)) {
@@ -317,7 +321,11 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("FName17")) {//发票税务科目
-
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Item  where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Item  where fitemid>0 and fname like '%" + cont + "%'";
+            }
         }
         dialog = CustomProgress.show(getContext(), "查找中...", true, null);
         SearchMoreTask moreTask = new SearchMoreTask(sql);
@@ -330,10 +338,12 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                 //填入子表
                 if (item >= 0) {
                     Map<String, String> bodyMap = orderInfo.getMapListson().get(item);
-                    bodyMap.put(whichkey, mShowData.get(i).get("fitemid"));
+                    bodyMap.put(whichkey, mShowData.get(i).get("fname"));
+                    bodyMap.put(whichkey + "id", mShowData.get(i).get("fitemid"));
                     mData.get(item).put(whichkey, mShowData.get(i).get("fname"));
                 } else {
-                    bodyMap.put(whichkey, mShowData.get(i));
+                    bodyMap.put(whichkey, mShowData.get(i).get("fname"));
+                    bodyMap.put(whichkey + "id", mShowData.get(i).get("fitemid"));
                 }
                 dialog.dismiss();
             }

@@ -134,8 +134,8 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             setTvChangeListener(tv_rate, "汇率", "", "FAmount4");
             setTvChangeListener(tv_zzjg, "组织机构", "search", "FName1");
             setTvChangeListener(tv_nr1, "内容", "search", "FName5");
-            setTvChangeListener(tv_hsje, "含税金额合计", "search", "");
-            setTvChangeListener(tv_fkze, "付款总额合计", "search", "");
+            setTvChangeListener(tv_hsje, "含税金额合计", "", "");
+            setTvChangeListener(tv_fkze, "付款总额合计", "", "");
             setTvChangeListener(tv_ljqjx, "累计：欠进项发票额", "", "FAmount36");
             setTvChangeListener(tv_bdqjx, "本单：欠进项发票额", "", "FAmount29");
             setTvChangeListener(tv_yfzq, "应付账期天数", "", "FInteger");
@@ -203,6 +203,9 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
     }
 
     public String getTowPoint(String numString) {
+        if (null == numString || "".equals(numString)) {
+            return "0.00";
+        }
         double price = Double.parseDouble(numString);
         DecimalFormat df = new DecimalFormat("0.00");
         df.setRoundingMode(RoundingMode.HALF_UP);
@@ -326,7 +329,8 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 tvcontent.setText(mShowData.get(i).get("fname"));
-                mOrderDataInfo.getHeadData().put(whichkey, mShowData.get(i).get("fitemid"));
+                mOrderDataInfo.getHeadData().put(whichkey, mShowData.get(i).get("fname"));
+                mOrderDataInfo.getHeadData().put(whichkey + "id", mShowData.get(i).get("fitemid"));
                 dialog.dismiss();
             }
         });
