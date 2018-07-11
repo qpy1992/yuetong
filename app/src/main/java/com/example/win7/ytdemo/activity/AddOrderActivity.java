@@ -214,8 +214,8 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
             String sql = "select a.FBillNo,c.FName,c.fcurrencyid FNameid,a.FAmount4,d.FName,d.fitemid FName1id,FAmount36,FAmount29," +
                     " a.FInteger,e.fname,e.fitemid fname2id,a.FDecimal8,a.FAmount9,FAmount17,f.FName,f.fitemid FName3id,FDecimal12,FAmount16,FAmount27,g.FName,g.fitemid FName4id,h.FName,h.fitemid FName5id," +
                     " FAmount12,FAmount13,FAmount37,FAmount30,FInteger1,i.FName,i.fitemid FName6id,FAmount28,j.FName,j.fitemid FName7id,FDecimal13,FAmount19," +
-                    " k.FName,k.fitemid FName8id,b.FNOTE2,FTime2,l.FName,l.fitemid FName9id,m.FName,m.fitemid FName10id,n.FName,o.FName,o.fitemid FName12,o.FBankAccount,p.FName,q.FName,p.F_109," +
-                    " r.FName,r.fitemid FName15id,b.FDecimal,b.FDecimal1,b.FAmount2,FAmount,b.FAmount3,b.FAmount10,s.FName,b.FDecimal," +
+                    " k.FName,k.fitemid FName8id,b.FNOTE2,FTime2,l.FName,l.fitemid FName9id,m.FName,m.fitemid FName10id,n.FName,n.fitemid FName11id,o.FName,o.fitemid FName12id,o.FBankAccount,p.FName,p.fitemid FName13id,q.FName,q.fitemid FName14id,p.F_109," +
+                    " r.FName,r.fitemid FName15id,b.FDecimal,b.FDecimal1,b.FAmount2,FAmount,b.FAmount3,b.FAmount10,s.FName,s.fitemid FName16id,b.FDecimal," +
                     " b.FTime3,b.FText2,t.FName,t.fitemid FName17id,u.FName,b.FText,b.FText1 " +
                     " from t_BOS200000011 a inner join t_BOS200000011Entry2 b on a.FID=b.FID" +
                     " left join t_Currency c on c.FCurrencyID=a.FBase3 left join t_Item_3001 d on d.FItemID=a.FBase11 left join t_Emp e on e.FItemID=a.FBase24 left join" +
@@ -250,7 +250,6 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
             String result = object.getProperty(0).toString();
             Document doc = null;
             //子订单存放列表maplist
-            //            List<Map<String, String>> mapList = new ArrayList<>();
             try {
                 doc = DocumentHelper.parseText(result); // 将字符串转为XML
                 Element rootElt = doc.getRootElement(); // 获取根节点
@@ -342,12 +341,15 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     String applyPart = recordEle.elementTextTrim("FName10");//申请部门
                     String applyPartid = recordEle.elementTextTrim("FName10id");//申请部门id
                     String responsPart = recordEle.elementTextTrim("FName11");//责任部门/考核
+                    String responsPartid = recordEle.elementTextTrim("FName11id");//责任部门/考核
                     String bodyIncome = recordEle.elementTextTrim("FName12");//表体往来
                     String bodyIncomeid = recordEle.elementTextTrim("FName12id");//表体往来id
                     String bankIncome = recordEle.elementTextTrim("FBankAccount");//往来-银行及帐号
-                    String bankIncomeid = recordEle.elementTextTrim("FName12id");//往来-银行及帐号id
+                    // String bankIncomeid = recordEle.elementTextTrim("FName12id");//往来-银行及帐号id
                     String planBudget = recordEle.elementTextTrim("FName13");//计划预算进度
+                    String planBudgetid = recordEle.elementTextTrim("FName13id");//计划预算进度
                     String budSub = recordEle.elementTextTrim("FName14");//预算科目
+                    String budSubid = recordEle.elementTextTrim("FName14id");//预算科目
                     String budBalance = recordEle.elementTextTrim("F_109");//预算余额
                     String unit = recordEle.elementTextTrim("FName15");//计量
                     String unitid = recordEle.elementTextTrim("FName15id");//计量id
@@ -358,12 +360,13 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     String RMBNoTax = recordEle.elementTextTrim("FAmount3");//人民币不含税额
                     String taxRate = recordEle.elementTextTrim("FAmount10");//税率%
                     String unitOther = recordEle.elementTextTrim("FName16");//辅助
+                    String unitOtherid = recordEle.elementTextTrim("FName16id");//辅助
                     String unitNum = recordEle.elementTextTrim("FDecimal2");//辅量
                     String ticDataRespon = recordEle.elementTextTrim("FTime3");//发票日-权责制
                     String remarkTicNO = recordEle.elementTextTrim("FText2");//备注-发票号码/税票说明
                     String ticTaxSub = recordEle.elementTextTrim("FName17");//发票税务科目
                     String ticTaxSubid = recordEle.elementTextTrim("FName17id");//发票税务科目
-                    String score = recordEle.elementTextTrim("FName18");//评分
+                    String score = recordEle.elementTextTrim("FName19");//评分
                     String sendMsg = recordEle.elementTextTrim("FText");//发送消息
                     String getMsg = recordEle.elementTextTrim("FText1");//回馈消息
 
@@ -377,21 +380,14 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     dataMap.put("FName10", applyPart);
                     dataMap.put("FName10id", applyPartid);
                     dataMap.put("FName11", responsPart);
-                    if (null == bodyIncome) {
-                        bodyIncome = "";
-                    }
-                    dataMap.put("FName12", bodyIncome);
-                    if (null == bodyIncomeid) {
-                        bodyIncomeid = "";
-                    }
-                    dataMap.put("FName12id", bodyIncomeid);
-                    if (null == bankIncome) {
-                        bankIncome = "";
-                    }
-                    dataMap.put("FBankAccount", bankIncome);
-                    dataMap.put("FBankAccountid", bankIncomeid);
+                    dataMap.put("FName11id", responsPartid);
+                    dataMap.put("FName12", null == bodyIncome ? "" : bodyIncome);
+                    dataMap.put("FName12id", null == bodyIncomeid ? "" : bodyIncomeid);
+                    dataMap.put("FBankAccount", null == bankIncome ? "" : bankIncome);
                     dataMap.put("FName13", planBudget);
+                    dataMap.put("FName13id", planBudgetid);
                     dataMap.put("FName14", budSub);
+                    dataMap.put("FName14id", budSubid);
                     dataMap.put("F_109", budBalance);
                     dataMap.put("FName15", unit);
                     dataMap.put("FName15id", unitid);
@@ -402,6 +398,7 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     dataMap.put("FAmount3", RMBNoTax);
                     dataMap.put("FAmount10", taxRate);
                     dataMap.put("FName16", unitOther);
+                    dataMap.put("FName16id", unitOtherid);
                     dataMap.put("FDecimal2", unitNum);
                     dataMap.put("FTime3", ticDataRespon);
                     dataMap.put("FText2", remarkTicNO);
@@ -410,10 +407,8 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
                     dataMap.put("FName18", score);
                     dataMap.put("FText", sendMsg);
                     dataMap.put("FText1", getMsg);
-                    //                    mapList.add(dataMap);
                     orderInfo.getMapListson().add(dataMap);
                 }
-                //                orderInfo.setMapListson(mapList);
             } catch (Exception e) {
                 e.printStackTrace();
                 ToastUtils.showToast(AddOrderActivity.this, "查找详情出错");

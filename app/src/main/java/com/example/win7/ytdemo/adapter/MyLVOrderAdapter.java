@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +86,7 @@ public class MyLVOrderAdapter extends BaseAdapter {
             viewHolder = (MyViewHolder) view.getTag();
         }
         //填充数据
-//        OrderDataInfo.ListsonBean bean = mList.get(i);
+        //        OrderDataInfo.ListsonBean bean = mList.get(i);
         Map<String, String> dataMap = mList.get(i);
 
         viewHolder.tv_con.setText(dataMap.get("FName8"));
@@ -98,14 +100,14 @@ public class MyLVOrderAdapter extends BaseAdapter {
         viewHolder.tv_yskm.setText(dataMap.get("FName14"));
         viewHolder.tv_ysye.setText(dataMap.get("F_109"));
         viewHolder.tv_jl.setText(dataMap.get("FName15"));
-        viewHolder.tv_sl.setText(dataMap.get("FDecimal"));
-        viewHolder.tv_djhs.setText(dataMap.get("FDecimal1"));
-        viewHolder.tv_jehs.setText(dataMap.get("FAmount2"));
-        viewHolder.tv_se.setText(dataMap.get("FAmount"));
-        viewHolder.tv_rmbbhse.setText(dataMap.get("FAmount3"));
-        viewHolder.tv_slpercent.setText(dataMap.get("FAmount10"));
+        viewHolder.tv_sl.setText(getTowPoint(dataMap.get("FDecimal")));//..
+        viewHolder.tv_djhs.setText(getTowPoint(dataMap.get("FDecimal1")));//..
+        viewHolder.tv_jehs.setText(getTowPoint(dataMap.get("FAmount2")));//..
+        viewHolder.tv_se.setText(getTowPoint(dataMap.get("FAmount")));//..
+        viewHolder.tv_rmbbhse.setText(getTowPoint(dataMap.get("FAmount3")));//..
+        viewHolder.tv_slpercent.setText(getTowPoint(dataMap.get("FAmount10")));//..
         viewHolder.tv_fz.setText(dataMap.get("FName16"));
-        viewHolder.tv_fl.setText(dataMap.get("FDecimal2"));
+        viewHolder.tv_fl.setText(getTowPoint(dataMap.get("FDecimal2")));//..
         viewHolder.tv_bz.setText(dataMap.get("FText2"));
         viewHolder.tv_fpswkm.setText(dataMap.get("FName17"));
         //隐藏展示
@@ -138,5 +140,16 @@ public class MyLVOrderAdapter extends BaseAdapter {
         private View view_line;
         TextView tv_con, tv_date, tv_zdr, tv_sqbm, tv_zrbm, tv_wl, tv_wlyhzh, tv_jhys, tv_yskm, tv_ysye, tv_jl, tv_sl, tv_djhs, tv_jehs, tv_se, tv_rmbbhse, tv_slpercent, tv_fz, tv_fl, tv_bz, tv_fpswkm;
         LinearLayout lin_sorh, lin_open;
+    }
+
+    private String getTowPoint(String numString) {
+        if (null == numString || "".equals(numString)) {
+            return "0.00";
+        }
+        double price = Double.parseDouble(numString);
+        DecimalFormat df = new DecimalFormat("0.00");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        String format = df.format(price);
+        return format;
     }
 }

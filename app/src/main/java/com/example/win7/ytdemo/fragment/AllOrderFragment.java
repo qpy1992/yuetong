@@ -129,7 +129,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
 
     private void setListener() {
         if (mEditable) {
-            setTvChangeListener(tv_orid, "单据号", "", "FBillNo");
+//            setTvChangeListener(tv_orid, "单据号", "", "FBillNo");
             setTvChangeListener(tv_RMB, "币别", "search", "FName");
             setTvChangeListener(tv_rate, "汇率", "", "FAmount4");
             setTvChangeListener(tv_zzjg, "组织机构", "search", "FName1");
@@ -153,7 +153,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             //            setTvChangeListener(tv_bdkccb, "本单库存成本", "", "");
             setTvChangeListener(tv_ljykp, "累计：已开票未收款额", "", "FAmount37");
             setTvChangeListener(tv_bdykp, "本单：已开票未收款额", "", "FAmount30");
-            setTvChangeListener(tv_yszq, "应收账期天数", "search", "FInteger1");
+            setTvChangeListener(tv_yszq, "应收账期天数", "", "FInteger1");
             setTvChangeListener(tv_skwl, "收款往来", "search", "FName6");
             setTvChangeListener(tv_ysk, "应收款合计", "", "FAmount28");
             setTvChangeListener(tv_xxpwl, "销项票往来", "search", "FName7");
@@ -173,6 +173,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
 
     private void writeDataIn() {
         tv_orid.setText(mOrderDataInfo.getHeadData().get("FBillNo"));
+        tv_RMB.setText(mOrderDataInfo.getHeadData().get("FName"));
         tv_zzjg.setText(mOrderDataInfo.getHeadData().get("FName1"));
         tv_nr1.setText(mOrderDataInfo.getHeadData().get("FName5"));
         //        tv_hsje.setText(orderInfo.getMoneyTax());
@@ -202,7 +203,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
         tv_xxkphs.setText(getTowPoint(mOrderDataInfo.getHeadData().get("FAmount19")));
     }
 
-    public String getTowPoint(String numString) {
+    private String getTowPoint(String numString) {
         if (null == numString || "".equals(numString)) {
             return "0.00";
         }
@@ -213,10 +214,13 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
         return format;
     }
 
+    private boolean canSub = false;
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_submit:
+
                 //提交前先判断，需提交内码的不能为空
                 Map<String, String> headData = mOrderDataInfo.getHeadData();
                 //判断是否为空
@@ -232,15 +236,18 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
                 for (int i = 0; i < mapListson.size(); i++) {
                     Map<String, String> dataMap = mapListson.get(i);
                     isNullStr(dataMap.get("FName8id"), "第" + (i + 1) + "子表的" + "内容");
+                    isNullStr(dataMap.get("FTime2"),"第" + (i + 1) + "子表的" + "日期");
                     isNullStr(dataMap.get("FName9id"), "第" + (i + 1) + "子表的" + "制单人");
                     isNullStr(dataMap.get("FName10id"), "第" + (i + 1) + "子表的" + "申请部门");
                     isNullStr(dataMap.get("FName12id"), "第" + (i + 1) + "子表的" + "往来");
-                    isNullStr(dataMap.get("FBankAccountid"), "第" + (i + 1) + "子表的" + "往来-银行及帐号");
+                    //isNullStr(dataMap.get("FBankAccountid"), "第" + (i + 1) + "子表的" + "往来-银行及帐号");
                     isNullStr(dataMap.get("FName15id"), "第" + (i + 1) + "子表的" + "计量");
                     isNullStr(dataMap.get("FName17id"), "第" + (i + 1) + "子表的" + "发票税务科目");
                 }
-                //提交
-                sendInfo();
+                if (canSub) {
+                    //提交
+                    sendInfo();
+                }
                 break;
             default:
                 break;
@@ -250,7 +257,10 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
     private void isNullStr(String str, String name) {
         if (null == str || "".equals(str)) {
             ToastUtils.showToast(getContext(), name + "不能为空");
+            canSub = false;
             return;
+        } else {
+            canSub = true;
         }
     }
 
@@ -283,6 +293,8 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
                 }).setNegativeButton("取消", null).show();
     }
 
+    private boolean isSearchBibie = false;
+
     private void showMoreWriteInfo(final TextView tvcontent, String title, final String cont, final String whichkey) {//cont查找内容是否为空
         View view = View.inflate(getContext(), R.layout.view_only_list, null);
         ListView lv_showmore = view.findViewById(R.id.lv_showmore);
@@ -296,6 +308,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
         //TODO:根据确定的内容查找内码
         String sql = "";
         if (whichkey.equals("FName")) {//币别
+            isSearchBibie = true;
             if (null == cont || "".equals(cont)) {
                 sql = "select fcurrencyid,FName,FExchangeRate from t_Currency where fcurrencyid>0";
             } else {
@@ -303,6 +316,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("FName1")) {//组织机构
+            isSearchBibie = false;
             if (null == cont || "".equals(cont)) {
                 sql = "select fitemid,fname from t_Item_3001 where fitemid>0";
             } else {
@@ -310,6 +324,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("fname2")) {//付款往来
+            isSearchBibie = false;
             if (null == cont || "".equals(cont)) {
                 sql = "select fitemid,fname from t_Emp where fitemid>0";
             } else {
@@ -317,6 +332,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("FName3")) {//进项票往来
+            isSearchBibie = false;
             if (null == cont || "".equals(cont)) {
                 sql = "select fitemid,fname from t_Emp where fitemid>0";
             } else {
@@ -324,6 +340,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("FName4")) {//入出库往来
+            isSearchBibie = false;
             if (null == cont || "".equals(cont)) {
                 sql = "select fitemid,fname from t_Emp where fitemid>0";
             } else {
@@ -331,6 +348,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("FName5")) {//内容
+            isSearchBibie = false;
             if (null == cont || "".equals(cont)) {
                 sql = "select a.fitemid,a.fname,a.ftaxrate,a.fseccoefficient,a.funitid,b.fname sup,c.fname jiliang from t_icitem a left join t_measureunit b on b.fmeasureunitid=a.fsecunitid left join t_measureunit c on c.fitemid=a.funitid where a.fitemid>0 order by a.fnumber";
             } else {
@@ -338,6 +356,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("FName6")) {//收款往来
+            isSearchBibie = false;
             if (null == cont || "".equals(cont)) {
                 sql = "select fitemid,fname from t_Emp where fitemid>0";
             } else {
@@ -345,6 +364,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             }
         }
         if (whichkey.equals("FName7")) {//销项票往来
+            isSearchBibie = false;
             if (null == cont || "".equals(cont)) {
                 sql = "select fitemid,fname from t_Emp where fitemid>0";
             } else {
@@ -359,7 +379,7 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 tvcontent.setText(mShowData.get(i).get("fname"));
                 mOrderDataInfo.getHeadData().put(whichkey, mShowData.get(i).get("fname"));
-                mOrderDataInfo.getHeadData().put(whichkey + "id", mShowData.get(i).get("fitemid"));
+                mOrderDataInfo.getHeadData().put(whichkey + "id", mShowData.get(i).get("itemid"));
                 dialog.dismiss();
             }
         });
@@ -423,8 +443,13 @@ public class AllOrderFragment extends Fragment implements View.OnClickListener {
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
                     HashMap<String, String> map = new HashMap<>();
-                    map.put("itemid", recordEle.elementTextTrim("fitemid"));
-                    map.put("fname", recordEle.elementTextTrim("fname"));
+                    if (isSearchBibie) {
+                        map.put("itemid", recordEle.elementTextTrim("fcurrencyid"));
+                        map.put("fname", recordEle.elementTextTrim("FName"));
+                    } else {
+                        map.put("itemid", recordEle.elementTextTrim("fitemid"));
+                        map.put("fname", recordEle.elementTextTrim("fname"));
+                    }
                     mShowData.add(map);
                 }
             } catch (Exception e) {

@@ -73,7 +73,11 @@ public class SubmitOrder extends AsyncTask<Void, String, String> {
             //币别
             cust.addElement("FBase3").setText(getSubKeyStr(mOrderDataInfo.getHeadData().get("FNameid")));//....
             //汇率
-            cust.addElement("FAmount4").setText(getSubKeyStr(mOrderDataInfo.getHeadData().get("FAmount4")));
+            String fAmount4 = getSubKeyStr(mOrderDataInfo.getHeadData().get("FAmount4"));
+            if (null == fAmount4 || "".equals(fAmount4)) {
+                fAmount4 = "1";
+            }
+            cust.addElement("FAmount4").setText(fAmount4);
             //组织机构
             cust.addElement("FBase11").setText(getSubKeyStr(mOrderDataInfo.getHeadData().get("FName1id")));//...
             //累计：欠进项发票额！！
@@ -130,27 +134,25 @@ public class SubmitOrder extends AsyncTask<Void, String, String> {
                 //内容
                 cust2.addElement("FBase1").setText(getSubKeyStr(dataMap.get("FName8id")));//...
                 //摘要
-                cust2.addElement("FNOTE2").setText(getSubKeyStr(dataMap.get("FNOTE2")));
+                String fnote2 = getSubKeyStr(dataMap.get("FNOTE2"));
+                if ("".equals(fnote2)) {
+                    fnote2 = "1";
+                }
+                cust2.addElement("FNOTE2").setText(fnote2);
                 //日期
                 cust2.addElement("FTime2").setText(getSubKeyStr(dataMap.get("FTime2")));
                 //制单人
                 cust2.addElement("FBase15").setText(getSubKeyStr(dataMap.get("FName9id")));//...
                 //申请部门
                 cust2.addElement("FBase18").setText(getSubKeyStr(dataMap.get("FName10id")));//...
-                //评分
-                cust2.addElement("FBase14").setText("10");
+                //责任部门/考核
+                cust2.addElement("FBase14").setText(getSubKeyStr(dataMap.get("FName11id")));//..
                 //表体往来
                 cust2.addElement("FBase10").setText(getSubKeyStr(dataMap.get("FName12id")));//...
-                //往来-银行及帐号
-                cust2.addElement("FBase").setText(getSubKeyStr(dataMap.get("FBankAccountid")));//...
-                //
-                cust2.addElement("FBase21").setText("0");
                 //计划预算进度
-                cust2.addElement("FName13").setText(getSubKeyStr(dataMap.get("FName13")));
+                cust2.addElement("FBase").setText(getSubKeyStr(dataMap.get("FName13id")));//...
                 //预算科目
-                cust2.addElement("FName14").setText(getSubKeyStr(dataMap.get("FName14")));
-                //预算余额
-                cust2.addElement("F_109").setText(getSubKeyStr(dataMap.get("F_109")));
+                cust2.addElement("FBase21").setText(getSubKeyStr(dataMap.get("FName14id")));//...
                 //计量
                 cust2.addElement("FBase2").setText(getSubKeyStr(dataMap.get("FName15id")));//...
                 //数量
@@ -165,10 +167,6 @@ public class SubmitOrder extends AsyncTask<Void, String, String> {
                 cust2.addElement("FAmount3").setText(getSubKeyStr(dataMap.get("FAmount3")));
                 //税率%
                 cust2.addElement("FAmount10").setText(getSubKeyStr(dataMap.get("FAmount10")));
-                //辅助
-                cust2.addElement("FName16").setText(getSubKeyStr(dataMap.get("FName16")));
-                //辅量
-                cust2.addElement("FDecimal2").setText(getSubKeyStr(dataMap.get("FDecimal2")));
                 //发票日-权责制
                 cust2.addElement("FTime3").setText(getSubKeyStr(dataMap.get("FTime3")));
                 //备注-发票号码/税票说明
@@ -176,9 +174,20 @@ public class SubmitOrder extends AsyncTask<Void, String, String> {
                 //发票税务科目
                 cust2.addElement("FBase17").setText(getSubKeyStr(dataMap.get("FName17id")));//...
                 //发送消息
-                cust2.addElement("FText").setText("");
+                cust2.addElement("FText").setText("1");
                 //回馈消息
-                cust2.addElement("FText1").setText("");
+                cust2.addElement("FText1").setText("1");
+
+                //                //计划预算进度
+                //                cust2.addElement("FName13").setText(getSubKeyStr(dataMap.get("FName13")));
+                //                        //预算科目
+                //                cust2.addElement("FName14").setText(getSubKeyStr(dataMap.get("FName14")));
+                //                //预算余额
+                //                cust2.addElement("F_109").setText(getSubKeyStr(dataMap.get("F_109")));
+                //                //辅助
+                //                cust2.addElement("FName16").setText(getSubKeyStr(dataMap.get("FName16")));
+                //                //辅量
+                //                cust2.addElement("FDecimal2").setText(getSubKeyStr(dataMap.get("FDecimal2")));
             }
             OutputFormat outputFormat = OutputFormat.createPrettyPrint();
             outputFormat.setSuppressDeclaration(false);
@@ -215,12 +224,11 @@ public class SubmitOrder extends AsyncTask<Void, String, String> {
             // 获取返回的数据
             String result = "";
             if (envelope.bodyIn instanceof SoapFault) {
-//                Log.i("服务器返回", (SoapObject) envelope.getResponse() + "");
+                //                Log.i("服务器返回", (SoapObject) envelope.getResponse() + "");
             } else {
                 SoapObject object = (SoapObject) envelope.bodyIn;
                 // 获取返回的结果
                 String s = object.toString();
-//                Log.i("返回结果", object.getProperty(0).toString() + "=========================");
                 result = s;
             }
             return result;
@@ -242,6 +250,7 @@ public class SubmitOrder extends AsyncTask<Void, String, String> {
             Toast.makeText(mContext, "提交失败", Toast.LENGTH_SHORT).show();
         }
     }
+
     private String getSubKeyStr(String cont) {
         if (null == cont) {
             cont = "";

@@ -160,6 +160,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         final TextView tv_slpercent = view.findViewById(R.id.tv_slpercent);//税率%
         final TextView tv_fz = view.findViewById(R.id.tv_fz);//辅助
         final TextView tv_fl = view.findViewById(R.id.tv_fl);//辅量
+        final TextView tv_fpr = view.findViewById(R.id.tv_fpr);//发票日-权责制
         final TextView tv_bz = view.findViewById(R.id.tv_bz);//备注
         final TextView tv_fpswkm = view.findViewById(R.id.tv_fpswkm);//发票税务科目
 
@@ -186,6 +187,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
             tv_slpercent.setText(sBodyMap.get("FAmount10"));
             tv_fz.setText(sBodyMap.get("FName16"));
             tv_fl.setText(sBodyMap.get("FDecimal2"));
+            tv_fpr.setText(sBodyMap.get("FTime3"));
             tv_bz.setText(sBodyMap.get("FText2"));
             tv_fpswkm.setText(sBodyMap.get("FName17"));
         } else {
@@ -208,26 +210,27 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         setChangeListener(tv_date, "日期", "", "FTime2", item, sBodyMap);
         setChangeListener(tv_zdr, "制单人", "search", "FName9", item, sBodyMap);
         setChangeListener(tv_sqbm, "申请部门", "search", "FName10", item, sBodyMap);
-        setChangeListener(tv_zrbm, "责任部门", "", "FName11", item, sBodyMap);
+        setChangeListener(tv_zrbm, "责任部门", "search", "FName11", item, sBodyMap);
         setChangeListener(tv_wl, "往来", "search", "FName12", item, sBodyMap);
-        setChangeListener(tv_wlyhzh, "往来银行及账号", "search", "FBankAccount", item, sBodyMap);
-        setChangeListener(tv_jhys, "计划预算进度", "", "FName13", item, sBodyMap);
-        setChangeListener(tv_yskm, "预算科目", "", "FName14", item, sBodyMap);
+        setChangeListener(tv_wlyhzh, "往来银行及账号", "", "FBankAccount", item, sBodyMap);
+        setChangeListener(tv_jhys, "计划预算进度", "search", "FName13", item, sBodyMap);
+        setChangeListener(tv_yskm, "预算科目", "search", "FName14", item, sBodyMap);
         setChangeListener(tv_ysye, "预算余额", "", "F_109", item, sBodyMap);
         setChangeListener(tv_jl, "计量", "search", "FName15", item, sBodyMap);
         setChangeListener(tv_sl, "数量", "", "FDecimal", item, sBodyMap);
         setChangeListener(tv_djhs, "单价含税", "", "FDecimal1", item, sBodyMap);
         setChangeListener(tv_jehs, "金额含税", "", "FAmount2", item, sBodyMap);
         setChangeListener(tv_se, "税额", "", "FAmount", item, sBodyMap);
-        setChangeListener(tv_rmbbhse, "人民币不含税额", "FAmount3", "", item, sBodyMap);
+        setChangeListener(tv_rmbbhse, "人民币不含税额", "", "FAmount3", item, sBodyMap);
         setChangeListener(tv_slpercent, "税率%", "", "FAmount10", item, sBodyMap);
         setChangeListener(tv_fz, "辅助", "", "FName16", item, sBodyMap);
         setChangeListener(tv_fl, "辅量", "", "FDecimal2", item, sBodyMap);
+        setChangeListener(tv_fpr, "发票日-权责制", "", "FTime3", item, sBodyMap);
         setChangeListener(tv_bz, "备注", "", "FText2", item, sBodyMap);
         setChangeListener(tv_fpswkm, "发票税务科目", "search", "FName17", item, sBodyMap);
     }
 
-    private void setChangeListener(final TextView tv, final String title, final String writeKind, final String whichkey, final int item, final Map<String,String> sBodyMap) {
+    private void setChangeListener(final TextView tv, final String title, final String writeKind, final String whichkey, final int item, final Map<String, String> sBodyMap) {
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -248,9 +251,9 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                                         bodyMap.put(whichkey, et_con);
                                         mData.get(item).put(whichkey, et_con);
                                     } else {
-                                        List<Map<String, String>> mapListson = orderInfo.getMapListson();
+                                        //                                        List<Map<String, String>> mapListson = orderInfo.getMapListson();
                                         sBodyMap.put(whichkey, et_con);
-                                        mapListson.add(sBodyMap);
+                                        //                                        mapListson.add(sBodyMap);
                                     }
                                 }
                                 if ("search".equals(writeKind)) {
@@ -292,7 +295,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                 sql = "select fitemid,fname from t_Emp where fitemid>0 and fname like '%" + cont + "%'";
             }
         }
-        if (whichkey.equals("FName10")) {//申请部门
+        if (whichkey.equals("FName10") || whichkey.equals("FName11")) {//申请部门//责任部门
             if (null == cont || "".equals(cont)) {
                 sql = "select fitemid,fname from t_Department where fitemid>0";
             } else {
@@ -306,11 +309,18 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                 sql = "select fitemid,fname from t_Emp where fitemid>0 and fname like '%" + cont + "%'";
             }
         }
-        if (whichkey.equals("FBankAccount")) {//往来-银行及帐号
+        if (whichkey.equals("FName13")) {//计划预算进度
             if (null == cont || "".equals(cont)) {
-                sql = "select fitemid,fname from t_Item_3007 where fitemid>0";
+                sql = "select fitemid,fname from t_Item_3007  where fitemid>0";
             } else {
-                sql = "select fitemid,fname from t_Item_3007 where fitemid>0 and fname like '%" + cont + "%'";
+                sql = "select fitemid,fname from t_Item_3007  where fitemid>0 and fname like '%" + cont + "%'";
+            }
+        }
+        if (whichkey.equals("FName14")) {//预算科目
+            if (null == cont || "".equals(cont)) {
+                sql = "select fitemid,fname from t_Item  where fitemid>0";
+            } else {
+                sql = "select fitemid,fname from t_Item  where fitemid>0 and fname like '%" + cont + "%'";
             }
         }
         if (whichkey.equals("FName15")) {//计量
@@ -339,11 +349,11 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                 if (item >= 0) {
                     Map<String, String> bodyMap = orderInfo.getMapListson().get(item);
                     bodyMap.put(whichkey, mShowData.get(i).get("fname"));
-                    bodyMap.put(whichkey + "id", mShowData.get(i).get("fitemid"));
+                    bodyMap.put(whichkey + "id", mShowData.get(i).get("itemid"));
                     mData.get(item).put(whichkey, mShowData.get(i).get("fname"));
                 } else {
                     bodyMap.put(whichkey, mShowData.get(i).get("fname"));
-                    bodyMap.put(whichkey + "id", mShowData.get(i).get("fitemid"));
+                    bodyMap.put(whichkey + "id", mShowData.get(i).get("itemid"));
                 }
                 dialog.dismiss();
             }
