@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
-import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
 import com.example.win7.ytdemo.adapter.MyRecAdapter;
 import com.example.win7.ytdemo.adapter.ZiAdapter;
 import com.example.win7.ytdemo.entity.TaskEntry;
@@ -642,8 +641,8 @@ public class AddTaskActivity extends BaseActivity {
         //压缩图片
         File file = new File(imgPath);
         File newFile = new CompressHelper.Builder(this)
-                .setMaxWidth(720)  // 默认最大宽度为720
-                .setMaxHeight(960) // 默认最大高度为960
+                .setMaxWidth(720*2)  // 默认最大宽度为720
+                .setMaxHeight(960*2) // 默认最大高度为960
                 .setQuality(100)    // 默认压缩质量为80
                 .setFileName("sendPic") // 设置你需要修改的文件名
                 .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
@@ -2623,7 +2622,7 @@ public class AddTaskActivity extends BaseActivity {
             super.onPostExecute(s);
         }
     }
-
+    //提交图片
     class Task2 extends AsyncTask<Void, Integer, Integer> {
         private List<Bitmap> mBitmapList;
         private int          n;//n小于0时是新增，大于等于0时是点击编辑
@@ -2662,9 +2661,9 @@ public class AddTaskActivity extends BaseActivity {
                 //图片
                 Document document2 = DocumentHelper.createDocument();
                 Element rootElement2 = document2.addElement("NewDataSet");
-                for (Bitmap e : mBitmapList) {
+                for (Bitmap bit : mBitmapList) {
                     Element cust = rootElement2.addElement("Cust");
-                    cust.addElement("fimage").setText(bitmapToBase64(e));
+                    cust.addElement("fimage").setText(bitmapToBase64(bit));
                 }
                 //
                 OutputFormat outputFormat = OutputFormat.createPrettyPrint();
@@ -2740,7 +2739,7 @@ public class AddTaskActivity extends BaseActivity {
         try {
             if (null != bitmap) {
                 bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bos);//将bitmap放入字节数组流中
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);//将bitmap放入字节数组流中
 
                 bos.flush();//将bos流缓存在内存中的数据全部输出，清空缓存
                 bos.close();

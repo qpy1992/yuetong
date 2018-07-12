@@ -338,7 +338,7 @@ public class YApplication extends Application {
                     .setAutoCancel(true) //当点击后自动删除
                     .setSmallIcon(R.mipmap.message) //必须设置
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                    .setContentTitle("您有一条新的审核待消息")
+                    .setContentTitle("您有一条新的待审核消息")
                     .setContentText(messageContent)
                     .setContentInfo(message.getFrom())
                     .setContentIntent(pendingIntent)

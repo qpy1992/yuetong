@@ -7,17 +7,12 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -66,11 +61,11 @@ public class MeFragment extends Fragment {
     private List<MainMenuEntity> list    = new ArrayList<MainMenuEntity>();
     MainMenuEntity data;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setHasOptionsMenu(true);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,31 +85,38 @@ public class MeFragment extends Fragment {
     }
 
     protected void setTool() {
-        toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
-        toolbar.setTitle(getResources().getString(R.string.me));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//        toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
+//        toolbar.setTitle(getResources().getString(R.string.me));
+//        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+//
+//        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+//
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.action_settings:
+//                        startActivity(new Intent(mContext, SettingsActivity.class));
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+        TextView tv_set = view.findViewById(R.id.tv_set);
+        tv_set.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_settings:
-                        startActivity(new Intent(mContext, SettingsActivity.class));
-                        break;
-                }
-                return true;
+            public void onClick(View view) {
+                startActivity(new Intent(mContext, SettingsActivity.class));
             }
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu, menu);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        inflater.inflate(R.menu.menu, menu);
+//    }
 
     protected void setViews() {
         gv_me = (GridView) view.findViewById(R.id.gv_me);

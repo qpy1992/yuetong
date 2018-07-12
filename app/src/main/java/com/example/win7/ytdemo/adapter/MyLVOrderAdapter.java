@@ -60,7 +60,7 @@ public class MyLVOrderAdapter extends BaseAdapter {
             viewHolder.lin_open = view.findViewById(R.id.lin_open);
             viewHolder.lin_sorh = view.findViewById(R.id.lin_sorh);
             //需填充数据的view
-            viewHolder.tv_con = view.findViewById(R.id.tv_con);//内 容
+//            viewHolder.tv_con = view.findViewById(R.id.tv_con);//内 容
             viewHolder.tv_date = view.findViewById(R.id.tv_date);//日期
             viewHolder.tv_zdr = view.findViewById(R.id.tv_zdr);//制单人
             viewHolder.tv_sqbm = view.findViewById(R.id.tv_sqbm);//申请部门
@@ -89,7 +89,7 @@ public class MyLVOrderAdapter extends BaseAdapter {
         //        OrderDataInfo.ListsonBean bean = mList.get(i);
         Map<String, String> dataMap = mList.get(i);
 
-        viewHolder.tv_con.setText(dataMap.get("FName8"));
+//        viewHolder.tv_con.setText(dataMap.get("FName8"));
         viewHolder.tv_date.setText(dataMap.get("FTime2"));
         viewHolder.tv_zdr.setText(dataMap.get("FName9"));
         viewHolder.tv_sqbm.setText(dataMap.get("FName10"));
@@ -116,7 +116,7 @@ public class MyLVOrderAdapter extends BaseAdapter {
             viewHolder.view_line.setBackgroundColor(mContext.getResources().getColor(R.color.black));
             viewHolder.lin_sorh.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.view_line.setBackgroundColor(mContext.getResources().getColor(R.color.vm_blue_38));
+            viewHolder.view_line.setBackgroundColor(mContext.getResources().getColor(R.color.red));
             viewHolder.lin_sorh.setVisibility(View.GONE);
         }
         viewHolder.lin_open.setOnClickListener(new View.OnClickListener() {

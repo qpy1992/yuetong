@@ -1,11 +1,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.win7.ytdemo.fragment.TaskFragment">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.example.win7.ytdemo.fragment.TaskFragment">
 
-    <include layout="@layout/toolbar"/>
+    <!--<include layout="@layout/toolbar"/>-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:minHeight="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="任务"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/tv_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="新增"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,16 +50,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:hint="@string/select"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:hint="@string/select"/>
 
         <ImageView
             android:id="@+id/iv_search"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:src="@drawable/search_button_style"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:layout_marginRight="10dp"/>
+            android:src="@drawable/search_button_style"/>
     </LinearLayout>
 
     <View
@@ -45,14 +71,14 @@
         android:id="@+id/tv_notask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/notask"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text="@string/notask"/>
 
 
-        <ListView
-            android:id="@+id/lv_task"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </ListView>
+    <ListView
+        android:id="@+id/lv_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ListView>
 
 </LinearLayout>

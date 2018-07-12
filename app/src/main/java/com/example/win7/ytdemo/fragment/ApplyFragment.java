@@ -141,8 +141,10 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
 
     private void showAlogToChange(String title, final int item) {//item=-1是新增,>=0是修改
         View view = View.inflate(getContext(), R.layout.view_add_zibiao, null);
-        final TextView tv_con = view.findViewById(R.id.tv_con);//内容
+        //        final TextView tv_con = view.findViewById(R.id.tv_con);//内容
+        View tv_con = view.findViewById(R.id.view_line);//分隔线
         final TextView tv_date = view.findViewById(R.id.tv_date);//日期
+        final TextView tv_zy = view.findViewById(R.id.tv_zy);//摘要
         final TextView tv_zdr = view.findViewById(R.id.tv_zdr);//制单人
         final TextView tv_sqbm = view.findViewById(R.id.tv_sqbm);//申请部门
         final TextView tv_zrbm = view.findViewById(R.id.tv_zrbm);//责任部门
@@ -163,12 +165,12 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
         final TextView tv_fpr = view.findViewById(R.id.tv_fpr);//发票日-权责制
         final TextView tv_bz = view.findViewById(R.id.tv_bz);//备注
         final TextView tv_fpswkm = view.findViewById(R.id.tv_fpswkm);//发票税务科目
-
+        tv_con.setBackgroundColor(getResources().getColor(R.color.black));
         final Map<String, String> sBodyMap;
         //填充数据
         if (item >= 0) {
             sBodyMap = mData.get(item);
-            tv_con.setText(sBodyMap.get("FName8"));
+            //            tv_con.setText(sBodyMap.get("FName8"));
             tv_date.setText(sBodyMap.get("FTime2"));
             tv_zdr.setText(sBodyMap.get("FName9"));
             tv_sqbm.setText(sBodyMap.get("FName10"));
@@ -206,7 +208,7 @@ public class ApplyFragment extends Fragment implements View.OnClickListener {
                     }
                 }).setNegativeButton("取消", null).show();
 
-        setChangeListener(tv_con, "内容", "search", "FName8", item, sBodyMap);
+        //        setChangeListener(tv_con, "内容", "search", "FName8", item, sBodyMap);
         setChangeListener(tv_date, "日期", "", "FTime2", item, sBodyMap);
         setChangeListener(tv_zdr, "制单人", "search", "FName9", item, sBodyMap);
         setChangeListener(tv_sqbm, "申请部门", "search", "FName10", item, sBodyMap);

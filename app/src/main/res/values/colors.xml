@@ -28,6 +28,7 @@
     <color name="gray_ef">#EFEFEF</color>
     <color name="vm_blue_38">#612384fe</color>
     <color name="deepskyblue">#00BFFF</color>
+    <color name="red">#FF0000</color>
 
     <!--橙色-->
     <color name="vm_orange_100">#ffff5722</color>

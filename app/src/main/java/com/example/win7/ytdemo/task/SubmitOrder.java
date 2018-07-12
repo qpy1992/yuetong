@@ -252,8 +252,8 @@ public class SubmitOrder extends AsyncTask<Void, String, String> {
     }
 
     private String getSubKeyStr(String cont) {
-        if (null == cont) {
-            cont = "";
+        if (null == cont||"".equals(cont)) {
+            cont = "0";
         }
         return cont;
     }

@@ -12,30 +12,30 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="2dp"-->
+            <!--android:orientation="horizontal">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="内容："
-                android:textColor="@color/black"
-                android:textSize="20sp"/>
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:text="内容："-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="20sp"/>-->
 
-            <TextView
-                android:id="@+id/tv_con"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:gravity="right"
-                android:text=""
-                android:textColor="@color/vm_blue_38"
-                android:textSize="16sp"/>
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/tv_con"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:gravity="right"-->
+                <!--android:text=""-->
+                <!--android:textColor="@color/vm_blue_38"-->
+                <!--android:textSize="16sp"/>-->
+        <!--</LinearLayout>-->
 
         <View
             android:layout_width="match_parent"
@@ -93,11 +93,41 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/view_line"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginTop="2dp"
             android:background="@color/bottom_button_text_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="摘要："
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_zy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:gravity="right"
+                android:text=""
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/red"/>
     </LinearLayout>
 
     <LinearLayout
@@ -615,6 +645,7 @@
             android:layout_height="0.5dp"
             android:layout_marginTop="2dp"
             android:background="@color/bottom_button_text_gray"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -644,6 +675,7 @@
             android:layout_height="0.5dp"
             android:layout_marginTop="2dp"
             android:background="@color/bottom_button_text_gray"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

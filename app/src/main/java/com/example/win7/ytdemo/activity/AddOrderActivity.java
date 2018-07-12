@@ -18,6 +18,7 @@ import com.example.win7.ytdemo.adapter.MyPagerAdapter;
 import com.example.win7.ytdemo.entity.OrderDataInfo;
 import com.example.win7.ytdemo.fragment.AllOrderFragment;
 import com.example.win7.ytdemo.fragment.ApplyFragment;
+import com.example.win7.ytdemo.fragment.SubBillFragment;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.ToastUtils;
 import com.example.win7.ytdemo.view.CustomProgress;
@@ -50,7 +51,7 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
     private TextView         tv_title;
     private TabLayout        mTablayout;//导航标签
     private MyFixedViewpager mView_pager;//自我viewpager可实现禁止滑动
-    private String[] mStrings  = {"主表", "子表"};
+    private String[] mStrings  = {"主表", "子表","账表"};
     private boolean  mEditable = false;
     private CustomProgress dialog;
     private String orderID = "";//订单表id
@@ -117,12 +118,15 @@ public class AddOrderActivity extends BaseActivity implements View.OnClickListen
         // 创建一个集合,装填Fragment
         ArrayList<Fragment> fragments = new ArrayList<>();
         // 装填
-        //汇总界面
+        //主表界面
         AllOrderFragment allOrderFragment = new AllOrderFragment();
         fragments.add(allOrderFragment);
-        //申请界面
+        //子表界面
         ApplyFragment applyFragment = new ApplyFragment();
         fragments.add(applyFragment);
+        //账表界面
+        SubBillFragment subBillFragment = new SubBillFragment();
+        fragments.add(subBillFragment);
 
         // 创建ViewPager适配器
         MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());

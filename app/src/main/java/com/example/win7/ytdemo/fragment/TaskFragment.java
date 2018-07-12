@@ -5,17 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,6 +21,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.activity.AddTaskActivity;
@@ -36,6 +32,7 @@ import com.example.win7.ytdemo.entity.Tool;
 import com.example.win7.ytdemo.task.Task1;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.view.CustomProgress;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -43,6 +40,7 @@ import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -68,11 +66,11 @@ public class TaskFragment extends Fragment {
     String group = YApplication.fgroup;
     String outeruser = "外部客户组";
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setHasOptionsMenu(true);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,38 +84,52 @@ public class TaskFragment extends Fragment {
     }
 
     protected void setTool(){
-        toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
-        toolbar.setTitle(R.string.task);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//        toolbar = (Toolbar) view.findViewById(R.id.id_toolbar);
+//        toolbar.setTitle(R.string.task);
+//        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+//
+//        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+//
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                if(group.equals("")){
+//                    Toast.makeText(mContext,"您不在任何用户组内，请先申请权限！",Toast.LENGTH_SHORT).show();
+//                }else {
+//                    switch (item.getItemId()) {
+//                        case R.id.action_add:
+//                            Intent intent = new Intent(mContext, AddTaskActivity.class);
+//                            intent.putExtra("taskno", "a");
+//                            intent.putExtra("interid", "0");
+//                            startActivity(intent);
+//                            break;
+//                    }
+//                }
+//                    return true;
+//            }
+//        });
+        TextView tv_add = view.findViewById(R.id.tv_add);
+        tv_add.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
+            public void onClick(View view) {
                 if(group.equals("")){
                     Toast.makeText(mContext,"您不在任何用户组内，请先申请权限！",Toast.LENGTH_SHORT).show();
                 }else {
-                    switch (item.getItemId()) {
-                        case R.id.action_add:
-                            Intent intent = new Intent(mContext, AddTaskActivity.class);
-                            intent.putExtra("taskno", "a");
-                            intent.putExtra("interid", "0");
-                            startActivity(intent);
-                            break;
-                    }
+                    Intent intent = new Intent(mContext, AddTaskActivity.class);
+                    intent.putExtra("taskno", "a");
+                    intent.putExtra("interid", "0");
+                    startActivity(intent);
                 }
-                    return true;
             }
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu2, menu);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        inflater.inflate(R.menu.menu2, menu);
+//    }
 
     protected void setViews(){
         sp_search = (Spinner)view.findViewById(R.id.sp_task_search);

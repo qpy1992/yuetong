@@ -1,11 +1,9 @@
 package com.example.win7.ytdemo.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 
