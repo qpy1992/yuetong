@@ -23,10 +23,12 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
+import com.example.win7.ytdemo.activity.AddTaskActivity;
 import com.example.win7.ytdemo.util.GlideLoaderUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @创建者 AndyYan
@@ -38,16 +40,14 @@ import java.util.ArrayList;
  */
 
 public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> {
-    private Context   mContext;
-    private ArrayList mData;
-    private int       mKind;//1是添加的图片，2是添加的地址
+    private Context mContext;
+    private List    mData;
     private static final int IMAGE     = 1;//调用系统相册-选择图片
     private static final int SHOT_CODE = 20;//调用系统相册-选择图片
 
-    public MyRecAdapter(Context context, ArrayList data, int kind) {
+    public MyRecAdapter(Context context, List data) {
         this.mContext = context;
         this.mData = data;
-        this.mKind = kind;
     }
 
     @Override
@@ -115,13 +115,16 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                                         MY_PERMISSIONS_REQUEST_CALL_PHONE2);
                             } else {
                                 String mFilePath = Environment.getExternalStorageDirectory().getPath();// 获取SD卡路径
-                                mFilePath = mFilePath + "/" + "temp123.png";// 指定路径
+                                long photoTime = System.currentTimeMillis();
+                                mFilePath = mFilePath + "/temp" + photoTime + ".png";// 指定路径
                                 //权限已经被授予，在这里直接写要执行的相应方法即可
                                 //调用相机
                                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 Uri photoUri = Uri.fromFile(new File(mFilePath)); // 传递路径
                                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);// 更改系统默认存储路径
-                                Activity activity = (Activity) mContext;
+                                AddTaskActivity activity = (AddTaskActivity) mContext;
+                                //把指定路径传递给需保存的字段
+                                activity.setPtRote(mFilePath);
                                 activity.startActivityForResult(intent, SHOT_CODE);
                                 popupWindow.dismiss();
                             }
@@ -130,7 +133,6 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                 }
             });
         } else {
-            final ArrayList markList = new ArrayList<>();
             Object o = mData.get(position);
             if (null != o) {
                 if (o instanceof Bitmap) {
@@ -138,13 +140,14 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                 } else if (o instanceof String) {
                     GlideLoaderUtil.showImageView(mContext, (String) o, holder.img_add_photo);
                 }
-                markList.add(o);
             }
 
-            markList.remove(0);
             holder.img_add_photo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    final ArrayList markList = new ArrayList<>();
+                    markList.addAll(mData);
+                    markList.remove(0);
                     //弹出popupwindow展示照片
                     final PopupWindow popupWindow = new PopupWindow(mContext);
                     popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -159,12 +162,7 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
                     ViewPager viewpager = popupWindow.getContentView().findViewById(R.id.viewpager);
                     final TextView tv_title = popupWindow.getContentView().findViewById(R.id.tv_title);
                     MyViewPagerAdapter viewPagerAdapter;
-
-                    //                    if (mKind == 1) {
                     viewPagerAdapter = new MyViewPagerAdapter(mContext, markList, popupWindow);
-                    //                    } else {
-                    //                        viewPagerAdapter = new MyViewPagerAdapter(mContext, markList, popupWindow);
-                    //                    }
                     viewpager.setAdapter(viewPagerAdapter);
                     viewpager.setCurrentItem(position - 1);
                     tv_title.setText(position + "/" + markList.size());
@@ -206,13 +204,11 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView img_add_photo;
         ImageView img_delet;
-        //        TextView  tv_pro_uping;
 
         public ViewHolder(View itemView) {
             super(itemView);
             img_add_photo = (ImageView) itemView.findViewById(R.id.img_add_photo);
             img_delet = (ImageView) itemView.findViewById(R.id.img_delet);
-            //            tv_pro_uping = (TextView) itemView.findViewById(R.id.tv_pro_uping);
         }
     }
 }

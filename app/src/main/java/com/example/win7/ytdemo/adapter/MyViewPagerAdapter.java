@@ -38,7 +38,6 @@ public class MyViewPagerAdapter extends PagerAdapter {
     @Override
     public int getCount() {
         return mArrayList == null ? 0 : mArrayList.size();
-
     }
 
     @Override
@@ -61,7 +60,7 @@ public class MyViewPagerAdapter extends PagerAdapter {
             if (o instanceof Bitmap) {
                 img_show.setImageBitmap((Bitmap) o);
             } else if (o instanceof String) {
-                GlideLoaderUtil.showImageView(mContext, (String) mArrayList.get(position), img_show);
+                GlideLoaderUtil.showImageView(mContext, (String) o, img_show);
             }
         }
         img_show.enable();

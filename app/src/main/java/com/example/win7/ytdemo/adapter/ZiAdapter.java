@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -326,7 +325,7 @@ public class ZiAdapter extends BaseAdapter {
                 //填充图片
                 List<Bitmap> bitmapList = (ArrayList) mSumBitmapList.get(i);
                 GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
-                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, bitmapList, 1);
+                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, bitmapList);
                 holder.recview_show.setLayoutManager(mLayoutManager);
                 holder.recview_show.setAdapter(showAdapter);
             }
@@ -334,7 +333,7 @@ public class ZiAdapter extends BaseAdapter {
             if (null != mSumBitmapList && mSumBitmapList.size() > 0) {
                 List<String> urlList = (ArrayList) mSumBitmapList.get(i);
                 GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
-                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, urlList, 2);
+                RecViewShowAdapter showAdapter = new RecViewShowAdapter(mContext, urlList);
                 holder.recview_show.setLayoutManager(mLayoutManager);
                 holder.recview_show.setAdapter(showAdapter);
             }

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.util.GlideLoaderUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,13 +30,10 @@ import java.util.List;
 public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.ViewHolder> {
     private Context mContext;
     private List    mData;
-    private int     mType;
-    private ArrayList<Bitmap> mBitmapList = new ArrayList<>();
 
-    public RecViewShowAdapter(Context context, List data, int kind) {
+    public RecViewShowAdapter(Context context, List data) {
         this.mContext = context;
         this.mData = data;
-        this.mType = kind;
     }
 
     @Override
@@ -89,7 +85,7 @@ public class RecViewShowAdapter extends RecyclerView.Adapter<RecViewShowAdapter.
 
                     @Override
                     public void onPageSelected(int position) {
-                        tv_title.setText((position + 1) + "/" + mBitmapList.size());
+                        tv_title.setText((position + 1) + "/" + mData.size());
                     }
 
                     @Override

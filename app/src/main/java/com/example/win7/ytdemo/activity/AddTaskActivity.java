@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -30,13 +29,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.adapter.MyRecAdapter;
@@ -55,7 +56,6 @@ import com.example.win7.ytdemo.view.CustomProgress;
 import com.example.win7.ytdemo.view.MyListView;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
-import com.nanchen.compresshelper.CompressHelper;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -69,6 +69,7 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
@@ -94,7 +95,7 @@ public class AddTaskActivity extends BaseActivity {
             content, contentid, planid, sup, jiliang,
             jiliangid, pfid, zuzhi, quyu, zeren,
             zhidu1, zhidu2, username, depart, company,
-            aid,a,aa,bid,b,bb,cid,c,cc,did,d,dd,eid,e,ee,qr1,qr2,qr3,qr4,qr5;
+            aid, a, aa, bid, b, bb, cid, c, cc, did, d, dd, eid, e, ee, qr1, qr2, qr3, qr4, qr5;
     int    currencyid = 1;
     String currency   = "人民币";
     Double huilv      = 1.00;
@@ -107,8 +108,8 @@ public class AddTaskActivity extends BaseActivity {
     Double total  = 0d;
     Double amount = 0d;
     private GridLayoutManager mLayoutManager;
-    private List mBitmapList = new ArrayList<>();//给recyclerview添加的bitmap集合
-    private MyRecAdapter mMyAdapter;
+    private List              mBitmapList;//给recyclerview添加的bitmap集合
+    private MyRecAdapter      mMyAdapter;
     private List<List>   mSumBitmapList = new ArrayList();//记录总的bitmaplist的集合
     private List<String> mSumBtUrlList  = new ArrayList();//记录总的图片在服务器地址的集合
 
@@ -179,17 +180,16 @@ public class AddTaskActivity extends BaseActivity {
             if (!map.isEmpty()) {
                 planid = map.get("planid");
                 pfid = map.get("pfid");
-
                 List list = mSumBitmapList.get(n);
                 mBitmapList.addAll(list);
-                if (interid.equals("0")) {
-                    mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList, 1);
-                } else {
-                    mMyAdapter = new MyRecAdapter(this, (ArrayList<String>) mBitmapList, 2);
-                }
+                //                if (interid.equals("0")) {
+                mMyAdapter = new MyRecAdapter(this, mBitmapList);
+                //                } else {
+                //                    mMyAdapter = new MyRecAdapter(this, mBitmapList);
+                //                }
             } else {
                 mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
-                mMyAdapter = new MyRecAdapter(this, (ArrayList<Bitmap>) mBitmapList, 1);
+                mMyAdapter = new MyRecAdapter(this, mBitmapList);
             }
             // 设置布局管理器
             recview_add.setLayoutManager(mLayoutManager);
@@ -387,31 +387,31 @@ public class AddTaskActivity extends BaseActivity {
             tv_one.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new HYTask(tv_one,1).execute();
+                    new HYTask(tv_one, 1).execute();
                 }
             });
             tv_two.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new HYTask(tv_two,2).execute();
+                    new HYTask(tv_two, 2).execute();
                 }
             });
             tv_three.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new HYTask(tv_three,3).execute();
+                    new HYTask(tv_three, 3).execute();
                 }
             });
             tv_four.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new HYTask(tv_four,4).execute();
+                    new HYTask(tv_four, 4).execute();
                 }
             });
             tv_five.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new HYTask(tv_five,5).execute();
+                    new HYTask(tv_five, 5).execute();
                 }
             });
             final TextView tv_submit = (TextView) v.findViewById(R.id.tv_submit);
@@ -440,7 +440,7 @@ public class AddTaskActivity extends BaseActivity {
                 tv_four.setText(map.get("d"));
                 tv_five.setText(map.get("e"));
             }
-            if(map.get("type")!=null){
+            if (map.get("type") != null) {
                 et_shuliang.setEnabled(false);
                 et_danjia.setEnabled(false);
                 et_hanshui.setEnabled(false);
@@ -449,19 +449,19 @@ public class AddTaskActivity extends BaseActivity {
                 tv_zhi.setEnabled(false);
                 tv_progress.setEnabled(false);
                 et_fasong.setEnabled(false);
-                if(map.get("qr1").equals("True")){
+                if (map.get("qr1").equals("True")) {
                     tv_one.setEnabled(false);
                 }
-                if(map.get("qr2").equals("True")){
+                if (map.get("qr2").equals("True")) {
                     tv_two.setEnabled(false);
                 }
-                if(map.get("qr3").equals("True")){
+                if (map.get("qr3").equals("True")) {
                     tv_three.setEnabled(false);
                 }
-                if(map.get("qr4").equals("True")){
+                if (map.get("qr4").equals("True")) {
                     tv_four.setEnabled(false);
                 }
-                if(map.get("qr5").equals("True")){
+                if (map.get("qr5").equals("True")) {
                     tv_five.setEnabled(false);
                 }
             }
@@ -493,14 +493,14 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("neirong", content);
                     Log.i("计量", jiliangid);
                     map.put("jiliangid", jiliangid);
-                    if (et_shuliang.getText().toString().equals("")){
+                    if (et_shuliang.getText().toString().equals("")) {
                         map.put("shuliang", "0");
                     } else {
                         map.put("shuliang", et_shuliang.getText().toString());
                     }
                     if (et_danjia.getText().toString().equals("")) {
                         map.put("danjia", "0");
-                    } else{
+                    } else {
                         map.put("danjia", et_danjia.getText().toString());
                     }
                     map.put("qi", tv_qi.getText().toString());
@@ -511,9 +511,9 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("budget", tv_budget.getText().toString());
                     map.put("pbudget", tv_pbudget.getText().toString());
                     map.put("note", et_note.getText().toString());
-                    if (et_hanshui.getText().toString().equals("")){
+                    if (et_hanshui.getText().toString().equals("")) {
                         map.put("hanshui", "0");
-                    } else{
+                    } else {
                         map.put("hanshui", et_hanshui.getText().toString());
                     }
                     if (et_buhan.getText().toString().equals("")) {
@@ -533,35 +533,35 @@ public class AddTaskActivity extends BaseActivity {
                     } else {
                         map.put("pfid", pfid);
                     }
-                    if(!tv_one.getText().toString().equals("")){
-                        map.put("aid",aid);
-                        map.put("a",a);
-                        map.put("aa",aa);
-                        map.put("qr1",qr1);
+                    if (!tv_one.getText().toString().equals("")) {
+                        map.put("aid", aid);
+                        map.put("a", a);
+                        map.put("aa", aa);
+                        map.put("qr1", qr1);
                     }
-                    if(!tv_two.getText().toString().equals("")){
-                        map.put("bid",bid);
-                        map.put("b",b);
-                        map.put("bb",bb);
-                        map.put("qr2",qr2);
+                    if (!tv_two.getText().toString().equals("")) {
+                        map.put("bid", bid);
+                        map.put("b", b);
+                        map.put("bb", bb);
+                        map.put("qr2", qr2);
                     }
-                    if(!tv_three.getText().toString().equals("")){
-                        map.put("cid",cid);
-                        map.put("c",c);
-                        map.put("c",cc);
-                        map.put("qr3",qr3);
+                    if (!tv_three.getText().toString().equals("")) {
+                        map.put("cid", cid);
+                        map.put("c", c);
+                        map.put("c", cc);
+                        map.put("qr3", qr3);
                     }
-                    if(!tv_four.getText().toString().equals("")){
-                        map.put("did",did);
-                        map.put("d",d);
-                        map.put("dd",dd);
-                        map.put("qr4",qr4);
+                    if (!tv_four.getText().toString().equals("")) {
+                        map.put("did", did);
+                        map.put("d", d);
+                        map.put("dd", dd);
+                        map.put("qr4", qr4);
                     }
-                    if(!tv_five.getText().toString().equals("")){
-                        map.put("eid",eid);
-                        map.put("e",e);
-                        map.put("ee",ee);
-                        map.put("qr5",qr5);
+                    if (!tv_five.getText().toString().equals("")) {
+                        map.put("eid", eid);
+                        map.put("e", e);
+                        map.put("ee", ee);
+                        map.put("qr5", qr5);
                     }
                     if (map.get("id") == null) {
                         map.put("id", Utils.UUID());
@@ -586,19 +586,36 @@ public class AddTaskActivity extends BaseActivity {
                     }
                     //跟页面类表刷新
                     //上传图片
-                    int childCount = recview_add.getChildCount();
-                    mBitmapList.clear();
-                    for (int i = 1; i < childCount; i++) {
-                        View childAt = recview_add.getChildAt(i);
-                        ImageView viewbt = childAt.findViewById(R.id.img_add_photo);
-                        viewbt.setDrawingCacheEnabled(true);
-                        Bitmap bitmap = Bitmap.createBitmap(viewbt.getDrawingCache());
-                        mBitmapList.add(bitmap);
-                        viewbt.setDrawingCacheEnabled(false);
-                    }
+                    //                    int childCount = recview_add.getChildCount();
+                    //                    mBitmapList.clear();
+                    //                    for (int i = 1; i < childCount; i++) {//此处有bug，获取的img中的图片不清晰
+                    //                        View childAt = recview_add.getChildAt(i);
+                    //                        ImageView viewbt = childAt.findViewById(R.id.img_add_photo);
+                    //                        viewbt.setDrawingCacheEnabled(true);
+                    //                        Bitmap bitmap = Bitmap.createBitmap(viewbt.getDrawingCache());
+                    //                        mBitmapList.add(bitmap);
+                    //                        viewbt.setDrawingCacheEnabled(false);
+                    //                    }
+
                     if (mBitmapList.size() > 0) {
-                        sendPic(mBitmapList, n);//n小于0时是新增，大于等于0时是点击编辑
-                    } else {
+                        MySendProcess = 0;
+                        // mBitmapList记录的是图片地址
+                        //新建个list，存放bitmap
+                        final List<Bitmap> mBtTemList = new ArrayList<>();
+                        for (int i = 0; i < mBitmapList.size(); i++) {//从总bitmaplist中获取地址，用glide获取bitmap
+                            String url = String.valueOf(mBitmapList.get(i));
+                            Glide.with(AddTaskActivity.this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                    mBtTemList.add(resource);
+                                    MySendProcess = MySendProcess + 1;
+                                    if (MySendProcess == mBitmapList.size()) {
+                                        sendPic(mBtTemList, n);//n小于0时是新增，大于等于0时是点击编辑
+                                    }
+                                }
+                            });
+                        }
+                    } else {//子表中没有图片
                         if (n >= 0) {
                             mSumBtUrlList.set(n, "");
                         } else {
@@ -607,13 +624,25 @@ public class AddTaskActivity extends BaseActivity {
                     }
                     dialog.dismiss();
                     adapter.notifyDataSetChanged();
+                    //                    if (mBitmapList.size() > 0) {
+                    //                        sendPic(mBitmapList, n);//n小于0时是新增，大于等于0时是点击编辑
+                    //                    } else {
+                    //                        if (n >= 0) {
+                    //                            mSumBtUrlList.set(n, "");
+                    //                        } else {
+                    //                            mSumBtUrlList.add("");
+                    //                        }
+                    //                    }
+                    //                    dialog.dismiss();
+                    //                    adapter.notifyDataSetChanged();
                 }
             });
         }
     }
 
+    private int MySendProcess;
     private static final int IMAGE     = 1;//调用系统相册-选择图片n小于0
-    private static final int SHOT_CODE = 20;//调用系统相册-选择图片n小于0
+    private static final int SHOT_CODE = 20;//调用系统相机-选择图片n小于0
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -630,29 +659,33 @@ public class AddTaskActivity extends BaseActivity {
             c.close();
         }
         if (requestCode == SHOT_CODE && resultCode == Activity.RESULT_OK) {
-            String mFilePath = Environment.getExternalStorageDirectory().getPath();// 获取SD卡路径
-            mFilePath = mFilePath + "/" + "temp123.png";// 指定路径
-            showImage(mFilePath);
+            showImage(mRote);
         }
+    }
+
+    private String mRote;
+
+    public void setPtRote(String rote) {
+        this.mRote = rote;
     }
 
     //加载图片
     private void showImage(String imgPath) {
         //压缩图片
-        File file = new File(imgPath);
-        File newFile = new CompressHelper.Builder(this)
-                .setMaxWidth(720*2)  // 默认最大宽度为720
-                .setMaxHeight(960*2) // 默认最大高度为960
-                .setQuality(100)    // 默认压缩质量为80
-                .setFileName("sendPic") // 设置你需要修改的文件名
-                .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
-                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
-                .build()
-                .compressToFile(file);
-        Bitmap bm = BitmapFactory.decodeFile(newFile.getPath());
+        //        File file = new File(imgPath);
+        //        File newFile = new CompressHelper.Builder(this)
+        //                .setMaxWidth(1080)  // 默认最大宽度为720
+        //                .setMaxHeight(1920) // 默认最大高度为960
+        //                .setQuality(100)    // 默认压缩质量为80
+        //                .setFileName("sendPic") // 设置你需要修改的文件名
+        //                .setCompressFormat(Bitmap.CompressFormat.PNG) // 设置默认压缩为jpg格式
+        //                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+        //                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
+        //                .build()
+        //                .compressToFile(file);
+        //        Bitmap bm = BitmapFactory.decodeFile(newFile.getPath());
         //添加到bitmap集合中
-        mBitmapList.add(bm);
+        mBitmapList.add(imgPath);
         mMyAdapter.notifyDataSetChanged();
     }
 
@@ -859,7 +892,7 @@ public class AddTaskActivity extends BaseActivity {
                     if (map.get("qr1").equals("True") || map.get("qr2").equals("True") ||
                             map.get("qr3").equals("True") || map.get("qr4").equals("True") ||
                             map.get("qr5").equals("True")) {
-                        map.put("type","1");
+                        map.put("type", "1");
                     }
                 }
                 jiliang = map.get("jiliang");
@@ -2471,9 +2504,9 @@ public class AddTaskActivity extends BaseActivity {
     //查询好友列表
     class HYTask extends AsyncTask<Void, String, String> {
         TextView tv;
-        int index;
+        int      index;
 
-        public HYTask(TextView tv,int index) {
+        public HYTask(TextView tv, int index) {
             this.tv = tv;
             this.index = index;
         }
@@ -2579,7 +2612,7 @@ public class AddTaskActivity extends BaseActivity {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    switch(index){
+                    switch (index) {
                         case 1:
                             aid = list1.get(i).get("fitemid");//审核人id
                             a = strList1.get(i);//显示审核人名称
@@ -2622,6 +2655,7 @@ public class AddTaskActivity extends BaseActivity {
             super.onPostExecute(s);
         }
     }
+
     //提交图片
     class Task2 extends AsyncTask<Void, Integer, Integer> {
         private List<Bitmap> mBitmapList;
@@ -2739,7 +2773,7 @@ public class AddTaskActivity extends BaseActivity {
         try {
             if (null != bitmap) {
                 bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);//将bitmap放入字节数组流中
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bos);//将bitmap放入字节数组流中
 
                 bos.flush();//将bos流缓存在内存中的数据全部输出，清空缓存
                 bos.close();
@@ -2759,5 +2793,14 @@ public class AddTaskActivity extends BaseActivity {
             }
         }
         return result;
+    }
+
+    public String encodeBase64File(String path) throws Exception {
+        File file = new File(path);
+        FileInputStream inputFile = new FileInputStream(file);
+        byte[] buffer = new byte[(int) file.length()];
+        inputFile.read(buffer);
+        inputFile.close();
+        return Base64.encodeToString(buffer, Base64.DEFAULT);
     }
 }
