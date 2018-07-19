@@ -68,8 +68,6 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
@@ -2754,7 +2752,6 @@ public class AddTaskActivity extends BaseActivity {
         protected void onPostExecute(Integer integer) {
             ProgressDialogUtil.hideDialog();
             Toast.makeText(AddTaskActivity.this, "修改图片成功", Toast.LENGTH_LONG).show();
-
         }
 
         /**
@@ -2793,14 +2790,5 @@ public class AddTaskActivity extends BaseActivity {
             }
         }
         return result;
-    }
-
-    public String encodeBase64File(String path) throws Exception {
-        File file = new File(path);
-        FileInputStream inputFile = new FileInputStream(file);
-        byte[] buffer = new byte[(int) file.length()];
-        inputFile.read(buffer);
-        inputFile.close();
-        return Base64.encodeToString(buffer, Base64.DEFAULT);
     }
 }

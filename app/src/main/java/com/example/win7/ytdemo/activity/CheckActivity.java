@@ -3,14 +3,17 @@ package com.example.win7.ytdemo.activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.YApplication;
 import com.example.win7.ytdemo.adapter.CheckBoxAdapter;
+import com.example.win7.ytdemo.adapter.RecViewShowAdapter;
 import com.example.win7.ytdemo.listener.CallBackListener;
 import com.example.win7.ytdemo.util.Consts;
 import com.example.win7.ytdemo.util.ToastUtils;
@@ -43,27 +47,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class CheckActivity extends AppCompatActivity {
-    Toolbar toolbar;
-    TextView tv_comp,tv_part,tv_creator,
-            tv_item,tv_num,tv_pri,tv_taxpri,tv_start,tv_end,tv_pro,
-            tv_plans,tv_budget,tv_pbudget,tv_notes,tv_buhan,tv_sup,
-            tv_supl,tv_send,tv_pf,tv_submit,tv_refuse;
-    EditText et_get;
-    List<HashMap<String,String>> list1;
-    List<HashMap<String,Object>> list2;
-    HashMap<String,String> map;
-    String pfid = "230";
-    DecimalFormat df  = new DecimalFormat("#0.00");
-    String goodsid,userid;
+    Toolbar  toolbar;
+    TextView tv_comp, tv_part, tv_creator,
+            tv_item, tv_num, tv_pri, tv_taxpri, tv_start, tv_end, tv_pro,
+            tv_plans, tv_budget, tv_pbudget, tv_notes, tv_buhan, tv_sup,
+            tv_supl, tv_send, tv_pf, tv_submit, tv_refuse;
+    EditText                      et_get;
+    List<HashMap<String, String>> list1;
+    List<HashMap<String, Object>> list2;
+    HashMap<String, String>       map;
+    String        pfid = "230";
+    DecimalFormat df   = new DecimalFormat("#0.00");
+    String goodsid, userid;
     CustomProgress progress;
+    private RecyclerView       recview_show;
+    private List<String>       mBitmapList;
+    private RecViewShowAdapter showAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setTool();
         setViews();
         setListeners();
@@ -87,7 +94,7 @@ public class CheckActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.action_chaosong:
                         new HYTask().execute();
                         break;
@@ -103,31 +110,37 @@ public class CheckActivity extends AppCompatActivity {
         return true;
     }
 
-    protected void setViews(){
-        tv_comp = (TextView)findViewById(R.id.tv_comp);
-        tv_part = (TextView)findViewById(R.id.tv_part);
-        tv_creator = (TextView)findViewById(R.id.tv_creator);
-        tv_item = (TextView)findViewById(R.id.tv_item);
-        tv_num = (TextView)findViewById(R.id.tv_num);
-        tv_pri = (TextView)findViewById(R.id.tv_pri);
-        tv_taxpri = (TextView)findViewById(R.id.tv_taxpri);
-        tv_start = (TextView)findViewById(R.id.tv_start);
-        tv_end = (TextView)findViewById(R.id.tv_end);
-        tv_pro = (TextView)findViewById(R.id.tv_pro);
+    protected void setViews() {
+        tv_comp = (TextView) findViewById(R.id.tv_comp);
+        tv_part = (TextView) findViewById(R.id.tv_part);
+        tv_creator = (TextView) findViewById(R.id.tv_creator);
+        tv_item = (TextView) findViewById(R.id.tv_item);
+        tv_num = (TextView) findViewById(R.id.tv_num);
+        tv_pri = (TextView) findViewById(R.id.tv_pri);
+        tv_taxpri = (TextView) findViewById(R.id.tv_taxpri);
+        tv_start = (TextView) findViewById(R.id.tv_start);
+        tv_end = (TextView) findViewById(R.id.tv_end);
+        tv_pro = (TextView) findViewById(R.id.tv_pro);
         tv_pro.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        tv_plans = (TextView)findViewById(R.id.tv_plans);
-        tv_budget = (TextView)findViewById(R.id.tv_budget_check);
-        tv_pbudget = (TextView)findViewById(R.id.tv_pbudget_check);
-        tv_notes = (TextView)findViewById(R.id.tv_notes);
-        tv_buhan = (TextView)findViewById(R.id.tv_buhan_check);
-        tv_sup = (TextView)findViewById(R.id.tv_sup);
-        tv_supl = (TextView)findViewById(R.id.tv_supl);
-        tv_send = (TextView)findViewById(R.id.tv_send);
-        tv_pf = (TextView)findViewById(R.id.tv_pf);
+        tv_plans = (TextView) findViewById(R.id.tv_plans);
+        tv_budget = (TextView) findViewById(R.id.tv_budget_check);
+        tv_pbudget = (TextView) findViewById(R.id.tv_pbudget_check);
+        tv_notes = (TextView) findViewById(R.id.tv_notes);
+        tv_buhan = (TextView) findViewById(R.id.tv_buhan_check);
+        tv_sup = (TextView) findViewById(R.id.tv_sup);
+        tv_supl = (TextView) findViewById(R.id.tv_supl);
+        tv_send = (TextView) findViewById(R.id.tv_send);
+        tv_pf = (TextView) findViewById(R.id.tv_pf);
+        recview_show = (RecyclerView) findViewById(R.id.recview_show);
+        mBitmapList = new ArrayList<>();
+        GridLayoutManager mLayoutManager = new GridLayoutManager(CheckActivity.this, 3, GridLayoutManager.VERTICAL, false);
+        showAdapter = new RecViewShowAdapter(CheckActivity.this, mBitmapList);
+        recview_show.setLayoutManager(mLayoutManager);
+        recview_show.setAdapter(showAdapter);
         tv_pf.setText("10分");
-        tv_submit = (TextView)findViewById(R.id.tv_submit_check);
-        tv_refuse = (TextView)findViewById(R.id.tv_refuse_check);
-        et_get = (EditText)findViewById(R.id.et_get);
+        tv_submit = (TextView) findViewById(R.id.tv_submit_check);
+        tv_refuse = (TextView) findViewById(R.id.tv_refuse_check);
+        et_get = (EditText) findViewById(R.id.et_get);
         map = new HashMap<>();
         list1 = new ArrayList<>();
         list2 = new ArrayList<>();
@@ -137,7 +150,7 @@ public class CheckActivity extends AppCompatActivity {
         new UseridTask().execute();
     }
 
-    protected void setListeners(){
+    protected void setListeners() {
         tv_pf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,17 +160,17 @@ public class CheckActivity extends AppCompatActivity {
         tv_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new CheckTask(et_get.getText().toString(),pfid,userid,goodsid).execute();
+                new CheckTask(et_get.getText().toString(), pfid, userid, goodsid).execute();
             }
         });
         tv_refuse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(et_get.getText().toString().equals("")){
-                    Toast.makeText(CheckActivity.this,"请填写回馈消息",Toast.LENGTH_SHORT).show();
+                if (et_get.getText().toString().equals("")) {
+                    Toast.makeText(CheckActivity.this, "请填写回馈消息", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new CheckTask(et_get.getText().toString(),pfid,"0",goodsid).execute();
+                new CheckTask(et_get.getText().toString(), pfid, "0", goodsid).execute();
             }
         });
     }
@@ -179,13 +192,13 @@ public class CheckActivity extends AppCompatActivity {
         EMClient.getInstance().chatManager().sendMessage(emMessage);
     }
 
-    class CheckTask extends AsyncTask<Void,String,String>{
+    class CheckTask extends AsyncTask<Void, String, String> {
         String ftext1;
         String pfid;
         String userid;
         String id;
 
-        CheckTask(String ftext1,String pfid,String userid,String id){
+        CheckTask(String ftext1, String pfid, String userid, String id) {
             this.ftext1 = ftext1;
             this.pfid = pfid;
             this.userid = userid;
@@ -195,7 +208,7 @@ public class CheckActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progress = CustomProgress.show(CheckActivity.this,"提交中...",true,null);
+            progress = CustomProgress.show(CheckActivity.this, "提交中...", true, null);
         }
 
         @Override
@@ -214,7 +227,7 @@ public class CheckActivity extends AppCompatActivity {
                 SoapObject rpc = new SoapObject(nameSpace, methodName);
 
                 // 设置需调用WebService接口需要传入的参数
-                Log.i("传入的参数","回馈消息"+ftext1+"评分id"+pfid+"审核人id"+userid+"单据id"+id);
+                Log.i("传入的参数", "回馈消息" + ftext1 + "评分id" + pfid + "审核人id" + userid + "单据id" + id);
                 rpc.addProperty("FText1", ftext1);
                 rpc.addProperty("FBase14", pfid);
                 rpc.addProperty("FCheckerID", userid);
@@ -240,8 +253,8 @@ public class CheckActivity extends AppCompatActivity {
 
                 String result = "";
                 if (envelope.bodyIn instanceof SoapFault) {
-                    Log.i("服务器返回",(SoapObject) envelope.getResponse()+"");
-                } else{
+                    Log.i("服务器返回", (SoapObject) envelope.getResponse() + "");
+                } else {
                     SoapObject object = (SoapObject) envelope.bodyIn;
 
                     // 获取返回的结果
@@ -249,7 +262,7 @@ public class CheckActivity extends AppCompatActivity {
                     result = object.getProperty(0).toString();
                 }
                 return result;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -258,17 +271,17 @@ public class CheckActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(s.equals("成功")){
+            if (s.equals("成功")) {
                 progress.dismiss();
-                Toast.makeText(CheckActivity.this,"确认成功",Toast.LENGTH_SHORT).show();
+                Toast.makeText(CheckActivity.this, "确认成功", Toast.LENGTH_SHORT).show();
                 finish();
-            }else{
-                Toast.makeText(CheckActivity.this,"确认异常",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(CheckActivity.this, "确认异常", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    class UseridTask extends AsyncTask<Void,String,String>{
+    class UseridTask extends AsyncTask<Void, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -290,7 +303,7 @@ public class CheckActivity extends AppCompatActivity {
             SoapObject rpc = new SoapObject(nameSpace, methodName);
 
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
-            String sql = "select a.fitemid from t_Emp a left join t_user b on a.fitemid=b.fempid where b.fname='"+ YApplication.fname+"'";
+            String sql = "select a.fitemid from t_Emp a left join t_user b on a.fitemid=b.fempid where b.fname='" + YApplication.fname + "'";
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_user");
 
@@ -341,10 +354,10 @@ public class CheckActivity extends AppCompatActivity {
         }
     }
 
-    class DetailTask extends AsyncTask<Void,String,String>{
+    class DetailTask extends AsyncTask<Void, String, String> {
         String id;
 
-        public DetailTask(String id){
+        public DetailTask(String id) {
             this.id = id;
         }
 
@@ -370,11 +383,11 @@ public class CheckActivity extends AppCompatActivity {
             // 设置需调用WebService接口需要传入的两个参数mobileCode、userId
             String sql = "select t.fname comp,u.fname part,b.fname item,a.fdecimal shuliang,a.fdecimal1 danjia,a.famount2 hanshui,a.ftime qi,a.ftime1 zhi,c.fname progress," +
                     "c.f_111 plans,d.fname budget,c.f_107 pbudget,a.fnote,a.famount3 buhan,e.fname fuzhu,a.fdecimal2 fuliang,a.ftext fasong,a.ftext1 huikui,f.fname pf,i.fname zhidan" +
-                    " from t_BOS200000000Entry2 a left join t_BOS200000000 s on s.fid=a.fid left join t_Item_3001 t on t.fitemid=s.fbase11 left join t_Department u on u.FItemID=s.FBase12 " +
+                    ",a.fimage1,a.fimage2,a.fimage3,a.fimage4,a.fimage5 from t_BOS200000000Entry2 a left join t_BOS200000000 s on s.fid=a.fid left join t_Item_3001 t on t.fitemid=s.fbase11 left join t_Department u on u.FItemID=s.FBase12 " +
                     " left join t_icitem b on b.fitemid=a.fbase1 " +
                     "left join t_item_3007 c on c.fitemid=a.fbase left join t_item d on d.fitemid=c.f_105 " +
-                    "left join t_measureunit e on e.fmeasureunitid=b.fitemid left join t_item f on f.fitemid=a.fbase14 left join t_emp i on i.fitemid=a.fbase15 where a.id='"+id+"'";
-            Log.i("SQL查询语句",sql);
+                    "left join t_measureunit e on e.fmeasureunitid=b.fitemid left join t_item f on f.fitemid=a.fbase14 left join t_emp i on i.fitemid=a.fbase15 where a.id='" + id + "'";
+            Log.i("SQL查询语句", sql);
             rpc.addProperty("FSql", sql);
             rpc.addProperty("FTable", "t_BOS200000000Entry2");
 
@@ -408,30 +421,38 @@ public class CheckActivity extends AppCompatActivity {
                 Element rootElt = doc.getRootElement(); // 获取根节点
                 System.out.println("根节点：" + rootElt.getName()); // 拿到根节点的名称
                 Iterator iter = rootElt.elementIterator("Cust"); // 获取根节点下的子节点head
+                mBitmapList.clear();
                 // 遍历head节点
                 while (iter.hasNext()) {
                     Element recordEle = (Element) iter.next();
-                    map.put("comp",recordEle.elementTextTrim("comp"));
-                    map.put("part",recordEle.elementTextTrim("part"));
+                    map.put("comp", recordEle.elementTextTrim("comp"));
+                    map.put("part", recordEle.elementTextTrim("part"));
                     map.put("item", recordEle.elementTextTrim("item"));
                     map.put("shuliang", recordEle.elementTextTrim("shuliang"));
-                    map.put("danjia",recordEle.elementTextTrim("danjia"));
-                    map.put("hanshui",recordEle.elementTextTrim("hanshui"));
-                    map.put("qi",recordEle.elementTextTrim("qi"));
-                    map.put("zhi",recordEle.elementTextTrim("zhi"));
-                    map.put("progress",recordEle.elementTextTrim("progress"));
-                    map.put("plan",recordEle.elementTextTrim("plans"));
-                    map.put("budget",recordEle.elementTextTrim("budget"));
-                    map.put("pbudget",recordEle.elementTextTrim("pbudget"));
-                    map.put("note",recordEle.elementTextTrim("fnote"));
-                    map.put("buhan",recordEle.elementTextTrim("buhan"));
-                    map.put("fuzhu",recordEle.elementTextTrim("fuzhu"));
-                    map.put("fuliang",recordEle.elementTextTrim("fuliang"));
-                    map.put("fasong",recordEle.elementTextTrim("fasong"));
-                    map.put("huikui",recordEle.elementTextTrim("huikui"));
-                    map.put("pf",recordEle.elementTextTrim("pf"));
-                    map.put("zhidan",recordEle.elementTextTrim("zhidan"));
+                    map.put("danjia", recordEle.elementTextTrim("danjia"));
+                    map.put("hanshui", recordEle.elementTextTrim("hanshui"));
+                    map.put("qi", recordEle.elementTextTrim("qi"));
+                    map.put("zhi", recordEle.elementTextTrim("zhi"));
+                    map.put("progress", recordEle.elementTextTrim("progress"));
+                    map.put("plan", recordEle.elementTextTrim("plans"));
+                    map.put("budget", recordEle.elementTextTrim("budget"));
+                    map.put("pbudget", recordEle.elementTextTrim("pbudget"));
+                    map.put("note", recordEle.elementTextTrim("fnote"));
+                    map.put("buhan", recordEle.elementTextTrim("buhan"));
+                    map.put("fuzhu", recordEle.elementTextTrim("fuzhu"));
+                    map.put("fuliang", recordEle.elementTextTrim("fuliang"));
+                    map.put("fasong", recordEle.elementTextTrim("fasong"));
+                    map.put("huikui", recordEle.elementTextTrim("huikui"));
+                    for (int i = 0; i < 5; i++) {
+                        String url = recordEle.elementTextTrim("fimage" + (i + 1));
+                        if (null != url && !"".equals(url)) {
+                            mBitmapList.add(url);
+                        }
+                    }
+                    map.put("pf", recordEle.elementTextTrim("pf"));
+                    map.put("zhidan", recordEle.elementTextTrim("zhidan"));
                 }
+                showAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -444,7 +465,7 @@ public class CheckActivity extends AppCompatActivity {
             tv_comp.setText(map.get("comp"));
             tv_part.setText(map.get("part"));
             tv_item.setText(map.get("item"));
-            Log.i("数量",map.get("shuliang"));
+            Log.i("数量", map.get("shuliang"));
             tv_num.setText(df.format(Double.parseDouble(map.get("shuliang"))));
             tv_pri.setText(df.format(Double.parseDouble(map.get("danjia"))));
             tv_taxpri.setText(df.format(Double.parseDouble(map.get("hanshui"))));
@@ -461,7 +482,7 @@ public class CheckActivity extends AppCompatActivity {
             tv_send.setText(map.get("fasong"));
             et_get.setText(map.get("huikui"));
             tv_creator.setText(map.get("zhidan"));
-            if(!map.get("pf").equals("*")) {
+            if (!map.get("pf").equals("*")) {
                 tv_pf.setText(map.get("pf"));
             }
         }
@@ -677,7 +698,7 @@ public class CheckActivity extends AppCompatActivity {
                     for (int i = 0; i < list2.size(); i++) {
                         if (Boolean.valueOf(list2.get(i).get("ischeck").toString())) {
                             new ChaoSongTask(list2.get(i).get("fitemid").toString()).execute();
-                            sendMessegeToShenhe(goodsid,list2.get(i).get("name").toString());
+                            sendMessegeToShenhe(goodsid, list2.get(i).get("name").toString());
                         }
                     }
                     dialog.dismiss();
@@ -687,10 +708,10 @@ public class CheckActivity extends AppCompatActivity {
         }
     }
 
-    class ChaoSongTask extends AsyncTask<Void,String,String>{
+    class ChaoSongTask extends AsyncTask<Void, String, String> {
         String userid;
 
-        ChaoSongTask(String userid){
+        ChaoSongTask(String userid) {
             this.userid = userid;
         }
 
@@ -747,9 +768,9 @@ public class CheckActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(s.equals("成功")){
+            if (s.equals("成功")) {
 
-            }else{
+            } else {
 
             }
         }

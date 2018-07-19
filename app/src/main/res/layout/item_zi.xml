@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/ll_show"
@@ -17,28 +17,30 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="数量"
-            android:textSize="16sp"
             android:textColor="@color/bottom_button_text_black"
-            android:gravity="center_vertical"/>
+            android:textSize="16sp"/>
+
         <TextView
             android:id="@+id/tv_danjia"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="单价"
-            android:textSize="16sp"
             android:textColor="@color/bottom_button_text_black"
-            android:gravity="center_vertical"/>
+            android:textSize="16sp"/>
+
         <TextView
             android:id="@+id/tv_hanshui"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="金额含税"
-            android:textSize="16sp"
             android:textColor="@color/bottom_button_text_black"
-            android:gravity="center_vertical"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -57,8 +59,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/note"
                 android:gravity="center_vertical"
+                android:text="@string/note"
                 android:textColor="@color/bottom_button_text_black"
                 android:textSize="20sp"/>
 
@@ -66,9 +68,9 @@
                 android:id="@+id/tv_note"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
                 android:layout_weight="3"
                 android:gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
                 android:singleLine="true"
                 android:textSize="20sp"/>
         </LinearLayout>
@@ -82,8 +84,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/qi"
                 android:gravity="center_vertical"
+                android:text="@string/qi"
                 android:textColor="@color/bottom_button_text_black"/>
 
             <TextView
@@ -105,8 +107,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/zhi"
                 android:gravity="center_vertical"
+                android:text="@string/zhi"
                 android:textColor="@color/bottom_button_text_black"/>
 
             <TextView
@@ -128,17 +130,17 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/progress"
                 android:gravity="center_vertical"
-                android:textColor="@color/bottom_button_text_black" />
+                android:text="@string/progress"
+                android:textColor="@color/bottom_button_text_black"/>
 
             <TextView
                 android:id="@+id/tv_progress"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
                 android:layout_weight="2"
                 android:gravity="right|center_vertical"
-                android:layout_marginRight="5dp"
                 android:singleLine="true"
                 android:textStyle="bold"/>
         </LinearLayout>
@@ -152,17 +154,17 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/plan"
                 android:gravity="center_vertical"
-                android:textColor="@color/bottom_button_text_black" />
+                android:text="@string/plan"
+                android:textColor="@color/bottom_button_text_black"/>
 
             <TextView
                 android:id="@+id/tv_plan"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
                 android:layout_weight="3"
                 android:gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
                 android:singleLine="true"/>
         </LinearLayout>
 
@@ -175,17 +177,17 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/budget"
                 android:gravity="center_vertical"
+                android:text="@string/budget"
                 android:textColor="@color/bottom_button_text_black"/>
 
             <TextView
                 android:id="@+id/tv_budget"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
                 android:layout_weight="3"
                 android:gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
                 android:singleLine="true"/>
         </LinearLayout>
 
@@ -198,20 +200,19 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/pbudget"
                 android:gravity="center_vertical"
+                android:text="@string/pbudget"
                 android:textColor="@color/bottom_button_text_black"/>
 
             <TextView
                 android:id="@+id/tv_pbudget"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
                 android:layout_weight="2"
                 android:gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
                 android:singleLine="true"/>
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -225,12 +226,13 @@
                 android:layout_weight="1"
                 android:text="@string/rmb"
                 android:textColor="@color/bottom_button_text_black"/>
+
             <TextView
                 android:id="@+id/tv_buhan"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:layout_marginRight="10dp"
+                android:layout_weight="2"
                 android:gravity="right"/>
         </LinearLayout>
 
@@ -244,12 +246,13 @@
                 android:layout_weight="1"
                 android:text="@string/sup"
                 android:textColor="@color/bottom_button_text_black"/>
+
             <TextView
                 android:id="@+id/tv_fuzhu"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:layout_marginRight="10dp"
+                android:layout_weight="2"
                 android:gravity="right"/>
 
             <TextView
@@ -258,12 +261,13 @@
                 android:layout_weight="1"
                 android:text="@string/supl"
                 android:textColor="@color/bottom_button_text_black"/>
+
             <TextView
                 android:id="@+id/tv_fuliang"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:layout_marginRight="10dp"
+                android:layout_weight="2"
                 android:gravity="right"/>
         </LinearLayout>
 
@@ -278,15 +282,16 @@
                 android:text="@string/send"
                 android:textColor="@color/bottom_button_text_black"
                 android:textSize="20sp"/>
+
             <TextView
                 android:id="@+id/tv_fasong"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:layout_marginRight="10dp"
+                android:layout_weight="2"
                 android:gravity="right"
-                android:textSize="20sp"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:textSize="20sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -300,15 +305,16 @@
                 android:text="@string/receive"
                 android:textColor="@color/bottom_button_text_black"
                 android:textSize="20sp"/>
+
             <TextView
                 android:id="@+id/tv_huikui"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
                 android:layout_weight="2"
                 android:gravity="right"
-                android:layout_marginRight="10dp"
-                android:textSize="20sp"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:textSize="20sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -334,11 +340,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="3"/>
         </LinearLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recview_show"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -352,17 +360,17 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/a"
                     android:layout_weight="2"
+                    android:text="@string/a"
                     android:textColor="@color/bottom_button_text_black"/>
 
                 <TextView
                     android:id="@+id/tv_a"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="5"
-                    android:gravity="right"
-                    android:layout_marginRight="10dp"/>
+                    android:gravity="right"/>
             </LinearLayout>
 
             <LinearLayout
@@ -374,17 +382,17 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/b"
                     android:layout_weight="2"
+                    android:text="@string/b"
                     android:textColor="@color/bottom_button_text_black"/>
 
                 <TextView
                     android:id="@+id/tv_b"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="5"
-                    android:gravity="right"
-                    android:layout_marginRight="10dp"/>
+                    android:gravity="right"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -401,17 +409,17 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/c"
                     android:layout_weight="2"
+                    android:text="@string/c"
                     android:textColor="@color/bottom_button_text_black"/>
 
                 <TextView
                     android:id="@+id/tv_c"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="5"
-                    android:gravity="right"
-                    android:layout_marginRight="10dp"/>
+                    android:gravity="right"/>
             </LinearLayout>
 
             <LinearLayout
@@ -423,17 +431,17 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/d"
                     android:layout_weight="2"
+                    android:text="@string/d"
                     android:textColor="@color/bottom_button_text_black"/>
 
                 <TextView
                     android:id="@+id/tv_d"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="5"
-                    android:gravity="right"
-                    android:layout_marginRight="10dp"/>
+                    android:gravity="right"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -445,17 +453,17 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/e"
                 android:layout_weight="2"
+                android:text="@string/e"
                 android:textColor="@color/bottom_button_text_black"/>
 
             <TextView
                 android:id="@+id/tv_e"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
                 android:layout_weight="5"
-                android:gravity="right"
-                android:layout_marginRight="10dp"/>
+                android:gravity="right"/>
 
             <View
                 android:layout_width="0dp"

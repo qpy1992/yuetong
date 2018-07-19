@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.win7.ytdemo.R;
 import com.example.win7.ytdemo.activity.AddOrderActivity;
+import com.example.win7.ytdemo.adapter.LvAccAdapter;
 import com.example.win7.ytdemo.adapter.LvShowMoreAdapter;
 import com.example.win7.ytdemo.entity.OrderDataInfo;
 
@@ -35,10 +36,12 @@ import java.util.Map;
 public class SubBillFragment extends Fragment {
     private View mRootView;
     private boolean mEditable = false;//是否可编辑
-    private OrderDataInfo orderInfo;//整个订单表信息
-    private TextView      tv_jfkm, tv_jfkmje, tv_jfjxkm, tv_jfjxje, tv_wy, tv_dfkm, tv_dfkmje, tv_dfxxkm, tv_dfxxje;
+    private OrderDataInfo             orderInfo;//整个订单表信息
     private List<Map<String, String>> mShowData;//临时存放内码
     private LvShowMoreAdapter         showMoreAdapter;
+    private ListView                  lv_acc;
+    private List                      mData;
+    private LvAccAdapter              accAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,16 +55,14 @@ public class SubBillFragment extends Fragment {
     }
 
     private void initView() {
-        tv_jfkm = mRootView.findViewById(R.id.tv_jfkm);//借方科目
-        tv_jfkmje = mRootView.findViewById(R.id.tv_jfkmje);//借方科目金额
-        tv_jfjxkm = mRootView.findViewById(R.id.tv_jfjxkm);//借方进项科目
-        tv_jfjxje = mRootView.findViewById(R.id.tv_jfjxje);//借方进项金额
-        tv_wy = mRootView.findViewById(R.id.tv_wy);//网银
-        tv_dfkm = mRootView.findViewById(R.id.tv_dfkm);//贷方科目
-        tv_dfkmje = mRootView.findViewById(R.id.tv_dfkmje);//贷方科目金额
-        tv_dfxxkm = mRootView.findViewById(R.id.tv_dfxxkm);//贷方销项科目
-        tv_dfxxje = mRootView.findViewById(R.id.tv_dfxxje);//贷方销项金额
-
+        lv_acc = mRootView.findViewById(R.id.lv_acc);
+        mData = new ArrayList();
+        mData.add("");
+        mData.add("");
+        mData.add("");
+        mData.add("");
+        accAdapter = new LvAccAdapter(getContext(), mData, -1);
+        lv_acc.setAdapter(accAdapter);
     }
 
     private void initData() {
@@ -82,15 +83,57 @@ public class SubBillFragment extends Fragment {
 
     private void setListener() {
         if (mEditable) {
-            setTvChangeListener(tv_jfkm, "借方科目", "search", "???");
-            setTvChangeListener(tv_jfkmje, "借方科目金额", "", "???");
-            setTvChangeListener(tv_jfjxje, "借方进项金额", "", "???");
-            setTvChangeListener(tv_wy, "网银", "", "???");
-            setTvChangeListener(tv_dfkm, "贷方科目", "", "???");
-            setTvChangeListener(tv_dfkmje, "贷方科目金额", "", "???");
-            setTvChangeListener(tv_dfxxkm, "贷方销项科目", "", "???");
-            setTvChangeListener(tv_dfxxje, "贷方销项金额", "", "???");
+            lv_acc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //弹出dailog让用户修改子表
+                    showAlogToChange("修改", i);
+                }
+            });
         }
+    }
+
+    private void showAlogToChange(String title, final int item) {//item=-1是新增,>=0是修改
+        View view = View.inflate(getContext(), R.layout.lv_item_acc, null);
+        TextView tv_more = view.findViewById(R.id.tv_more);//展示更多
+        TextView tv_jfkm = view.findViewById(R.id.tv_jfkm);//借方科目
+        TextView tv_jfkmje = view.findViewById(R.id.tv_jfkmje);//借方科目金额
+        TextView tv_jfjxkm = view.findViewById(R.id.tv_jfjxkm);//借方进项科目
+        TextView tv_jfjxje = view.findViewById(R.id.tv_jfjxje);//借方进项金额
+        TextView tv_wy = view.findViewById(R.id.tv_wy);//网银
+        TextView tv_dfkm = view.findViewById(R.id.tv_dfkm);//贷方科目
+        TextView tv_dfkmje = view.findViewById(R.id.tv_dfkmje);//贷方科目金额
+        TextView tv_dfxxkm = view.findViewById(R.id.tv_dfxxkm);//贷方销项科目
+        TextView tv_dfxxje = view.findViewById(R.id.tv_dfxxje);//贷方销项金额
+        tv_more.setVisibility(View.GONE);
+        final Map<String, String> sBodyMap;
+        //填充数据
+        if (item >= 0) {
+        } else {
+            sBodyMap = new HashMap<>();
+        }
+
+        new AlertDialog.Builder(getContext()).setView(view).setTitle(title)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (item < 0) {
+                            //orderInfo.getMapListson().add(sBodyMap);
+                            mData.add("");
+                        }
+                        accAdapter.notifyDataSetChanged();
+                    }
+                }).setNegativeButton("取消", null).show();
+
+        setTvChangeListener(tv_jfkm, "借方科目", "search", "???");
+        setTvChangeListener(tv_jfkmje, "借方科目金额", "", "???");
+        setTvChangeListener(tv_jfjxkm, "借方进项科目", "", "???");
+        setTvChangeListener(tv_jfjxje, "借方进项金额", "", "???");
+        setTvChangeListener(tv_wy, "网银", "", "???");
+        setTvChangeListener(tv_dfkm, "贷方科目", "", "???");
+        setTvChangeListener(tv_dfkmje, "贷方科目金额", "", "???");
+        setTvChangeListener(tv_dfxxkm, "贷方销项科目", "", "???");
+        setTvChangeListener(tv_dfxxje, "贷方销项金额", "", "???");
     }
 
     private void setTvChangeListener(final TextView tv, final String title, final String writekind, final String which) {
