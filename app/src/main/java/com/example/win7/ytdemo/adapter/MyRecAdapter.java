@@ -44,10 +44,14 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
     private List    mData;
     private static final int IMAGE     = 1;//调用系统相册-选择图片
     private static final int SHOT_CODE = 20;//调用系统相册-选择图片
+    private boolean mIschecked;
+    private int     mLongSize;
 
-    public MyRecAdapter(Context context, List data) {
+    public MyRecAdapter(Context context, List data, boolean isChecked, int longSize) {
         this.mContext = context;
         this.mData = data;
+        this.mIschecked = isChecked;
+        this.mLongSize = longSize;
     }
 
     @Override
@@ -63,6 +67,14 @@ public class MyRecAdapter extends RecyclerView.Adapter<MyRecAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final MyRecAdapter.ViewHolder holder, final int position) {
+        //被审核过的图片不显示删除按钮
+        if (mIschecked) {
+            if (position <= mLongSize - 1) {
+                holder.img_delet.setVisibility(View.GONE);
+            } else {
+                holder.img_delet.setVisibility(View.VISIBLE);
+            }
+        }
         if (position == 0) {
             //第一个条目不显示删除按键
             holder.img_delet.setVisibility(View.GONE);

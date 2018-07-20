@@ -180,14 +180,10 @@ public class AddTaskActivity extends BaseActivity {
                 pfid = map.get("pfid");
                 List list = mSumBitmapList.get(n);
                 mBitmapList.addAll(list);
-                //                if (interid.equals("0")) {
-                mMyAdapter = new MyRecAdapter(this, mBitmapList);
-                //                } else {
-                //                    mMyAdapter = new MyRecAdapter(this, mBitmapList);
-                //                }
+                mMyAdapter = new MyRecAdapter(this, mBitmapList,isChecked,mBitmapList.size());
             } else {
                 mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
-                mMyAdapter = new MyRecAdapter(this, mBitmapList);
+                mMyAdapter = new MyRecAdapter(this, mBitmapList,isChecked,mBitmapList.size());
             }
             // 设置布局管理器
             recview_add.setLayoutManager(mLayoutManager);
@@ -2449,6 +2445,8 @@ public class AddTaskActivity extends BaseActivity {
                     map.put("id", id);
                     ziList.add(map);
                     mSumBitmapList.add(mBitmapList);
+                    //判断是否有人审核过了
+                    isLooked(qr1, qr2, qr3, qr4, qr5);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2496,6 +2494,14 @@ public class AddTaskActivity extends BaseActivity {
             tv_amounts.setText(String.valueOf(amount));
             adapter = new ZiAdapter(AddTaskActivity.this, ziList, mSumBitmapList, 2);
             lv_zb.setAdapter(adapter);
+        }
+    }
+
+    private boolean isChecked = false;
+    //查阅是否已被审核
+    private void isLooked(String qr1, String qr2, String qr3, String qr4, String qr5) {
+        if ("True".equals(qr1) || "True".equals(qr2) || "True".equals(qr3) || "True".equals(qr4) || "True".equals(qr5)) {
+            isChecked = true;
         }
     }
 
@@ -2770,7 +2776,7 @@ public class AddTaskActivity extends BaseActivity {
         try {
             if (null != bitmap) {
                 bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bos);//将bitmap放入字节数组流中
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, bos);//将bitmap放入字节数组流中
 
                 bos.flush();//将bos流缓存在内存中的数据全部输出，清空缓存
                 bos.close();
