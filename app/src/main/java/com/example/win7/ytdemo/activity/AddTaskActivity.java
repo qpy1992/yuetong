@@ -68,6 +68,7 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
@@ -180,10 +181,10 @@ public class AddTaskActivity extends BaseActivity {
                 pfid = map.get("pfid");
                 List list = mSumBitmapList.get(n);
                 mBitmapList.addAll(list);
-                mMyAdapter = new MyRecAdapter(this, mBitmapList,isChecked,mBitmapList.size());
+                mMyAdapter = new MyRecAdapter(this, mBitmapList, isChecked, mBitmapList.size());
             } else {
                 mLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
-                mMyAdapter = new MyRecAdapter(this, mBitmapList,isChecked,mBitmapList.size());
+                mMyAdapter = new MyRecAdapter(this, mBitmapList, isChecked, mBitmapList.size());
             }
             // 设置布局管理器
             recview_add.setLayoutManager(mLayoutManager);
@@ -578,36 +579,64 @@ public class AddTaskActivity extends BaseActivity {
                     } else {
                         mSumBitmapList.add(mBitmapList);
                     }
-                    //跟页面类表刷新
-                    //上传图片
-                    //                    int childCount = recview_add.getChildCount();
-                    //                    mBitmapList.clear();
-                    //                    for (int i = 1; i < childCount; i++) {//此处有bug，获取的img中的图片不清晰
-                    //                        View childAt = recview_add.getChildAt(i);
-                    //                        ImageView viewbt = childAt.findViewById(R.id.img_add_photo);
-                    //                        viewbt.setDrawingCacheEnabled(true);
-                    //                        Bitmap bitmap = Bitmap.createBitmap(viewbt.getDrawingCache());
-                    //                        mBitmapList.add(bitmap);
-                    //                        viewbt.setDrawingCacheEnabled(false);
-                    //                    }
 
                     if (mBitmapList.size() > 0) {
+                        //                        MySendProcess = 0;
+                        //                        // mBitmapList记录的是图片地址
+                        //                        //新建list存放bitmap
+                        //                        final List<Bitmap> mBtTemList = new ArrayList<>();
+                        //                        ProgressDialogUtil.startShow(AddTaskActivity.this,"正在提交，请稍等");
+                        //                        for (int i = 0; i < mBitmapList.size(); i++) {//从总bitmaplist中获取地址，用glide获取bitmap
+                        //                            String url = String.valueOf(mBitmapList.get(i));
+                        //                                                    Glide.with(AddTaskActivity.this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+                        //                                                        @Override
+                        //                                                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        //                                                            mBtTemList.add(resource);
+                        //                                                            MySendProcess = MySendProcess + 1;
+                        //                                                            if (MySendProcess == mBitmapList.size()) {
+                        //                                                                sendPic(mBtTemList, n);//n小于0时是新增，大于等于0时是点击编辑
+                        //                                                            }
+                        //                                                        }
+                        //                                                    });
+                        //                        }
+
+                        //新建个list，存放bitmap网络地址
+                        mBtUrlList = new ArrayList<>();
                         MySendProcess = 0;
-                        // mBitmapList记录的是图片地址
-                        //新建个list，存放bitmap
-                        final List<Bitmap> mBtTemList = new ArrayList<>();
-                        for (int i = 0; i < mBitmapList.size(); i++) {//从总bitmaplist中获取地址，用glide获取bitmap
-                            String url = String.valueOf(mBitmapList.get(i));
-                            Glide.with(AddTaskActivity.this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    mBtTemList.add(resource);
-                                    MySendProcess = MySendProcess + 1;
-                                    if (MySendProcess == mBitmapList.size()) {
-                                        sendPic(mBtTemList, n);//n小于0时是新增，大于等于0时是点击编辑
+                        htUrlnum = 0;
+                        for (Object o : mBitmapList) {
+                            mBtUrlList.add("");
+                            String s = String.valueOf(o);
+                            if (s.contains("http")) {
+                                htUrlnum++;
+                            }
+                        }
+                        for (int i = 0; i < mBitmapList.size(); i++) {
+                            final String url = String.valueOf(mBitmapList.get(i));
+                            if (url.contains("http")) {
+                                mBtUrlList.set(i, url);
+                            } else {
+                                //子线程运行
+                                final int finalI = i;
+                                Glide.with(AddTaskActivity.this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                        new SingleTask2(resource, finalI, mBtUrlList, n).execute();
                                     }
-                                }
-                            });
+                                });
+                                //另一种读取本地bitmap方法
+                                //                                ThreadUtils.runOnSubThread(new Runnable() {
+                                //                                    @Override
+                                //                                    public void run() {
+                                //                                        Bitmap bitmap = decodeUriAsBitmap(Uri.parse("file://" + url));
+                                //                                        if (null == bitmap) {
+                                //                                            ToastUtils.showToast(AddTaskActivity.this, "图片" + finalI + "未读取到");
+                                //                                        } else {
+                                //                                            new SingleTask2(bitmap, finalI, mBtUrlList, n).execute();
+                                //                                        }
+                                //                                    }
+                                //                                });
+                            }
                         }
                     } else {//子表中没有图片
                         if (n >= 0) {
@@ -618,23 +647,14 @@ public class AddTaskActivity extends BaseActivity {
                     }
                     dialog.dismiss();
                     adapter.notifyDataSetChanged();
-                    //                    if (mBitmapList.size() > 0) {
-                    //                        sendPic(mBitmapList, n);//n小于0时是新增，大于等于0时是点击编辑
-                    //                    } else {
-                    //                        if (n >= 0) {
-                    //                            mSumBtUrlList.set(n, "");
-                    //                        } else {
-                    //                            mSumBtUrlList.add("");
-                    //                        }
-                    //                    }
-                    //                    dialog.dismiss();
-                    //                    adapter.notifyDataSetChanged();
                 }
             });
         }
     }
 
-    private int MySendProcess;
+    private List<String> mBtUrlList;
+    private int          MySendProcess;
+    private int          htUrlnum;
     private static final int IMAGE     = 1;//调用系统相册-选择图片n小于0
     private static final int SHOT_CODE = 20;//调用系统相机-选择图片n小于0
 
@@ -2498,6 +2518,7 @@ public class AddTaskActivity extends BaseActivity {
     }
 
     private boolean isChecked = false;
+
     //查阅是否已被审核
     private void isLooked(String qr1, String qr2, String qr3, String qr4, String qr5) {
         if ("True".equals(qr1) || "True".equals(qr2) || "True".equals(qr3) || "True".equals(qr4) || "True".equals(qr5)) {
@@ -2660,7 +2681,7 @@ public class AddTaskActivity extends BaseActivity {
         }
     }
 
-    //提交图片
+    //提交多张图片
     class Task2 extends AsyncTask<Void, Integer, Integer> {
         private List<Bitmap> mBitmapList;
         private int          n;//n小于0时是新增，大于等于0时是点击编辑
@@ -2675,7 +2696,7 @@ public class AddTaskActivity extends BaseActivity {
          */
         @Override
         protected void onPreExecute() {
-            ProgressDialogUtil.startShow(AddTaskActivity.this, "正在上传，请稍等");
+            //            ProgressDialogUtil.startShow(AddTaskActivity.this, "正在上传，请稍等");
         }
 
         /**
@@ -2769,6 +2790,153 @@ public class AddTaskActivity extends BaseActivity {
         }
     }
 
+    //提交单个图片
+    class SingleTask2 extends AsyncTask<Void, Integer, Integer> {
+        private Bitmap       mBitmap;
+        private int          n;
+        private int          mKind;
+        private List<String> mUrlList;
+
+        public SingleTask2(Bitmap bt, int which, List<String> mBtUrlList, int kind) {
+            this.mBitmap = bt;
+            this.n = which;
+            this.mUrlList = mBtUrlList;
+            this.mKind = kind;
+        }
+
+        /**
+         * 运行在UI线程中，在调用doInBackground()之前执行
+         */
+        @Override
+        protected void onPreExecute() {
+            ProgressDialogUtil.startShow(AddTaskActivity.this, "正在上传，请稍等");
+        }
+
+        /**
+         * 后台运行的方法，可以运行非UI线程，可以执行耗时的方法
+         */
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+                // 命名空间
+                String nameSpace = "http://tempuri.org/";
+                // 调用的方法名称
+                String methodName = "PIC_UPLoad";
+                // EndPoint
+                String endPoint = Consts.ENDPOINT;
+                // SOAP Action
+                String soapAction = "http://tempuri.org/PIC_UPLoad";
+
+                // 指定WebService的命名空间和调用的方法名
+                SoapObject rpc = new SoapObject(nameSpace, methodName);
+
+                //图片
+                Document document2 = DocumentHelper.createDocument();
+                Element rootElement2 = document2.addElement("NewDataSet");
+
+                Element cust = rootElement2.addElement("Cust");
+                cust.addElement("fimage").setText(bitmapToBase64(mBitmap));
+
+                //
+                OutputFormat outputFormat = OutputFormat.createPrettyPrint();
+                outputFormat.setSuppressDeclaration(false);
+                outputFormat.setNewlines(false);
+                StringWriter stringWriter2 = new StringWriter();
+                // xmlWriter是用来把XML文档写入字符串的(工具)
+                XMLWriter xmlWriter2 = new XMLWriter(stringWriter2, outputFormat);
+                // 把创建好的XML文档写入字符串
+                xmlWriter2.write(document2);
+
+                rpc.addProperty("base64string", stringWriter2.toString().substring(38));//<NewDataSet><Cust><fimage></fimage></Cust><Cust><fimage></fimage></Cust></NewDataSet>
+                //
+                Log.i("qwe", stringWriter2.toString().substring(38));
+
+                // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本
+                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+
+                envelope.bodyOut = rpc;
+                // 设置是否调用的是dotNet开发的WebService
+                envelope.dotNet = true;
+                // 等价于envelope.bodyOut = rpc;
+                envelope.setOutputSoapObject(rpc);
+
+                HttpTransportSE transport = new HttpTransportSE(endPoint);
+                try {
+                    // 调用WebService
+                    transport.call(soapAction, envelope);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // 获取返回的数据
+                SoapObject object = (SoapObject) envelope.bodyIn;
+                // 获取返回的结果
+                String result = object.getProperty(0).toString();
+                //获取返回的图片网络地址
+                mUrlList.set(n, result);
+                return 5;
+            } catch (Exception e) {
+                Log.i("sss", e.toString() + "sss");
+                return 0;
+            }
+        }
+
+        /**
+         * 运行在ui线程中，在doInBackground()执行完毕后执行
+         */
+        @Override
+        protected void onPostExecute(Integer integer) {
+            MySendProcess = MySendProcess + 1;
+            if (integer == 5) {
+                Toast.makeText(AddTaskActivity.this, "图片" + (n + 1) + "提交成功", Toast.LENGTH_LONG).show();
+            } else {
+                ToastUtils.showToast(AddTaskActivity.this, "图片" + (n + 1) + "提交失败");
+            }
+            if (MySendProcess == mBitmapList.size() - htUrlnum) {//说明要提交的图片都提交了
+                ProgressDialogUtil.hideDialog();
+                //将总的图片地址中对应的url，换置。
+                String totalUrl = "";
+                for (int m = 0; m < mUrlList.size(); m++) {
+                    String url = mUrlList.get(m);
+                    if (!"".equals(url)) {
+                        if (m == mUrlList.size() - 1) {
+                            totalUrl = totalUrl + url;
+                        } else {
+                            totalUrl = totalUrl + url + ",";
+                        }
+                    }
+                }
+                if (mKind >= 0) {
+                    mSumBtUrlList.set(mKind, totalUrl);
+                } else {
+                    mSumBtUrlList.add(totalUrl);
+                }
+            }
+        }
+
+        /**
+         * 在publishProgress()被调用以后执行，publishProgress()用于更新进度
+         */
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+        }
+    }
+
+    /**
+     * @param uri：图片的本地url地址
+     * @return Bitmap；
+     */
+    private Bitmap decodeUriAsBitmap(Uri uri) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return bitmap;
+    }
+
     /*bitmap转base64*/
     public String bitmapToBase64(Bitmap bitmap) {
         String result = "";
@@ -2776,7 +2944,7 @@ public class AddTaskActivity extends BaseActivity {
         try {
             if (null != bitmap) {
                 bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, bos);//将bitmap放入字节数组流中
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, bos);//将bitmap放入字节数组流中
 
                 bos.flush();//将bos流缓存在内存中的数据全部输出，清空缓存
                 bos.close();
