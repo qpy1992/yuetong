@@ -160,6 +160,7 @@ public class CheckActivity extends AppCompatActivity {
         tv_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                ToastUtils.showToast(CheckActivity.this,"请抄送后，转下一个人审核");
                 new CheckTask(et_get.getText().toString(), pfid, userid, goodsid).execute();
             }
         });
@@ -452,7 +453,6 @@ public class CheckActivity extends AppCompatActivity {
                     map.put("pf", recordEle.elementTextTrim("pf"));
                     map.put("zhidan", recordEle.elementTextTrim("zhidan"));
                 }
-                showAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -462,6 +462,8 @@ public class CheckActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            //刷新图片列表
+            showAdapter.notifyDataSetChanged();
             tv_comp.setText(map.get("comp"));
             tv_part.setText(map.get("part"));
             tv_item.setText(map.get("item"));

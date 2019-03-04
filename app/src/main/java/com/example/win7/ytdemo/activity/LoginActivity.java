@@ -64,7 +64,7 @@ public class LoginActivity extends BaseActivity {
                 public void onSuccess() {
                     EMClient.getInstance().groupManager().loadAllGroups();
                     EMClient.getInstance().chatManager().loadAllConversations();
-                    Log.d("main", "登录聊天服务器成功！");
+                    Log.d("main_older", "登录聊天服务器成功！");
                 }
 
                 @Override
@@ -74,7 +74,7 @@ public class LoginActivity extends BaseActivity {
 
                 @Override
                 public void onError(int code, String message) {
-                    Log.d("main", "登录聊天服务器失败！");
+                    Log.d("main_older", "登录聊天服务器失败！");
                 }
             });
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -196,7 +196,7 @@ public class LoginActivity extends BaseActivity {
                     public void onSuccess() {
                         EMClient.getInstance().groupManager().loadAllGroups();
                         EMClient.getInstance().chatManager().loadAllConversations();
-                        Log.d("main", "登录聊天服务器成功！");
+                        Log.d("main_older", "登录聊天服务器成功！");
                     }
 
                     @Override
@@ -206,7 +206,7 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void onError(int code, String message) {
-                        Log.d("main", "登录聊天服务器失败！");
+                        Log.d("main_older", "登录聊天服务器失败！");
                     }
                 });
                 //保存用户名，用户组

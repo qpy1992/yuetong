@@ -6,7 +6,8 @@ package com.example.win7.ytdemo.util;
 
 public class Consts {
 //    public static String ENDPOINT = "http://180.167.5.198:8084/Service1.asmx";
-    public static String ENDPOINT = "http://118.242.18.246:8084/Service1.asmx";
+//    public static String ENDPOINT = "http://118.242.18.246:8084/Service1.asmx";
+    public static String ENDPOINT = "http://134.175.143.63:8089/Service1.asmx";//阅同的
     public static String JA_select = "JA_select";
 //    public static String UM_APPKEY = "5ad43f1af43e480b1b0000d4";
 //    public static String UMENG_MESSAGE_SECRET = "4f715642599a8e9372d19556214e94a6";

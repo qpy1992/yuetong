@@ -20,7 +20,7 @@
             android:id="@+id/view_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/jw_logo"
+            android:src="@drawable/jw_logo_new"
             android:layout_marginTop="70dp"
             android:layout_gravity="center_horizontal"/>
 
@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/egg"
+            android:visibility="gone"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"/>
 
